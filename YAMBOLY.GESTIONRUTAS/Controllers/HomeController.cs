@@ -26,5 +26,20 @@ namespace YAMBOLY.GESTIONRUTAS.Controllers
 
             return View();
         }
+
+        public ActionResult TestMap01()
+        {
+            return View();
+        }
+
+        public ActionResult TestMap02()
+        {
+            return View();
+        }
+
+        public ActionResult TestMap03()
+        {
+            return View();
+        }
     }
 }
