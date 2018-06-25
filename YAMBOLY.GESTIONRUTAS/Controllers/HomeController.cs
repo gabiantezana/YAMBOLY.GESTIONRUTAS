@@ -41,5 +41,10 @@ namespace YAMBOLY.GESTIONRUTAS.Controllers
         {
             return View();
         }
+
+        public ActionResult TestMap04()
+        {
+            return View();
+        }
     }
 }

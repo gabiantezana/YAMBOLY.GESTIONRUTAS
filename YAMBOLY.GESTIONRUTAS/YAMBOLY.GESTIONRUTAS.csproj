@@ -196,6 +196,7 @@
     <Content Include="Views\Home\TestMap01.cshtml" />
     <Content Include="Views\Home\TestMap02.cshtml" />
     <Content Include="Views\Home\TestMap03.cshtml" />
+    <Content Include="Views\Home\TestMap04.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
