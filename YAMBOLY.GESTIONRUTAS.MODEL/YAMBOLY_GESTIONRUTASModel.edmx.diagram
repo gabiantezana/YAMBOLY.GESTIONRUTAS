@@ -9,6 +9,12 @@
         <EntityTypeShape EntityType="YAMBOLY_GESTIONRUTASModel.Users" Width="1.5" PointX="3" PointY="0.875" IsExpanded="true" />
         <AssociationConnector Association="YAMBOLY_GESTIONRUTASModel.FK__Users__RolId__1273C1CD" ManuallyRouted="false" />
         <EntityTypeShape EntityType="YAMBOLY_GESTIONRUTASModel.ErrorLog" Width="1.5" PointX="0.75" PointY="3.75" />
+        <EntityTypeShape EntityType="YAMBOLY_GESTIONRUTASModel.RolesViews" Width="1.5" PointX="7.875" PointY="3" />
+        <EntityTypeShape EntityType="YAMBOLY_GESTIONRUTASModel.ViewGroup" Width="1.5" PointX="3.375" PointY="5.125" />
+        <EntityTypeShape EntityType="YAMBOLY_GESTIONRUTASModel.Views" Width="1.5" PointX="5.625" PointY="4.875" />
+        <AssociationConnector Association="YAMBOLY_GESTIONRUTASModel.FK__RolesView__RolId__24927208" />
+        <AssociationConnector Association="YAMBOLY_GESTIONRUTASModel.FK__RolesView__ViewI__25869641" />
+        <AssociationConnector Association="YAMBOLY_GESTIONRUTASModel.FK__Views__ViewGroup__21B6055D" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -30,8 +30,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,14 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class1.cs" />
     <Compile Include="CustomException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\YAMBOLY.GESTIONRUTAS.HELPER\YAMBOLY.GESTIONRUTAS.HELPER.csproj">
-      <Project>{3AA328A4-C3B4-4C2D-BADE-9CF4955135D1}</Project>
-      <Name>YAMBOLY.GESTIONRUTAS.HELPER</Name>
-    </ProjectReference>
     <ProjectReference Include="..\YAMBOLY.GESTIONRUTAS.MODEL\YAMBOLY.GESTIONRUTAS.MODEL.csproj">
       <Project>{BE09D022-C81D-49B3-B6A5-225DEA39EBEB}</Project>
       <Name>YAMBOLY.GESTIONRUTAS.MODEL</Name>

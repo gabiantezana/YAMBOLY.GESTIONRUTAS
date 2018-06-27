@@ -38,6 +38,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -55,6 +56,10 @@
       <Project>{01132EBA-6A8D-4FF3-A47E-B7550466C3D8}</Project>
       <Name>YAMBOLY.GESTIONRUTAS.DATAAACCESS</Name>
     </ProjectReference>
+    <ProjectReference Include="..\YAMBOLY.GESTIONRUTAS.EXCEPTION\YAMBOLY.GESTIONRUTAS.EXCEPTION.csproj">
+      <Project>{AB7F6A00-5682-4079-B658-D8393B668F0B}</Project>
+      <Name>YAMBOLY.GESTIONRUTAS.EXCEPTION</Name>
+    </ProjectReference>
     <ProjectReference Include="..\YAMBOLY.GESTIONRUTAS.HELPER\YAMBOLY.GESTIONRUTAS.HELPER.csproj">
       <Project>{3aa328a4-c3b4-4c2d-bade-9cf4955135d1}</Project>
       <Name>YAMBOLY.GESTIONRUTAS.HELPER</Name>
@@ -69,6 +74,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

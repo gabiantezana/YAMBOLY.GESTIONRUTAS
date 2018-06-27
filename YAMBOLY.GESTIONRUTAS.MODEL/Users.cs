@@ -18,6 +18,7 @@ namespace YAMBOLY.GESTIONRUTAS.MODEL
         public string UserName { get; set; }
         public byte[] Pass { get; set; }
         public Nullable<int> RolId { get; set; }
+        public Nullable<bool> isActive { get; set; }
     
         public virtual Roles Roles { get; set; }
     }

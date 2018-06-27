@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using YAMBOLY.GESTIONRUTAS.HELPER;
 using YAMBOLY.GESTIONRUTAS.MODEL;
 using YAMBOLY.GESTIONRUTAS.VIEWMODEL.Administration;
+using YAMBOLY.GESTIONRUTAS.VIEWMODEL.General;
 
 namespace YAMBOLY.GESTIONRUTAS.DATAAACCESS.Administration
 {
@@ -42,6 +43,16 @@ namespace YAMBOLY.GESTIONRUTAS.DATAAACCESS.Administration
             else
                 dataContext.context.Users.Add(user);
             dataContext.context.SaveChanges();
+        }
+
+        public void ChangePassword(DataContext dataContext, int? userId, ChangePasswordViewModel model)
+        {
+            var entity = dataContext.context.Users.Find(userId);
+            if (entity != null)
+            {
+                entity.Pass = EncryptionHelper.EncryptTextToMemory(model.Password, ConstantHelper.ENCRIPT_KEY, ConstantHelper.ENCRIPT_METHOD);
+                dataContext.context.SaveChanges();
+            }
         }
     }
 }

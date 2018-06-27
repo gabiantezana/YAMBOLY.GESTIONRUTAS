@@ -28,5 +28,8 @@ namespace YAMBOLY.GESTIONRUTAS.MODEL
         public virtual DbSet<Roles> Roles { get; set; }
         public virtual DbSet<Users> Users { get; set; }
         public virtual DbSet<ErrorLog> ErrorLog { get; set; }
+        public virtual DbSet<RolesViews> RolesViews { get; set; }
+        public virtual DbSet<ViewGroup> ViewGroup { get; set; }
+        public virtual DbSet<Views> Views { get; set; }
     }
 }

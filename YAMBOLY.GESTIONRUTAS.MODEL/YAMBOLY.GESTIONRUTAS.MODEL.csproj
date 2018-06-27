@@ -58,7 +58,16 @@
     <Compile Include="Roles.cs">
       <DependentUpon>YAMBOLY_GESTIONRUTASModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="RolesViews.cs">
+      <DependentUpon>YAMBOLY_GESTIONRUTASModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Users.cs">
+      <DependentUpon>YAMBOLY_GESTIONRUTASModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ViewGroup.cs">
+      <DependentUpon>YAMBOLY_GESTIONRUTASModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Views.cs">
       <DependentUpon>YAMBOLY_GESTIONRUTASModel.tt</DependentUpon>
     </Compile>
     <Compile Include="YAMBOLY_GESTIONRUTASModel.Context.cs">

@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using YAMBOLY.GESTIONRUTAS.DATAAACCESS.Administration;
+using YAMBOLY.GESTIONRUTAS.EXCEPTION;
 using YAMBOLY.GESTIONRUTAS.HELPER;
 using YAMBOLY.GESTIONRUTAS.MODEL;
 using YAMBOLY.GESTIONRUTAS.VIEWMODEL.Administration;
+using YAMBOLY.GESTIONRUTAS.VIEWMODEL.General;
 
 namespace YAMBOLY.GESTIONRUTAS.LOGIC.Administration
 {
@@ -33,6 +35,14 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.Administration
         public void AddUpdate(DataContext dataContext, UserViewModel model)
         {
             new UserDataAccess().AddUpdate(dataContext, model);
+        }
+
+        public void ChangePassword(DataContext dataContext, ChangePasswordViewModel model)
+        {
+            var userId = dataContext.session.GetUserId();
+            if (userId == null)
+                throw new CustomException("No se encontró el id de usuario en la sesión.");
+            new UserDataAccess().ChangePassword(dataContext, userId, model);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.Administration.Controllers
 {
     public class UserController : BaseController
     {
-        [AppViewAuthorize(ConstantHelper.Administration.User.LIST)]
+        [AppViewAuthorize(ConstantHelper.Views.Administration.User.LIST)]
         public ActionResult Get()
         {
             var model = new UserLogic().Get(GetDataContext(), null);

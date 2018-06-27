@@ -30,4 +30,12 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
         Views,
     }
 
+    #region MODAL SIZE
+    public enum ModalSize
+    {
+        Normal,
+        Small,
+        Large
+    }
+    #endregion
 }

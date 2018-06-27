@@ -14,14 +14,22 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
         public static readonly byte[] ENCRIPT_METHOD = { 87, 10, 65, 35, 12, 66, 21, 65 };
         public static readonly string EXCEPTION_MESSAGE = "";
         public static readonly string ERROR_MESSAGE = "";
-        public static readonly string SUCCESS_MESSAGE  = "";
+        public static readonly string SUCCESS_MESSAGE = "";
 
-        public class Administration
+        public class Views
         {
-            public class User
+            public class Administration
             {
-                public const string LIST = "LIST";
+                public class User
+                {
+                    public const string LIST = "LIST";
+                }
             }
+        }
+
+        public class Area
+        {
+            public static readonly string ADMINISTRATION = "Administration";
         }
     }
 }

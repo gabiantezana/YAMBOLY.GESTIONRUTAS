@@ -26,6 +26,15 @@
           <Property Name="RolName" Type="nvarchar(max)" />
           <Property Name="RolDescription" Type="nvarchar(max)" />
         </EntityType>
+        <EntityType Name="RolesViews">
+          <Key>
+            <PropertyRef Name="RolViewId" />
+          </Key>
+          <Property Name="RolViewId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RolId" Type="int" Nullable="false" />
+          <Property Name="ViewId" Type="int" Nullable="false" />
+          <Property Name="RolesViewsState" Type="bit" />
+        </EntityType>
         <EntityType Name="Users">
           <Key>
             <PropertyRef Name="UserId" />
@@ -33,9 +42,51 @@
           <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UserName" Type="nvarchar(max)" />
           <Property Name="Pass" Type="varbinary(max)" />
+          <Property Name="isActive" Type="bit" />
           <Property Name="RolId" Type="int" />
         </EntityType>
-        <Association Name="FK__Users__RolId__182C9B23">
+        <EntityType Name="ViewGroup">
+          <Key>
+            <PropertyRef Name="ViewGroupId" />
+          </Key>
+          <Property Name="ViewGroupId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ViewGroupName" Type="nvarchar(max)" />
+          <Property Name="ViewGroupCode" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Views">
+          <Key>
+            <PropertyRef Name="ViewId" />
+          </Key>
+          <Property Name="ViewId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ViewName" Type="nvarchar(max)" />
+          <Property Name="ViewValue" Type="nvarchar(max)" />
+          <Property Name="ViewGroupId" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__RolesView__RolId__24927208">
+          <End Role="Roles" Type="Self.Roles" Multiplicity="1" />
+          <End Role="RolesViews" Type="Self.RolesViews" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="RolId" />
+            </Principal>
+            <Dependent Role="RolesViews">
+              <PropertyRef Name="RolId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__RolesView__ViewI__25869641">
+          <End Role="Views" Type="Self.Views" Multiplicity="1" />
+          <End Role="RolesViews" Type="Self.RolesViews" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Views">
+              <PropertyRef Name="ViewId" />
+            </Principal>
+            <Dependent Role="RolesViews">
+              <PropertyRef Name="ViewId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Users__RolId__1CF15040">
           <End Role="Roles" Type="Self.Roles" Multiplicity="0..1" />
           <End Role="Users" Type="Self.Users" Multiplicity="*" />
           <ReferentialConstraint>
@@ -47,13 +98,40 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__Views__ViewGroup__21B6055D">
+          <End Role="ViewGroup" Type="Self.ViewGroup" Multiplicity="1" />
+          <End Role="Views" Type="Self.Views" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ViewGroup">
+              <PropertyRef Name="ViewGroupId" />
+            </Principal>
+            <Dependent Role="Views">
+              <PropertyRef Name="ViewGroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="YAMBOLY_GESTIONRUTASModelStoreContainer">
           <EntitySet Name="ErrorLog" EntityType="Self.ErrorLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RolesViews" EntityType="Self.RolesViews" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__Users__RolId__182C9B23" Association="Self.FK__Users__RolId__182C9B23">
+          <EntitySet Name="ViewGroup" EntityType="Self.ViewGroup" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Views" EntityType="Self.Views" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__RolesView__RolId__24927208" Association="Self.FK__RolesView__RolId__24927208">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="RolesViews" EntitySet="RolesViews" />
+          </AssociationSet>
+          <AssociationSet Name="FK__RolesView__ViewI__25869641" Association="Self.FK__RolesView__ViewI__25869641">
+            <End Role="Views" EntitySet="Views" />
+            <End Role="RolesViews" EntitySet="RolesViews" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Users__RolId__1CF15040" Association="Self.FK__Users__RolId__1CF15040">
             <End Role="Roles" EntitySet="Roles" />
             <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Views__ViewGroup__21B6055D" Association="Self.FK__Views__ViewGroup__21B6055D">
+            <End Role="ViewGroup" EntitySet="ViewGroup" />
+            <End Role="Views" EntitySet="Views" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -68,6 +146,7 @@
           <Property Name="RolName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="RolDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Users" Relationship="Self.FK__Users__RolId__1273C1CD" FromRole="Roles" ToRole="Users" />
+          <NavigationProperty Name="RolesViews" Relationship="YAMBOLY_GESTIONRUTASModel.FK__RolesView__RolId__24927208" FromRole="Roles" ToRole="RolesViews" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -78,6 +157,7 @@
           <Property Name="Pass" Type="Binary" MaxLength="Max" FixedLength="false" />
           <Property Name="RolId" Type="Int32" />
           <NavigationProperty Name="Roles" Relationship="Self.FK__Users__RolId__1273C1CD" FromRole="Users" ToRole="Roles" />
+          <Property Name="isActive" Type="Boolean" />
         </EntityType>
         <Association Name="FK__Users__RolId__1273C1CD">
           <End Role="Roles" Type="Self.Roles" Multiplicity="0..1" />
@@ -99,6 +179,21 @@
             <End Role="Users" EntitySet="Users" />
           </AssociationSet>
           <EntitySet Name="ErrorLog" EntityType="YAMBOLY_GESTIONRUTASModel.ErrorLog" />
+          <EntitySet Name="RolesViews" EntityType="YAMBOLY_GESTIONRUTASModel.RolesViews" />
+          <EntitySet Name="ViewGroup" EntityType="YAMBOLY_GESTIONRUTASModel.ViewGroup" />
+          <EntitySet Name="Views" EntityType="YAMBOLY_GESTIONRUTASModel.Views" />
+          <AssociationSet Name="FK__RolesView__RolId__24927208" Association="YAMBOLY_GESTIONRUTASModel.FK__RolesView__RolId__24927208">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="RolesViews" EntitySet="RolesViews" />
+          </AssociationSet>
+          <AssociationSet Name="FK__RolesView__ViewI__25869641" Association="YAMBOLY_GESTIONRUTASModel.FK__RolesView__ViewI__25869641">
+            <End Role="Views" EntitySet="Views" />
+            <End Role="RolesViews" EntitySet="RolesViews" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Views__ViewGroup__21B6055D" Association="YAMBOLY_GESTIONRUTASModel.FK__Views__ViewGroup__21B6055D">
+            <End Role="ViewGroup" EntitySet="ViewGroup" />
+            <End Role="Views" EntitySet="Views" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="ErrorLog">
           <Key>
@@ -113,6 +208,73 @@
           <Property Name="sessionKeys" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="errorTimeStamp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="RolesViews">
+          <Key>
+            <PropertyRef Name="RolViewId" />
+          </Key>
+          <Property Name="RolViewId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RolId" Type="Int32" Nullable="false" />
+          <Property Name="ViewId" Type="Int32" Nullable="false" />
+          <Property Name="RolesViewsState" Type="Boolean" />
+          <NavigationProperty Name="Roles" Relationship="YAMBOLY_GESTIONRUTASModel.FK__RolesView__RolId__24927208" FromRole="RolesViews" ToRole="Roles" />
+          <NavigationProperty Name="Views" Relationship="YAMBOLY_GESTIONRUTASModel.FK__RolesView__ViewI__25869641" FromRole="RolesViews" ToRole="Views" />
+        </EntityType>
+        <EntityType Name="ViewGroup">
+          <Key>
+            <PropertyRef Name="ViewGroupId" />
+          </Key>
+          <Property Name="ViewGroupId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ViewGroupName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ViewGroupCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Views" Relationship="YAMBOLY_GESTIONRUTASModel.FK__Views__ViewGroup__21B6055D" FromRole="ViewGroup" ToRole="Views" />
+        </EntityType>
+        <EntityType Name="Views">
+          <Key>
+            <PropertyRef Name="ViewId" />
+          </Key>
+          <Property Name="ViewId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ViewName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ViewValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ViewGroupId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="RolesViews" Relationship="YAMBOLY_GESTIONRUTASModel.FK__RolesView__ViewI__25869641" FromRole="Views" ToRole="RolesViews" />
+          <NavigationProperty Name="ViewGroup" Relationship="YAMBOLY_GESTIONRUTASModel.FK__Views__ViewGroup__21B6055D" FromRole="Views" ToRole="ViewGroup" />
+        </EntityType>
+        <Association Name="FK__RolesView__RolId__24927208">
+          <End Type="YAMBOLY_GESTIONRUTASModel.Roles" Role="Roles" Multiplicity="1" />
+          <End Type="YAMBOLY_GESTIONRUTASModel.RolesViews" Role="RolesViews" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="RolId" />
+            </Principal>
+            <Dependent Role="RolesViews">
+              <PropertyRef Name="RolId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__RolesView__ViewI__25869641">
+          <End Type="YAMBOLY_GESTIONRUTASModel.Views" Role="Views" Multiplicity="1" />
+          <End Type="YAMBOLY_GESTIONRUTASModel.RolesViews" Role="RolesViews" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Views">
+              <PropertyRef Name="ViewId" />
+            </Principal>
+            <Dependent Role="RolesViews">
+              <PropertyRef Name="ViewId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Views__ViewGroup__21B6055D">
+          <End Type="YAMBOLY_GESTIONRUTASModel.ViewGroup" Role="ViewGroup" Multiplicity="1" />
+          <End Type="YAMBOLY_GESTIONRUTASModel.Views" Role="Views" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ViewGroup">
+              <PropertyRef Name="ViewGroupId" />
+            </Principal>
+            <Dependent Role="Views">
+              <PropertyRef Name="ViewGroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -131,6 +293,7 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="YAMBOLY_GESTIONRUTASModel.Users">
               <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="isActive" ColumnName="isActive" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="UserName" ColumnName="UserName" />
                 <ScalarProperty Name="Pass" ColumnName="Pass" />
@@ -149,6 +312,35 @@
                 <ScalarProperty Name="errorMessage" ColumnName="errorMessage" />
                 <ScalarProperty Name="internalException" ColumnName="internalException" />
                 <ScalarProperty Name="ErrorLogId" ColumnName="ErrorLogId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RolesViews">
+            <EntityTypeMapping TypeName="YAMBOLY_GESTIONRUTASModel.RolesViews">
+              <MappingFragment StoreEntitySet="RolesViews">
+                <ScalarProperty Name="RolesViewsState" ColumnName="RolesViewsState" />
+                <ScalarProperty Name="ViewId" ColumnName="ViewId" />
+                <ScalarProperty Name="RolId" ColumnName="RolId" />
+                <ScalarProperty Name="RolViewId" ColumnName="RolViewId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ViewGroup">
+            <EntityTypeMapping TypeName="YAMBOLY_GESTIONRUTASModel.ViewGroup">
+              <MappingFragment StoreEntitySet="ViewGroup">
+                <ScalarProperty Name="ViewGroupCode" ColumnName="ViewGroupCode" />
+                <ScalarProperty Name="ViewGroupName" ColumnName="ViewGroupName" />
+                <ScalarProperty Name="ViewGroupId" ColumnName="ViewGroupId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Views">
+            <EntityTypeMapping TypeName="YAMBOLY_GESTIONRUTASModel.Views">
+              <MappingFragment StoreEntitySet="Views">
+                <ScalarProperty Name="ViewGroupId" ColumnName="ViewGroupId" />
+                <ScalarProperty Name="ViewValue" ColumnName="ViewValue" />
+                <ScalarProperty Name="ViewName" ColumnName="ViewName" />
+                <ScalarProperty Name="ViewId" ColumnName="ViewId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
