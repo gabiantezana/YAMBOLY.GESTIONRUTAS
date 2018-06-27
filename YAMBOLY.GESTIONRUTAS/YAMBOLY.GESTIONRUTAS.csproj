@@ -46,7 +46,19 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList.Mvc, Version=4.5.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -148,7 +160,12 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Areas\Administration\AdministrationAreaRegistration.cs" />
+    <Compile Include="Areas\Administration\Controllers\UserController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Filters\AppRolAuthorizeAttribute.cs" />
+    <Compile Include="Filters\AppViewAuthorizeAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -159,6 +176,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\PagedList.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -168,6 +186,7 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Areas\Administration\Views\web.config" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -179,6 +198,9 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\underscore.js" />
+    <Content Include="Scripts\underscore.min.js" />
+    <Content Include="Scripts\Views\Home\TestMap04.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -197,9 +219,12 @@
     <Content Include="Views\Home\TestMap02.cshtml" />
     <Content Include="Views\Home\TestMap03.cshtml" />
     <Content Include="Views\Home\TestMap04.cshtml" />
+    <Content Include="Scripts\underscore.min.map" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\Administration\Models\" />
+    <Folder Include="Areas\Administration\Views\Shared\" />
     <Folder Include="Models\" />
     <Folder Include="Scripts\maplabel\" />
   </ItemGroup>
@@ -215,6 +240,28 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\YAMBOLY.GESTIONRUTAS.EXCEPTION\YAMBOLY.GESTIONRUTAS.EXCEPTION.csproj">
+      <Project>{AB7F6A00-5682-4079-B658-D8393B668F0B}</Project>
+      <Name>YAMBOLY.GESTIONRUTAS.EXCEPTION</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\YAMBOLY.GESTIONRUTAS.HELPER\YAMBOLY.GESTIONRUTAS.HELPER.csproj">
+      <Project>{3AA328A4-C3B4-4C2D-BADE-9CF4955135D1}</Project>
+      <Name>YAMBOLY.GESTIONRUTAS.HELPER</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\YAMBOLY.GESTIONRUTAS.LOGIC\YAMBOLY.GESTIONRUTAS.LOGIC.csproj">
+      <Project>{1B7806E5-E490-4174-ABB4-B6A62DFA6108}</Project>
+      <Name>YAMBOLY.GESTIONRUTAS.LOGIC</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\YAMBOLY.GESTIONRUTAS.MODEL\YAMBOLY.GESTIONRUTAS.MODEL.csproj">
+      <Project>{BE09D022-C81D-49B3-B6A5-225DEA39EBEB}</Project>
+      <Name>YAMBOLY.GESTIONRUTAS.MODEL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\YAMBOLY.GESTIONRUTAS.VIEWMODEL\YAMBOLY.GESTIONRUTAS.VIEWMODEL.csproj">
+      <Project>{1A15690A-98AA-4D69-B319-3BF89E70F09F}</Project>
+      <Name>YAMBOLY.GESTIONRUTAS.VIEWMODEL</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
