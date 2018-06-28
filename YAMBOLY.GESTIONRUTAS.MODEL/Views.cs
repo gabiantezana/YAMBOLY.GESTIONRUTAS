@@ -22,7 +22,7 @@ namespace YAMBOLY.GESTIONRUTAS.MODEL
     
         public int ViewId { get; set; }
         public string ViewName { get; set; }
-        public string ViewValue { get; set; }
+        public string ViewCode { get; set; }
         public int ViewGroupId { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

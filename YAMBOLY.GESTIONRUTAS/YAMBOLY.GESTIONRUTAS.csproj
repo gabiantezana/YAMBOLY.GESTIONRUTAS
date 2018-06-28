@@ -62,8 +62,10 @@
       <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Activities" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -157,6 +159,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Administration\AdministrationAreaRegistration.cs" />
+    <Compile Include="Areas\Administration\Controllers\RolController.cs" />
     <Compile Include="Areas\Administration\Controllers\UserController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -342,6 +345,14 @@
     <Content Include="Content\assets\images\logo192.png" />
     <Content Include="Content\assets\images\trama-escalera.png" />
     <Content Include="Content\assets\js\app.min.js" />
+    <Content Include="Areas\Administration\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Administration\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Administration\Views\User\List.cshtml" />
+    <Content Include="Areas\Administration\Views\User\AddUpdate.cshtml" />
+    <Content Include="Areas\Administration\Views\User\PartialView\_ListPartialView.cshtml" />
+    <Content Include="Areas\Administration\Views\Rol\AddUpdate.cshtml" />
+    <Content Include="Areas\Administration\Views\Rol\EditPermisosPorRoles.cshtml" />
+    <Content Include="Areas\Administration\Views\Rol\List.cshtml" />
     <None Include="Content\assets\js\jquery-1.10.2.intellisense.js" />
     <Content Include="Content\assets\js\jquery-1.10.2.js" />
     <Content Include="Content\assets\js\jquery-1.10.2.min.js" />
@@ -836,6 +847,7 @@
     <Content Include="Content\vendor\toastr\toastr.less" />
     <Content Include="Content\vendor\toastr\toastr.scss" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
+    <Content Include="Scripts\Global.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
@@ -898,7 +910,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Administration\Models\" />
-    <Folder Include="Areas\Administration\Views\Shared\" />
     <Folder Include="Content\assets\css\" />
     <Folder Include="Content\vendor\flag-icon-css\flags\" />
     <Folder Include="Models\" />
@@ -910,6 +921,10 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\YAMBOLY.GESTIONRUTAS.DATAAACCESS\YAMBOLY.GESTIONRUTAS.DATAAACCESS.csproj">
+      <Project>{01132EBA-6A8D-4FF3-A47E-B7550466C3D8}</Project>
+      <Name>YAMBOLY.GESTIONRUTAS.DATAAACCESS</Name>
+    </ProjectReference>
     <ProjectReference Include="..\YAMBOLY.GESTIONRUTAS.EXCEPTION\YAMBOLY.GESTIONRUTAS.EXCEPTION.csproj">
       <Project>{AB7F6A00-5682-4079-B658-D8393B668F0B}</Project>
       <Name>YAMBOLY.GESTIONRUTAS.EXCEPTION</Name>

@@ -1,26 +1,35 @@
 ﻿using PagedList;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using YAMBOLY.GESTIONRUTAS.DATAAACCESS.Administration;
 using YAMBOLY.GESTIONRUTAS.EXCEPTION;
 using YAMBOLY.GESTIONRUTAS.HELPER;
 using YAMBOLY.GESTIONRUTAS.MODEL;
-using YAMBOLY.GESTIONRUTAS.VIEWMODEL.Administration;
+using YAMBOLY.GESTIONRUTAS.VIEWMODEL.Administration.User;
 using YAMBOLY.GESTIONRUTAS.VIEWMODEL.General;
 
 namespace YAMBOLY.GESTIONRUTAS.LOGIC.Administration
 {
     public class UserLogic
     {
-        public IPagedList<Users> Get(DataContext dataContext, string searchKey, int? page)
+        public UserListViewModel GetListViewModel(DataContext dataContext)
+        {
+            var model = new UserListViewModel();
+            model.List = GetList(dataContext, null, null, null);
+            return model;
+        }
+
+        public IPagedList<Users> GetList(DataContext dataContext, string searchString, int? id, int? page)
         {
             var query = new UserDataAccess().Get(dataContext).AsQueryable();
             var p = page ?? 1;
-            if (string.IsNullOrEmpty(searchKey))
+
+            if (id != null)
+                query = query.Where(x => x.UserId == id);
+
+            else if (!string.IsNullOrEmpty(searchString))
             {
-                foreach (var token in searchKey.Split(' '))
+                foreach (var token in searchString.Split(' '))
                     query = query.Where(x => x.UserName.Contains(token));
             }
 
@@ -29,7 +38,20 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.Administration
 
         public UserViewModel Get(DataContext dataContext, int? id)
         {
-            return ConvertHelper.CopyAToB(new UserDataAccess().Get(dataContext, id), null) as UserViewModel;
+            var model = ConvertHelper.CopyAToB(new UserDataAccess().Get(dataContext, id), new UserViewModel()) as UserViewModel;
+            FillModelJLists(dataContext, ref model);
+
+            return model;
+        }
+
+        public List<JsonEntity> GetJList(DataContext dataContext, string searchString)
+        {
+            return GetList(dataContext, searchString, null, null).Select(x => new JsonEntity() { id = x.UserId, text = x.UserName }).ToList();
+        }
+
+        private void FillModelJLists(DataContext dataContext, ref UserViewModel model)
+        {
+            model.Roles = new RolLogic().GetList(dataContext, null);
         }
 
         public void AddUpdate(DataContext dataContext, UserViewModel model)
@@ -43,6 +65,16 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.Administration
             if (userId == null)
                 throw new CustomException("No se encontró el id de usuario en la sesión.");
             new UserDataAccess().ChangePassword(dataContext, userId, model);
+        }
+
+        public void ChangeState(DataContext dataContext, int? userId)
+        {
+            var entity = new UserDataAccess().Get(dataContext, userId);
+            if (entity != null)
+            {
+                var newState = !(entity.isActive ?? false);
+                new UserDataAccess().ChangeState(dataContext, userId, newState);
+            }
         }
     }
 }

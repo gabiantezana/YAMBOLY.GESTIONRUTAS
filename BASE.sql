@@ -4,7 +4,7 @@ RolId int not null primary key identity
 ,RolName nvarchar(max)
 ,RolDescription nvarchar(max)
 )
-drop table Users
+--drop table Users
 CREATE TABLE Users
 (
 UserId int not null primary key identity
@@ -49,3 +49,12 @@ RolViewId int not null primary key identity
 ,ViewId int not null foreign key references Views(ViewId)
 ,RolesViewsState bit
 )
+
+INSERT INTO Roles VALUES ('SUPERADMINISTRATOR','SUPERADMINISTRATOR')
+INSERT INTO Roles VALUES ('ADMINISTRATOR	','ADMINISTRATOR')
+INSERT INTO Users VALUES ('ADMIN',NULL,1, 1) 
+INSERT INTO Users VALUES ('SUPERADMIN',NULL,1, 1) 
+
+INSERT INTO ViewGroup VALUES ( 'ADMINISTRATION.USER', 'ADMINISTRATION.USER')
+INSERT INTO Views VALUES ('ADMINISTRATION.USER.LIST','Usuarios',  1)
+INSERT INTO Views VALUES ('ADMINISTRATION.USER.ADD_UPDATE','Usuarios',  1)

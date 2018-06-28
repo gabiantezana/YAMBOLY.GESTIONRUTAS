@@ -1,0 +1,40 @@
+﻿@model YAMBOLY.GESTIONRUTAS.VIEWMODEL.Administration.User.UserViewModel
+
+@{
+    ViewBag.Title = Model.UserId.HasValue ? "Editar Usuario" : "Crear Usuario";
+    ViewBag.Icon = Model.UserId.HasValue ? "edit" : "plus";
+    var isEdit = Model.UserId.HasValue ? "true" : "false";
+}
+
+@section Breadcrumbs{
+
+    <li><a href="@Url.Action("List", "User", new { area = "Administration"})">Listado de usuarios</a></li>
+}
+
+<div class="panel">
+    <div class="panel-heading">
+        <h5 class="panel-title">Datos del usuario</h5>
+    </div>
+    @using (Html.BeginForm("AddUpdate", "User", FormMethod.Post))
+    {
+        if (Model.UserId.HasValue)
+        {
+            @Html.HiddenFor(x => Model.UserId)
+        }
+        <div class="panel-body">
+            <div class="form-group col-md-6 col-sm-12">
+                @Html.LabelFor(model => Model.UserName, new { @class = "form-label" })
+                @Html.EditorFor(x => Model.UserName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(x => Model.UserName)
+            </div>
+            <div class="form-group col-md-6 col-sm-12">
+                @Html.LabelFor(x => Model.RolId, new { @class = "form-label" })
+                @Html.DropDownListFor(x => Model.RolId, new SelectList(Model.Roles, "id", "text", 0), new { @class = "form-control form-group-margin", @data_plugin = "select2", @data_isedit = isEdit })
+                @Html.ValidationMessageFor(x => Model.RolId)
+            </div>
+        </div>
+        <div class="panel-footer text-right">
+            <button class="btn btn-primary" id="btnGuardar"><i class="fa fa-save" aria-hidden="true"></i>&nbsp; Guardar</button>
+        </div>
+    }
+</div>

@@ -30,6 +30,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList.Mvc, Version=4.5.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -41,11 +47,30 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Administration\RolViewModel.cs" />
-    <Compile Include="Administration\UserViewModel.cs" />
+    <Compile Include="Administration\User\UserListViewModel.cs" />
+    <Compile Include="Administration\Rol\RolViewModel.cs" />
+    <Compile Include="Administration\User\UserViewModel.cs" />
+    <Compile Include="Administration\Rol\RolListViewModel.cs" />
     <Compile Include="General\ChangePasswordViewModel.cs" />
     <Compile Include="General\LoginViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\YAMBOLY.GESTIONRUTAS.HELPER\YAMBOLY.GESTIONRUTAS.HELPER.csproj">
+      <Project>{3AA328A4-C3B4-4C2D-BADE-9CF4955135D1}</Project>
+      <Name>YAMBOLY.GESTIONRUTAS.HELPER</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\YAMBOLY.GESTIONRUTAS.MODEL\YAMBOLY.GESTIONRUTAS.MODEL.csproj">
+      <Project>{BE09D022-C81D-49B3-B6A5-225DEA39EBEB}</Project>
+      <Name>YAMBOLY.GESTIONRUTAS.MODEL</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\PagedList.css" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

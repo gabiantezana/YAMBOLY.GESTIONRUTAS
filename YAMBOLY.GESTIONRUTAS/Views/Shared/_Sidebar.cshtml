@@ -16,21 +16,21 @@
                 <span class="site-menu-title">Administración</span>
             </a>
             <ul class="site-menu-sub">
-                @if (Session.GetRol() == AppRol.SuperAdministrator)
+                @if (Session.GetRol() == AppRol.SUPERADMINISTRATOR)
                 {
                     <li class="site-menu-item">
-                        <a class="animsition-link" href="@Url.Action("LstRoles", "Roles", new { Area = ConstantHelper.Area.ADMINISTRATION})"
+                        <a class="animsition-link" href="@Url.Action("List", "Rol", new { Area = ConstantHelper.Area.ADMINISTRATION})"
                            data-animsition-out-class="rotate-out"
                            data-animsition-out-duration="500">
-                            <span class="site-menu-title">Roles</span>
+                            <span class="site-menu-title">Permisos por Rol</span>
                         </a>
                     </li>
                 }
 
-                @if (Session.GetPermisosVista().Intersect(new String[] { ConstantHelper.Views.Administration.User.LIST }).Count() > 0)
+                @if (Session.GetViewPermissions().Intersect(new String[] { ConstantHelper.Views.Administration.User.LIST }).Count() > 0)
                 {
                     <li class="site-menu-item">
-                        <a class="animsition-link" href="@Url.Action("LstUsuarios", "Usuario", new { Area = ConstantHelper.Area.ADMINISTRATION})">
+                        <a class="animsition-link" href="@Url.Action("List", "User", new { Area = ConstantHelper.Area.ADMINISTRATION})">
                             <span class="site-menu-title">Usuarios</span>
                         </a>
                     </li>

@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using YAMBOLY.GESTIONRUTAS.HELPER;
 using YAMBOLY.GESTIONRUTAS.MODEL;
-using YAMBOLY.GESTIONRUTAS.VIEWMODEL.Administration;
+using YAMBOLY.GESTIONRUTAS.VIEWMODEL.Administration.User;
 using YAMBOLY.GESTIONRUTAS.VIEWMODEL.General;
 
 namespace YAMBOLY.GESTIONRUTAS.DATAAACCESS.Administration
@@ -25,17 +23,17 @@ namespace YAMBOLY.GESTIONRUTAS.DATAAACCESS.Administration
         public void AddUpdate(DataContext dataContext, UserViewModel model)
         {
             Users user = new Users();
-            Boolean itsUpdate = dataContext.context.Users.Find(model.Id) != null;
+            Boolean itsUpdate = dataContext.context.Users.Find(model.UserId) != null;
             if (itsUpdate)
             {
-                user = dataContext.context.Users.Find(user.UserId);
+                user = dataContext.context.Users.Find(model.UserId);
             }
             else
             {
                 var byteArrayPassword = EncryptionHelper.EncryptTextToMemory(ConstantHelper.PASSWORD_DEFAULT, ConstantHelper.ENCRIPT_KEY, ConstantHelper.ENCRIPT_METHOD);
                 user.Pass = byteArrayPassword;
             }
-            user.UserName = model.Username;
+            user.UserName = model.UserName;
             user.RolId = model.RolId;
 
             if (itsUpdate)
@@ -51,6 +49,17 @@ namespace YAMBOLY.GESTIONRUTAS.DATAAACCESS.Administration
             if (entity != null)
             {
                 entity.Pass = EncryptionHelper.EncryptTextToMemory(model.Password, ConstantHelper.ENCRIPT_KEY, ConstantHelper.ENCRIPT_METHOD);
+                dataContext.context.SaveChanges();
+            }
+        }
+
+        public void ChangeState(DataContext dataContext, int? userId, bool? newState)
+        {
+            var entity = dataContext.context.Users.Find(userId);
+            if (userId != null)
+            {
+                entity.isActive = newState;
+                dataContext.context.Entry(entity);
                 dataContext.context.SaveChanges();
             }
         }

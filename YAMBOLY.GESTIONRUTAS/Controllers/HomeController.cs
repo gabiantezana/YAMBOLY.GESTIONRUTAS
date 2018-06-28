@@ -25,12 +25,16 @@ namespace YAMBOLY.GESTIONRUTAS.Controllers
         [HttpPost]
         public ActionResult Login(LoginViewModel model)
         {
+
             try
             {
                 Users entity = context.Users.Include(x => x.Roles.RolesViews.Select(y => y.Views)).FirstOrDefault(x => x.UserName == model.Codigo);
+
                 var hasChangePassword = true;
                 if (entity != null)
                 {
+#if DEBUG
+#else
                     var byteArrayPassword = EncryptionHelper.EncryptTextToMemory(model.Password, ConstantHelper.ENCRIPT_KEY, ConstantHelper.ENCRIPT_METHOD);
 
                     if (!byteArrayPassword.SequenceEqual(entity.Pass))
@@ -48,23 +52,23 @@ namespace YAMBOLY.GESTIONRUTAS.Controllers
 
                     if (entity.Pass.SequenceEqual(basePasswordEncryp) || entity.Pass.ToSafeString().Equals(String.Empty))
                         hasChangePassword = false;
-
+#endif
                     //TODO:
                     Session.Set(SessionKey.UserNames, "TEST USERNAMESS");
                     Session.Set(SessionKey.UserName, entity.UserName);
 
-                    Session.Set(SessionKey.Views, entity.Roles.RolesViews.Where(x => x.RolesViewsState == true).Select(x => x.Views.ViewName).ToArray());
+                    Session.Set(SessionKey.Views, entity.Roles.RolesViews.Where(x => x.RolesViewsState == true).Select(x => x.Views.ViewCode).ToArray());
                     Session.Set(SessionKey.UserId, entity.UserId);
 
-                    var appRol = Enum.Parse(typeof(AppRol), entity.Roles.RolDescription);
-                    Session.Set(SessionKey.Rol, entity.Roles.RolDescription);
+                    var appRol = Enum.Parse(typeof(AppRol), entity.Roles.RolName);
+                    Session.Set(SessionKey.Rol, appRol);
                     switch (appRol)
                     {
-                        case AppRol.Administrator:
-                            Session.Set(SessionKey.Views, context.Views.Select(x => x.ViewName).ToArray());
+                        case AppRol.SUPERADMINISTRATOR:
+                            Session.Set(SessionKey.Views, context.Views.Select(x => x.ViewCode).ToArray());
                             break;
                     }
-                    
+
                     if (!hasChangePassword)
                         return RedirectToAction(nameof(ChangePassword));
                     else
@@ -80,7 +84,6 @@ namespace YAMBOLY.GESTIONRUTAS.Controllers
             {
                 PostMessage(MessageType.Error, "Ocurrió un error inesperado: " + ex.ToString());
             }
-
             return RedirectToAction(nameof(Login));
         }
 

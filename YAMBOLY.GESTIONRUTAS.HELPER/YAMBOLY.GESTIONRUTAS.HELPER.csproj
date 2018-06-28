@@ -73,6 +73,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ReflectionHelper.cs" />
     <Compile Include="HtmlHelpers.cs" />
     <Compile Include="EntityHelper.cs" />
     <Compile Include="SessionHelper.cs" />

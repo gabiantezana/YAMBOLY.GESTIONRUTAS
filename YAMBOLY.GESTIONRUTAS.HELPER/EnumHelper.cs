@@ -18,8 +18,8 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
     }
     public enum AppRol
     {
-        SuperAdministrator,
-        Administrator,
+        SUPERADMINISTRATOR = 0,
+        ADMINISTRATOR = 1,
     }
     public enum SessionKey
     {
