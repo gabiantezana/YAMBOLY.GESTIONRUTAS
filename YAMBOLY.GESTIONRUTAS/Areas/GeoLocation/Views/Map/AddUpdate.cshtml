@@ -1,0 +1,353 @@
+﻿@model YAMBOLY.GESTIONRUTAS.VIEWMODEL.GeoLocation.MapViewModel
+
+@{
+    ViewBag.Title = "AddUpdate";
+}
+
+<h2>AddUpdate</h2>
+
+<div class="panel-group" id="accordion-continuous" aria-multiselectable="true" role="tablist">
+    @foreach (var grupo in Model.ZoneList)
+    {
+        <div class="panel">
+            <div class="panel-heading" id="heading-continuous-one" role="tab">
+                <a class="panel-title collapsed" data-parent="#accordion-continuous" data-toggle="collapse" href="#@grupo.Id" aria-controls="@grupo.Id" aria-expanded="false">
+                    <i class="fa fa-cubes" aria-hidden="true"></i>&nbsp; @grupo.Name
+                </a>
+            </div>
+            <div class="panel-collapse collapse" id="@grupo.Id" aria-labelledby="heading-continuous-one" role="tabpanel" aria-expanded="false">
+                <div class="panel-body">
+                    <div class="row">
+                        <div id="left" class="span3">
+                            <ul id="menu-group-1" class="nav menu">
+                                <div class="table table-responsive">
+                                    <table class="table table-hover table-striped table-bordered">
+                                        <thead>
+                                            <tr>
+                                                @foreach (var vista in Model.RouteList.Where(x => x.ZoneId == grupo.Id))
+                                                {
+                                                    <th class="text-center">@vista.Name</th>
+                                                }
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                @foreach (var vista in Model.ClientList)
+                                                {
+                                                    <td class="text-center">
+                                                        <div class="checkbox-custom checkbox-primary">
+                                                            <input type="checkbox" id="@vista.Codigo" name="@vista.RazonSocial" />
+                                                            <label for="@vista.RazonSocial">&nbsp;</label>
+                                                        </div>
+                                                    </td>
+                                                }
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="text-right">
+    <a class="btn btn-default animsition-link pull-left" href="@Url.Action("List", "Rol", new { area = "Administration" })"><i class="fa fa-arrow-left"></i> Atrás</a>
+    <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i> Guardar</button>
+</div>
+
+@*<div>
+        <input type="button" value="Crear zona" onclick="OnCreateClick(drawingModes.drawZoneMode)" />
+        <input type="button" value="Crear ruta" onclick="OnCreateClick(drawingModes.drawRouteMode)" />
+        <input type="button" id="RemoveSelectedPolygon" value="Eliminar" style="display: none;" onclick="RemoveSelectedPolygon(this)" />
+        <div id="showonPolygon"><b> Area:</b> <span id="areaPolygon">&nbsp700;</span></div>
+        <div id="map" style="width:1200px ; height: 400px;"></div>
+    </div>*@
+
+@section Scripts{
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB0hFla3KhpSUtpkjK7gqJVqfqUCI-7oFs&sensor=false&libraries=drawing"></script>
+    <script src="~/Scripts/Views/Home/TestMap04.js"></script>
+    <script src="~/Scripts/underscore.js"></script>
+    @*<script>
+
+                    var polygonArray = [];
+                    var editedPolygonArray = [];
+                    var current = null
+                    var drawingMode = null;
+                    var map;
+                    var all_overlays = [];
+                    var drawingManager;
+                    var selectedShape;
+
+                    initialize();
+
+                    function initialize() {
+                        map = new google.maps.Map(document.getElementById("map"), {
+                            center: latLngCenterInit,
+                            zoom: 13,
+                            mapTypeId: google.maps.MapTypeId.ROADMAP
+                        });
+
+                        drawingManager = new google.maps.drawing.DrawingManager({
+                            drawingMode: google.maps.drawing.OverlayType.POLYGON,
+                            drawingControl: false,
+                            markerOptions: {
+                                draggable: true
+                            },
+                        });
+
+                        google.maps.event.addListener(drawingManager, 'polygoncomplete', function (polygon) {
+                            debugger;
+                            if (drawingMode == drawingModes.drawRouteMode) {
+                                var zone = GetZonePolygoneFromRoutePolygon(polygon);
+                                if (zone == null) {
+                                    alert("Hubo un error al obtener la zona de la ruta seleccionada");
+                                    RemoveSelectedPolygon();
+                                    return;
+                                }
+                                if (!isPolygonInsidePolygon(polygon, zone)) {
+                                    alert("La ruta debe estar dentro la zona");
+                                    RemoveSelectedPolygon();
+                                    return;
+                                }
+
+                                //Change color for next draw in routes
+                                var polygonOptions = drawingManager.get('polygonOptions');
+                                polygonOptions.fillColor = colors[Math.floor(Math.random() * colors.length)];
+                                drawingManager.set('polygonOptions', polygonOptions);
+                            }
+
+                            current = polygon;
+
+                            editedPolygonArray.push({ current });
+                        });
+
+                        google.maps.event.addListener(drawingManager, 'overlaycomplete', function (e) {
+                            all_overlays.push(e);
+                            if (e.type != google.maps.drawing.OverlayType.MARKER) {
+                                // Switch back to non-drawing mode after drawing a shape.
+                                drawingManager.setDrawingMode(null);
+
+                                // Add an event listener that selects the newly-drawn shape when the user mouses down on it.
+                                var newShape = e.overlay;
+                                newShape.type = e.type;
+                                google.maps.event.addListener(newShape, 'click', function () {
+                                    setSelection(newShape);
+                                });
+                                setSelection(newShape);
+                            }
+                        });
+
+                        google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection);
+
+                        google.maps.event.addListener(map, 'click', clearSelection);
+                    }
+
+
+
+        //google.maps.event.addDomListener(window, "load", initialize);
+        // Clear the current selection when the drawing mode is changed, or when the
+        // map is clicked.
+
+                </script>*@
+}
+<style>
+    /* MENU-LEFT
+    -------------------------- */
+    /* layout */
+    #left ul.nav {
+        margin-bottom: 2px;
+        font-size: 12px; /* to change font-size, please change instead .lbl */
+    }
+
+        #left ul.nav ul,
+        #left ul.nav ul li {
+            list-style: none !important;
+            list-style-type: none !important;
+            margin-top: 1px;
+            margin-bottom: 1px;
+        }
+
+        #left ul.nav ul {
+            padding-left: 0;
+            width: auto;
+        }
+
+            #left ul.nav ul.children {
+                padding-left: 12px;
+                width: auto;
+            }
+
+                #left ul.nav ul.children li {
+                    margin-left: 0px;
+                }
+
+        #left ul.nav li a:hover {
+            text-decoration: none;
+        }
+
+            #left ul.nav li a:hover .lbl {
+                color: #999 !important;
+            }
+
+        #left ul.nav li.current > a .lbl {
+            background-color: #999;
+            color: #fff !important;
+        }
+
+        /* parent item */
+        #left ul.nav li.parent a {
+            padding: 0px;
+            color: #ccc;
+        }
+
+        #left ul.nav > li.parent > a {
+            border: solid 1px #999;
+            text-transform: uppercase;
+        }
+
+        #left ul.nav li.parent a:hover {
+            background-color: #fff;
+            -webkit-box-shadow: inset 0 3px 8px rgba(0,0,0,0.125);
+            -moz-box-shadow: inset 0 3px 8px rgba(0,0,0,0.125);
+            box-shadow: inset 0 3px 8px rgba(0,0,0,0.125);
+        }
+
+        /* link tag (a)*/
+        #left ul.nav li.parent ul li a {
+            color: #222;
+            border: none;
+            display: block;
+            padding-left: 5px;
+        }
+
+            #left ul.nav li.parent ul li a:hover {
+                background-color: #fff;
+                -webkit-box-shadow: none;
+                -moz-box-shadow: none;
+                box-shadow: none;
+            }
+
+        /* sign for parent item */
+        #left ul.nav li .sign {
+            display: inline-block;
+            width: 14px;
+            padding: 5px 8px;
+            background-color: transparent;
+            color: #fff;
+        }
+
+        #left ul.nav li.parent > a > .sign {
+            margin-left: 0px;
+            background-color: #999;
+        }
+
+        /* label */
+        #left ul.nav li .lbl {
+            padding: 5px 12px;
+            display: inline-block;
+        }
+
+        #left ul.nav li.current > a > .lbl {
+            color: #fff;
+        }
+
+        #left ul.nav li a .lbl {
+            font-size: 12px;
+        }
+
+        /* THEMATIQUE
+    ------------------------- */
+        /* theme 1 */
+        #left ul.nav > li.item-1.parent > a {
+            border: solid 1px #ff6307;
+        }
+
+            #left ul.nav > li.item-1.parent > a > .sign,
+            #left ul.nav > li.item-1 li.parent > a > .sign {
+                margin-left: 0px;
+                background-color: #ff6307;
+            }
+
+        #left ul.nav > li.item-1 .lbl {
+            color: #ff6307;
+        }
+
+        #left ul.nav > li.item-1 li.current > a .lbl {
+            background-color: #ff6307;
+            color: #fff !important;
+        }
+
+        /* theme 2 */
+        #left ul.nav > li.item-8.parent > a {
+            border: solid 1px #51c3eb;
+        }
+
+            #left ul.nav > li.item-8.parent > a > .sign,
+            #left ul.nav > li.item-8 li.parent > a > .sign {
+                margin-left: 0px;
+                background-color: #51c3eb;
+            }
+
+        #left ul.nav > li.item-8 .lbl {
+            color: #51c3eb;
+        }
+
+        #left ul.nav > li.item-8 li.current > a .lbl {
+            background-color: #51c3eb;
+            color: #fff !important;
+        }
+
+        /* theme 3 */
+        #left ul.nav > li.item-15.parent > a {
+            border: solid 1px #94cf00;
+        }
+
+            #left ul.nav > li.item-15.parent > a > .sign,
+            #left ul.nav > li.item-15 li.parent > a > .sign {
+                margin-left: 0px;
+                background-color: #94cf00;
+            }
+
+        #left ul.nav > li.item-15 .lbl {
+            color: #94cf00;
+        }
+
+        #left ul.nav > li.item-15 li.current > a .lbl {
+            background-color: #94cf00;
+            color: #fff !important;
+        }
+
+        /* theme 4 */
+        #left ul.nav > li.item-22.parent > a {
+            border: solid 1px #ef409c;
+        }
+
+            #left ul.nav > li.item-22.parent > a > .sign,
+            #left ul.nav > li.item-22 li.parent > a > .sign {
+                margin-left: 0px;
+                background-color: #ef409c;
+            }
+
+        #left ul.nav > li.item-22 .lbl {
+            color: #ef409c;
+        }
+
+        #left ul.nav > li.item-22 li.current > a .lbl {
+            background-color: #ef409c;
+            color: #fff !important;
+        }
+</style>
+
+<script>
+    !function ($) {
+        $(document).on("click", "#left ul.nav li.parent > a > span.sign", function () {
+            $(this).find('i:first').toggleClass("icon-minus");
+        });
+        // Open Le current menu
+        $("#left ul.nav li.parent.active > a > span.sign").find('i:first').addClass("icon-minus");
+        $("#left ul.nav li.current").parents('ul.children').addClass("in");
+    }(window.jQuery);
+</script>

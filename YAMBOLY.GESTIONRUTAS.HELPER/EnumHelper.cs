@@ -9,6 +9,7 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
     public class EnumHelper
     {
     }
+
     public enum MessageType
     {
         Success,
@@ -38,4 +39,18 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
         Large
     }
     #endregion
+
+    public enum PolygonType
+    {
+        Zone = 1,
+        Route = 2,
+        Point = 3,
+    }
+
+    public enum ShapeType
+    {
+        Zone = 1,
+        Route = 2,
+        Client = 3,
+    }
 }

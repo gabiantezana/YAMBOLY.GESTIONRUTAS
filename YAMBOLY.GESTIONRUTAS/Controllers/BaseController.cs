@@ -38,6 +38,7 @@ namespace YAMBOLY.GESTIONRUTAS.Controllers
 
         protected override void OnException(ExceptionContext filterContext)
         {
+
             var context = GetDataContext();
             System.Exception ex = filterContext.Exception;
             var action = "Index";

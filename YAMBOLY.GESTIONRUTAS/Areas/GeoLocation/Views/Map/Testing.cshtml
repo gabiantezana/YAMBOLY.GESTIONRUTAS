@@ -1,0 +1,257 @@
+﻿@model YAMBOLY.GESTIONRUTAS.VIEWMODEL.GeoLocation.MapViewModel
+@{
+    ViewBag.Title = "TESTING";
+    ViewBag.Icon = "users";
+    ViewBag.Section = String.Empty;
+    ViewBag.Subsection = String.Empty;
+}
+
+@section Breadcrumbs{
+
+}
+<div class="panel">
+    <div clss="panel-body">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="input-search" class="sr-only">Search Tree:</label>
+                    <input type="input" class="form-control" id="input-search" placeholder="Buscar..." value="">
+                </div>
+                <div id="tree" class="treeview"></div>
+            </div>
+            <div class="col-md-10">
+                <div style="display:block">
+                    <input type="button" value="Crear zona" onclick="OnCreateClick(drawingModes.drawZoneMode)" />
+                    <input type="button" value="Crear ruta" onclick="OnCreateClick(drawingModes.drawRouteMode)" />
+                    <input type="button" id="RemoveSelectedPolygon" value="Eliminar" style="display: none;" onclick="RemoveSelectedPolygon(this)" />
+                    <div id="showonPolygon"><b> Area:</b> <span id="areaPolygon">&nbsp700;</span></div>
+                </div>
+                <div id="map" style="width:900px; height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="~/Scripts/bootstrap-treeview.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB0hFla3KhpSUtpkjK7gqJVqfqUCI-7oFs&sensor=false&libraries=drawing"></script>
+    <script src="~/Areas/GeoLocation/Scripts/Testing.js"></script>
+    <script src="~/Scripts/underscore.js"></script>
+
+    <script>
+        var polygonArray = [];
+        var editedPolygonArray = [];
+        var current = null
+        var drawingMode = null;
+        var map;
+        var all_overlays = [];
+        var drawingManager;
+        var selectedShape;
+        var shapesInMapArray = [];
+
+        $(document).ready(function () {
+            var json = '@Html.Raw(Model.JsonShapeList)';
+            CreateList(json);
+
+            var obj = $.parseJSON(json);
+            createMap(obj);
+
+
+        });
+
+
+        function createMap(json){
+            initialize();
+            IterateJsonShapes(json);
+        }
+
+        function IterateJsonShapes(json) {
+            json.forEach(function (element) {
+                DrawShape(element.ShapeType, element.Shape);
+                if (element.nodes != null)
+                    IterateJsonShapes(element.nodes);
+            });
+        }
+
+        function DrawShape(shapeType, shape) {
+            switch (shapeType.toString())
+            {
+                case '@((int)ShapeType.Route)':
+                case '@((int)ShapeType.Zone)':
+                    var coords = shape.paths;
+                    var polygon = new google.maps.Polygon({
+                        Id: shape.id,
+                        Name: shape.name,
+                        clickable: shape.clickable,
+                        draggable: shape.draggable,
+                        editable : shape.editable,
+                        fillColor: shape.fillColor,
+                        fillOpacity: shape.fillOpacity,
+                        strokeWeight: shape.strokeWeight,
+                        visible: shape.visible,
+                        paths: coords,
+                    });
+                    polygon.setMap(map);
+                    shapesInMapArray.push(polygon);
+                    break;
+                case '@((int)ShapeType.Client)':
+                    var marker = new google.maps.Marker({
+                        Id: shape.codigo,
+                        position: shape.coords,
+                        map: map,
+                        title: shape.razonSocial,
+                    });
+                    shapesInMapArray.push(marker);
+                    break;
+            }
+        }
+
+        function CreateList(json) {
+            var _mytree = [
+            {
+                _nodeId: "Zona001",
+                text: "Zona 1",
+                nodes: [
+                    {
+                        _nodeId: "Ruta001",
+                        text: "Ruta 1",
+                        nodes: [
+                            {
+                                _nodeId: "Cliente001",
+                                text: "Cliente 1"
+                            },
+                            {
+                                _nodeId: "Cliente002",
+                                text: "Cliente 2"
+                            }
+                        ]
+                    },
+                    {
+                        _nodeId: "Ruta002",
+                        text: "Ruta 2"
+                    }
+                ]
+            },
+            {
+                text: "Zona 2"
+            },
+            {
+                text: "Zona 3"
+            },
+            {
+                text: "Zona 4"
+            },
+            {
+                text: "Zona 5"
+            }
+        ];
+            var json = json;
+
+            var $searchableTree = $('#tree').treeview({
+                data: json,
+            });
+            $('#tree').on('nodeSelected', function (event, data) {
+                console.log(data.Id);
+                var shape = GetShapeFromMap(data.Id);
+                shape.setOptions({ fillColor: "Red" });
+                map.panTo(shape.getPosition());
+            });
+
+            var search = function (e) {
+                var pattern = $('#input-search').val();
+                var options = {
+                    ignoreCase: true,
+                    exactMatch: false,
+                    revealResults: true,
+                };
+                var results = $searchableTree.treeview('search', [pattern, options]);
+                var output = '<p>' + results.length + ' matches found</p>';
+                $.each(results, function (index, result) {
+                    output += '<p>- ' + result.text + '</p>';
+                });
+                $('#search-output').html(output);
+            }
+            $('#btn-search').on('click', search);
+            $('#input-search').on('keyup', search);
+
+            $('#btn-clear-search').on('click', function (e) {
+                $searchableTree.treeview('clearSearch');
+                $('#input-search').val('');
+                $('#search-output').html('');
+            });
+        }
+
+        function initialize() {
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: latLngCenterInit,
+                zoom: 13,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+
+            drawingManager = new google.maps.drawing.DrawingManager({
+                drawingMode: google.maps.drawing.OverlayType.POLYGON,
+                drawingControl: false,
+                markerOptions: {
+                    draggable: true
+                },
+            });
+
+            google.maps.event.addListener(drawingManager, 'polygoncomplete', function (polygon) {
+                if (drawingMode == drawingModes.drawRouteMode) {
+                    var zone = GetZonePolygoneFromRoutePolygon(polygon);
+                    if (zone == null) {
+                        alert("Hubo un error al obtener la zona de la ruta seleccionada");
+                        RemoveSelectedPolygon();
+                        return;
+                    }
+                    if (!isPolygonInsidePolygon(polygon, zone)) {
+                        alert("La ruta debe estar dentro la zona");
+                        RemoveSelectedPolygon();
+                        return;
+                    }
+
+                    //Change color for next draw in routes
+                    var polygonOptions = drawingManager.get('polygonOptions');
+                    polygonOptions.fillColor = colors[Math.floor(Math.random() * colors.length)];
+                    drawingManager.set('polygonOptions', polygonOptions);
+                }
+
+                current = polygon;
+
+                editedPolygonArray.push({ current });
+            });
+
+            google.maps.event.addListener(drawingManager, 'overlaycomplete', function (e) {
+                all_overlays.push(e);
+                if (e.type != google.maps.drawing.OverlayType.MARKER) {
+                    // Switch back to non-drawing mode after drawing a shape.
+                    drawingManager.setDrawingMode(null);
+
+                    // Add an event listener that selects the newly-drawn shape when the user mouses down on it.
+                    var newShape = e.overlay;
+                    newShape.type = e.type;
+                    google.maps.event.addListener(newShape, 'click', function () {
+                        setSelection(newShape);
+                    });
+                    setSelection(newShape);
+                }
+            });
+
+            google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection);
+
+            google.maps.event.addListener(map, 'click', clearSelection);
+        }
+
+        function GetShapeFromMap(shapeId) {
+            var match = _.findWhere(shapesInMapArray, { Id: shapeId});
+            if (!match)
+                alert("No se encontró ninguna forma con el id especificado.");
+            return match;
+        }
+
+
+
+    </script>
+}
+
