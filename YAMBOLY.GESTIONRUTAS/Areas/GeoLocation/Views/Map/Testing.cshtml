@@ -56,8 +56,6 @@
 
             var obj = $.parseJSON(json);
             createMap(obj);
-
-
         });
 
 
@@ -83,6 +81,7 @@
                     var polygon = new google.maps.Polygon({
                         Id: shape.id,
                         Name: shape.name,
+                        ShapeType : shapeType,
                         clickable: shape.clickable,
                         draggable: shape.draggable,
                         editable : shape.editable,
@@ -97,6 +96,7 @@
                     break;
                 case '@((int)ShapeType.Client)':
                     var marker = new google.maps.Marker({
+                        ShapeType: shapeType,
                         Id: shape.codigo,
                         position: shape.coords,
                         map: map,
@@ -108,56 +108,28 @@
         }
 
         function CreateList(json) {
-            var _mytree = [
-            {
-                _nodeId: "Zona001",
-                text: "Zona 1",
-                nodes: [
-                    {
-                        _nodeId: "Ruta001",
-                        text: "Ruta 1",
-                        nodes: [
-                            {
-                                _nodeId: "Cliente001",
-                                text: "Cliente 1"
-                            },
-                            {
-                                _nodeId: "Cliente002",
-                                text: "Cliente 2"
-                            }
-                        ]
-                    },
-                    {
-                        _nodeId: "Ruta002",
-                        text: "Ruta 2"
-                    }
-                ]
-            },
-            {
-                text: "Zona 2"
-            },
-            {
-                text: "Zona 3"
-            },
-            {
-                text: "Zona 4"
-            },
-            {
-                text: "Zona 5"
-            }
-        ];
-            var json = json;
-
             var $searchableTree = $('#tree').treeview({
                 data: json,
             });
+
+            //On clickEvent
             $('#tree').on('nodeSelected', function (event, data) {
-                console.log(data.Id);
                 var shape = GetShapeFromMap(data.Id);
-                shape.setOptions({ fillColor: "Red" });
-                map.panTo(shape.getPosition());
+                switch (shape.ShapeType.toString())
+                {
+                    case '@((int)ShapeType.Route)':
+                    case '@((int)ShapeType.Zone)':
+                        shape.setOptions({ fillColor: "Red" });
+                        map.panTo(GetPolygonCenter(shape));
+                        break;
+                    case '@((int)ShapeType.Client)':
+                        map.panTo(shape.getPosition());
+
+                        break;
+                };
             });
 
+            //Search
             var search = function (e) {
                 var pattern = $('#input-search').val();
                 var options = {
