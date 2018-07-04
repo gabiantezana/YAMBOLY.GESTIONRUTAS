@@ -52,68 +52,19 @@
 
         $(document).ready(function () {
             var json = '@Html.Raw(Model.JsonShapeList)';
-            CreateList(json);
 
-            var obj = $.parseJSON(json);
-            createMap(obj);
+            CreateInputList(json);
+            InitializeMap();
+            CreateShapes($.parseJSON(json));
         });
 
-
-        function createMap(json){
-            initialize();
-            IterateJsonShapes(json);
-        }
-
-        function IterateJsonShapes(json) {
-            json.forEach(function (element) {
-                DrawShape(element.ShapeType, element.Shape);
-                if (element.nodes != null)
-                    IterateJsonShapes(element.nodes);
-            });
-        }
-
-        function DrawShape(shapeType, shape) {
-            switch (shapeType.toString())
-            {
-                case '@((int)ShapeType.Route)':
-                case '@((int)ShapeType.Zone)':
-                    var coords = shape.paths;
-                    var polygon = new google.maps.Polygon({
-                        Id: shape.id,
-                        Name: shape.name,
-                        ShapeType : shapeType,
-                        clickable: shape.clickable,
-                        draggable: shape.draggable,
-                        editable : shape.editable,
-                        fillColor: shape.fillColor,
-                        fillOpacity: shape.fillOpacity,
-                        strokeWeight: shape.strokeWeight,
-                        visible: shape.visible,
-                        paths: coords,
-                    });
-                    polygon.setMap(map);
-                    shapesInMapArray.push(polygon);
-                    break;
-                case '@((int)ShapeType.Client)':
-                    var marker = new google.maps.Marker({
-                        ShapeType: shapeType,
-                        Id: shape.codigo,
-                        position: shape.coords,
-                        map: map,
-                        title: shape.razonSocial,
-                    });
-                    shapesInMapArray.push(marker);
-                    break;
-            }
-        }
-
-        function CreateList(json) {
+        function CreateInputList(json) {
             var $searchableTree = $('#tree').treeview({
                 data: json,
             });
-
             //On clickEvent
             $('#tree').on('nodeSelected', function (event, data) {
+                debugger;
                 var shape = GetShapeFromMap(data.Id);
                 switch (shape.ShapeType.toString())
                 {
@@ -154,7 +105,7 @@
             });
         }
 
-        function initialize() {
+        function InitializeMap() {
             map = new google.maps.Map(document.getElementById("map"), {
                 center: latLngCenterInit,
                 zoom: 13,
@@ -213,6 +164,55 @@
             google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection);
 
             google.maps.event.addListener(map, 'click', clearSelection);
+        }
+
+        function CreateShapes(json) {
+            json.forEach(function (element) {
+                DrawShape(element, element.Shape);
+                if (element.nodes != null)
+                    CreateShapes(element.nodes);
+            });
+        }
+
+        function DrawShape(item) {
+            debugger;
+            switch (item.ShapeType.toString())
+            {
+                case '@((int)ShapeType.Route)':
+                case '@((int)ShapeType.Zone)':
+                    var coords = item.GeoOptions.paths;
+                    var polygon = new google.maps.Polygon({
+                        //------Aditional properties------
+                        Id: item.Id,
+                        Name: item.Name,
+                        ShapeType: item.ShapeType,
+                        //------Fin Aditional properties------
+                        clickable: item.GeoOptions.clickable,
+                        draggable: item.GeoOptions.draggable,
+                        editable: item.GeoOptions.editable,
+                        fillColor: item.GeoOptions.fillColor,
+                        fillOpacity: item.GeoOptions.fillOpacity,
+                        strokeWeight: item.GeoOptions.strokeWeight,
+                        visible: item.GeoOptions.visible,
+                        paths: coords,
+                    });
+                    polygon.setMap(map);
+                    shapesInMapArray.push(polygon);
+                    break;
+                case '@((int)ShapeType.Client)':
+                    var marker = new google.maps.Marker({
+                        //------Aditional properties------
+                        Id: item.Id,
+                        Name: item.Name,
+                        ShapeType: item.ShapeType,
+                        //------Aditional properties------
+                        position: item.GeoOptions.coords,
+                        map: map,
+                        title: item.RazonSocial,
+                    });
+                    shapesInMapArray.push(marker);
+                    break;
+            }
         }
 
         function GetShapeFromMap(shapeId) {
