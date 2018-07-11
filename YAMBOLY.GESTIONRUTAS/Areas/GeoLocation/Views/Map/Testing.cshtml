@@ -20,10 +20,17 @@
                 <div id="tree" class="treeview"></div>
             </div>
             <div class="col-md-10">
-                <div style="display:block">
-                    <input type="button" value="Crear zona" onclick="OnCreateClick(drawingModes.drawZoneMode)" />
-                    <input type="button" value="Crear ruta" onclick="OnCreateClick(drawingModes.drawRouteMode)" />
-                    <input type="button" id="RemoveSelectedPolygon" value="Eliminar" style="display: none;" onclick="RemoveSelectedPolygon(this)" />
+                <input type="button" id="RemoveSelectedPolygon" value="Eliminar" onclick="RemoveSelectedPolygon(this)" style="display:none" />
+                <div>
+                    <input type="button" id="createShapeButton" value="Create shape" onclick="OnClickButton(BUTTONMODE.Create)" style="display:none" />
+                    <input type="button" id="editShapeButton" value="Edit shape" onclick="OnClickButton(BUTTONMODE.Edit)" style="display:none" />
+                    <input type="button" id="removeShapeButton" value="Remove shape" onclick="OnClickButton(BUTTONMODE.Remove)" style="display:none" />
+                </div>
+
+                <div style="display:none">
+                    <input type="button" value="Crear zona" onclick="OnCreateClick()" />
+                    <input type="button" value="Crear ruta" onclick="OnCreateClick()" />
+                    <input type="button" id="CreateMarker" value="Crear marker" onclick="OnCreateClick()" />
                     <div id="showonPolygon"><b> Area:</b> <span id="areaPolygon">&nbsp700;</span></div>
                 </div>
                 <div id="map" style="width:900px; height: 400px;"></div>
@@ -33,53 +40,35 @@
 </div>
 @section Scripts
 {
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB0hFla3KhpSUtpkjK7gqJVqfqUCI-7oFs&sensor=false&libraries=drawing"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <script src="~/Scripts/bootstrap-treeview.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB0hFla3KhpSUtpkjK7gqJVqfqUCI-7oFs&sensor=false&libraries=drawing"></script>
     <script src="~/Areas/GeoLocation/Scripts/Testing.js"></script>
     <script src="~/Scripts/underscore.js"></script>
 
     <script>
         var polygonArray = [];
         var editedPolygonArray = [];
-        var current = null
-        var drawingMode = null;
+        var currentSelectedItem = null
+        var currentSelectedShape = null;
+
         var map;
-        var all_overlays = [];
         var drawingManager;
-        var selectedShape;
-        var shapesInMapArray = [];
+        var jsonList;
 
         $(document).ready(function () {
-            var json = '@Html.Raw(Model.JsonShapeList)';
-
-            CreateInputList(json);
+            jsonList = '@Html.Raw(Model.JsonShapeList)';
+            CreateInputList(jsonList);
             InitializeMap();
-            CreateShapes($.parseJSON(json));
+            CreateShapes($.parseJSON(jsonList));
         });
 
-        function CreateInputList(json) {
+        function CreateInputList(jsonList) {
             var $searchableTree = $('#tree').treeview({
-                data: json,
-            });
-            //On clickEvent
-            $('#tree').on('nodeSelected', function (event, data) {
-                debugger;
-                var shape = GetShapeFromMap(data.Id);
-                switch (shape.ShapeType.toString())
-                {
-                    case '@((int)ShapeType.Route)':
-                    case '@((int)ShapeType.Zone)':
-                        shape.setOptions({ fillColor: "Red" });
-                        map.panTo(GetPolygonCenter(shape));
-                        break;
-                    case '@((int)ShapeType.Client)':
-                        map.panTo(shape.getPosition());
-
-                        break;
-                };
+                data: jsonList,
             });
 
+            $('#tree').on('nodeSelected', function (event, data) { onNodeClick(data) })
             //Search
             var search = function (e) {
                 var pattern = $('#input-search').val();
@@ -95,9 +84,9 @@
                 });
                 $('#search-output').html(output);
             }
+            //Eventos buscar
             $('#btn-search').on('click', search);
             $('#input-search').on('keyup', search);
-
             $('#btn-clear-search').on('click', function (e) {
                 $searchableTree.treeview('clearSearch');
                 $('#input-search').val('');
@@ -108,85 +97,49 @@
         function InitializeMap() {
             map = new google.maps.Map(document.getElementById("map"), {
                 center: latLngCenterInit,
-                zoom: 13,
+                zoom: 16,
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             });
-
-            drawingManager = new google.maps.drawing.DrawingManager({
-                drawingMode: google.maps.drawing.OverlayType.POLYGON,
-                drawingControl: false,
-                markerOptions: {
-                    draggable: true
-                },
-            });
+            //Drawing manager
+            drawingManager = new google.maps.drawing.DrawingManager(drawingManagerPolygonOptions);
 
             google.maps.event.addListener(drawingManager, 'polygoncomplete', function (polygon) {
-                if (drawingMode == drawingModes.drawRouteMode) {
-                    var zone = GetZonePolygoneFromRoutePolygon(polygon);
-                    if (zone == null) {
-                        alert("Hubo un error al obtener la zona de la ruta seleccionada");
-                        RemoveSelectedPolygon();
-                        return;
-                    }
-                    if (!isPolygonInsidePolygon(polygon, zone)) {
-                        alert("La ruta debe estar dentro la zona");
-                        RemoveSelectedPolygon();
-                        return;
-                    }
-
-                    //Change color for next draw in routes
-                    var polygonOptions = drawingManager.get('polygonOptions');
-                    polygonOptions.fillColor = colors[Math.floor(Math.random() * colors.length)];
-                    drawingManager.set('polygonOptions', polygonOptions);
-                }
-
-                current = polygon;
-
-                editedPolygonArray.push({ current });
+                OnFinishDrawing(polygon);
             });
-
+            google.maps.event.addListener(drawingManager, 'markercomplete', function (marker) {
+                OnFinishDrawing(marker);
+            });
             google.maps.event.addListener(drawingManager, 'overlaycomplete', function (e) {
-                all_overlays.push(e);
-                if (e.type != google.maps.drawing.OverlayType.MARKER) {
-                    // Switch back to non-drawing mode after drawing a shape.
-                    drawingManager.setDrawingMode(null);
-
-                    // Add an event listener that selects the newly-drawn shape when the user mouses down on it.
-                    var newShape = e.overlay;
-                    newShape.type = e.type;
-                    google.maps.event.addListener(newShape, 'click', function () {
-                        setSelection(newShape);
-                    });
-                    setSelection(newShape);
-                }
+                var newShape = e.overlay;
+                newShape.type = e.type;
+                //setSelection(newShape);
+                AddEventHandlersForShape(newShape);
+                // Switch back to non-drawing mode after drawing a shape.
+                drawingManager.setDrawingMode(null);
             });
-
-            google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection);
-
-            google.maps.event.addListener(map, 'click', clearSelection);
+            //google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection);
+            //google.maps.event.addListener(map, 'click', clearSelection);
         }
 
         function CreateShapes(json) {
             json.forEach(function (element) {
-                DrawShape(element, element.Shape);
-                if (element.nodes != null)
+                if (element.GeoOptions)
+                    DrawShape(element);
+                if (element.nodes) {
                     CreateShapes(element.nodes);
+                }
             });
+            editedPolygonArray = polygonArray;
         }
 
         function DrawShape(item) {
-            debugger;
-            switch (item.ShapeType.toString())
+            switch (item.ShapeType)
             {
-                case '@((int)ShapeType.Route)':
-                case '@((int)ShapeType.Zone)':
+                case SHAPETYPE.Zone:
+                case SHAPETYPE.Route:
                     var coords = item.GeoOptions.paths;
+                    console.log(item)
                     var polygon = new google.maps.Polygon({
-                        //------Aditional properties------
-                        Id: item.Id,
-                        Name: item.Name,
-                        ShapeType: item.ShapeType,
-                        //------Fin Aditional properties------
                         clickable: item.GeoOptions.clickable,
                         draggable: item.GeoOptions.draggable,
                         editable: item.GeoOptions.editable,
@@ -196,34 +149,135 @@
                         visible: item.GeoOptions.visible,
                         paths: coords,
                     });
+
+                    AddAditionalPropertiesToPolygon(item, polygon);
+                    AddEventHandlersForShape(polygon);
                     polygon.setMap(map);
-                    shapesInMapArray.push(polygon);
+                    polygonArray.push(polygon);
                     break;
-                case '@((int)ShapeType.Client)':
+                case SHAPETYPE.Client:
                     var marker = new google.maps.Marker({
-                        //------Aditional properties------
-                        Id: item.Id,
-                        Name: item.Name,
-                        ShapeType: item.ShapeType,
-                        //------Aditional properties------
                         position: item.GeoOptions.coords,
                         map: map,
                         title: item.RazonSocial,
                     });
-                    shapesInMapArray.push(marker);
+                    AddAditionalPropertiesToPolygon(item, marker);
+                    polygonArray.push(marker);
                     break;
+                default:
+                    throw "Invalid shapeType";
             }
         }
 
         function GetShapeFromMap(shapeId) {
-            var match = _.findWhere(shapesInMapArray, { Id: shapeId});
-            if (!match)
-                alert("No se encontró ninguna forma con el id especificado.");
-            return match;
+            return _.findWhere(editedPolygonArray, { Id: shapeId });
         }
 
+        function AddAditionalPropertiesToPolygon(item, shape) {
+            shape.Id = item.Id;
+            shape.Name = item.Name;
+            shape.ShapeType = item.ShapeType;
+            if (shape.ShapeType == SHAPETYPE.Route|| shape.ShapeType == SHAPETYPE.Client)
+                shape.ParentId = item.ParentId;
 
+        }
 
+        function AddEventHandlersForShape(shape) {
+            console.log(shape.type);
+            google.maps.event.addListener(shape, 'click', function () {
+                console.log("click");
+                setSelection(shape);
+            });
+
+        }
+
+        function OnClickButton(_buttonMode) {
+            var shapeType = currentSelectedItem.ShapeType;
+            var shape = GetShapeFromMap(currentSelectedItem.Id);
+            var drawingMode;
+
+            switch (_buttonMode) {
+                case BUTTONMODE.Create:
+                    if (shape)
+                        throw "No se puede crear, ya existe en el mapa";
+                    switch (shapeType) {
+                        case SHAPETYPE.Zone:
+                        case SHAPETYPE.Route:
+                            drawingMode = google.maps.drawing.OverlayType.POLYGON;
+                            break;
+                        case SHAPETYPE.Client:
+                            drawingMode = google.maps.drawing.OverlayType.MARKER
+                            break;
+                        default:
+                            throw "No se reconoce el tipo de forma";
+                    }
+                    drawingManager.setDrawingMode(drawingMode);
+                    drawingManager.setMap(map);
+                    break;
+                case BUTTONMODE.Edit:
+                    if (!shape)
+                        throw "No se puede editar, la forma no existe en el mapa.";
+                    setSelection(shape);
+                    break;
+                case BUTTONMODE.Remove:
+                    setSelection(shape);
+                    RemoveSelectedPolygon();
+                    EvaluateSelectedItem();
+                    break;
+                default:
+                    throw "Error button mode";
+                    break;
+            }
+        }
+
+        function onNodeClick(data) {
+            clearSelection();
+            currentSelectedItem = data;
+            EvaluateSelectedItem();
+        }
+
+        function EvaluateSelectedItem() {
+            var shape = GetShapeFromMap(currentSelectedItem.Id);
+            if (shape) {
+                currentSelectedShape = shape;
+                //---------Activa efecto zoom en el mapa---------
+                switch (currentSelectedItem.ShapeType) {
+                    case SHAPETYPE.Zone:
+                    case SHAPETYPE.Route:
+                        map.panTo(GetPolygonCenter(shape));
+                        break;
+                    case SHAPETYPE.Client:
+                        map.panTo(shape.getPosition());
+                        break;
+                    default:
+                        throw "Invalid shape";
+                }
+                $("#editShapeButton").slideDown();
+                $("#removeShapeButton").slideDown();
+                $("#createShapeButton").slideUp();
+            }
+            else {
+                currentSelectedShape = null;
+                $("#createShapeButton").slideDown();
+                $("#editShapeButton").slideUp();
+                $("#removeShapeButton").slideUp();
+            }
+        }
+
+        function OnFinishDrawing(shape) {
+            currentSelectedShape = shape;
+            AddAditionalPropertiesToPolygon(currentSelectedItem, shape);
+
+            var isAValidShape = IsAValidShape(shape);
+            if (isAValidShape) {
+                editedPolygonArray.push(shape);
+            }
+            else {
+                RemoveSelectedPolygon();
+                shape.setMap(null);
+            }
+            EvaluateSelectedItem();
+        }
     </script>
 }
 

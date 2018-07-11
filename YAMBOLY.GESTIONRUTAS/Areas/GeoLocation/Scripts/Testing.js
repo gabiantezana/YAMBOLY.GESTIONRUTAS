@@ -1,26 +1,39 @@
-﻿const drawingModes = Object.freeze({ drawZoneMode: 1, drawRouteMode: 2 });
+﻿//const drawingModes = Object.freeze({ drawZoneMode: 1, drawRouteMode: 2 });
+const BUTTONMODE = Object.freeze({ Create: 1, Edit: 2, Remove: 3 });
+const SHAPETYPE = Object.freeze({ Zone: 1, Route: 2, Client: 3 });
+
+
 var colors = ['red', 'green', 'blue', 'orange', 'yellow', 'BlueViolet ', 'DarkMagenta', 'Brown ', 'Violet', 'Lime', 'GoldenRod', 'CadetBlue'];
 var latLngCenterInit = new google.maps.LatLng(-12.0912651, -77.00467609999998);
 
-var Shape = function () { };
-Shape.prototype.id = null;
-Shape.prototype.type = null;
-Shape.prototype.polygon = null;
-Shape.prototype.parentPolygonId = null;
+var drawingManagerPolygonOptions = {
+    drawingMode: google.maps.drawing.OverlayType.POLYGON,
+    drawingControl: false,
+    markerOptions: {
+        draggable: true
+    }
+}
+
+var drawingManagerMarkerOptions = {
+    drawingMode: google.maps.drawing.OverlayType.MARKER,
+    drawingControl: false,
+    markerOptions: {
+        draggable: true
+    }
+}
 
 var polygonOptionsZone = {
     strokeWeight: 0.5,
     fillOpacity: 0.40,
     editable: true,
-    //fillColor: '#ffff00'
-    fillColor: 'HotPink'
+    fillColor: 'HotPink',
 }
 
 var polygonOptionsRoute = {
     strokeWeight: 0,
     fillOpacity: 0.40,
     editable: true,
-    fillColor: '#FF1493'
+    fillColor: '#FF1493',
 }
 
 function isPolygonInsidePolygon(innerPolygon, outerPolygon) {
@@ -32,6 +45,14 @@ function isPolygonInsidePolygon(innerPolygon, outerPolygon) {
     return (pointsOutside > 0) ? false : true;
 };
 
+function _isPolygonIntersectedWithAnother(innerPolygon, outerPolygon) {
+    var pointsInside = 0;
+    var pointsOutside = 0;
+    innerPolygon.getPath().getArray().map(function (x) {
+        (google.maps.geometry.poly.containsLocation(x, outerPolygon)) ? pointsInside++ : pointsOutside++;
+    });
+    return (pointsInside > 0) ? true : false;
+};
 
 function GetPointsFromPolygon(polygon) {
     var coordinates = [];
@@ -42,10 +63,7 @@ function GetPointsFromPolygon(polygon) {
             lat: polygon.getPath().getAt(i).lat(),
             lng: polygon.getPath().getAt(i).lng()
         });
-        //message += polygon.getPath().getAt(i).toUrlValue(6) + "<br>";
     }
-
-    console.log(coordinates);
     return coordinates;
 }
 
@@ -54,52 +72,42 @@ function GetZonePolygoneFromRoutePolygon(routePolygon) {
 }
 
 function RemoveSelectedPolygon() {
-    if (selectedShape)
-        selectedShape.setMap(null);
-    drawingManager.setMap(null);
-
+    if (currentSelectedShape) {
+        currentSelectedShape.setMap(null);
+        drawingManager.setMap(null);
+        editedPolygonArray = _.without(editedPolygonArray, _.findWhere(editedPolygonArray, { Id: currentSelectedShape.Id }));
+    }
 }
 
 function clearSelection() {
-    if (selectedShape) {
-        selectedShape.setEditable(false);
-        selectedShape = null;
+    if (currentSelectedShape) {
+        switch (currentSelectedShape.ShapeType) {
+            case SHAPETYPE.Zone:
+            case SHAPETYPE.Route:
+                currentSelectedShape.setEditable(false);
+                break;
+            case SHAPETYPE.Client:
+                currentSelectedShape.setDraggable(false);
+            default:
+                throw "Invalid shape type";
+        }
+        currentSelectedShape = null;
     }
 }
 
 function setSelection(shape) {
     clearSelection();
-    selectedShape = shape;
-    shape.setEditable(true);
-}
-
-
-function OnCreateClick(mode) {
-    drawingMode = mode;
-    clearSelection();
-    drawingManager.setMap(map);
-    drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
-    switch (mode) {
-        case drawingModes.drawRouteMode:
-            drawingManager.set('polygonOptions', polygonOptionsRoute);
+    currentSelectedShape = shape;
+    switch (shape.ShapeType) {
+        case SHAPETYPE.Zone:
+        case SHAPETYPE.Route:
+            shape.setEditable(true);
             break;
-        case drawingModes.drawZoneMode:
-            drawingManager.set('polygonOptions', polygonOptionsZone);
-            break;
+        case SHAPETYPE.Client:
+            shape.setDraggable(true);
         default:
-            break;
+            throw "Invalid shape type";
     }
-}
-
-function UpdatePolygon(polygon) {
-    //Mode 1:
-    /*polygonArray = _.without(polygonArray, _.findWhere(polygonArray, { id: polygon.id }))
-    polygonArray.push(polygon);*/
-
-    //Mode 2:
-    var match = _.find(polygonArray, function (item) { return item.id === polygon.id })
-    if (match)
-        match = polygon;
 }
 
 function GetPolygonCenter(poly) {
@@ -127,3 +135,63 @@ function GetPolygonCenter(poly) {
     return (new google.maps.LatLng(center_x, center_y));
 }
 
+function IsAValidShape(shape) {
+    var isValid = false;
+    switch (shape.ShapeType) {
+        case SHAPETYPE.Zone:
+            isValid = IsAValidZone(shape);
+            break;
+        case SHAPETYPE.Route:
+            isValid = ValidateCreatedRoute(shape);
+            break;
+        case SHAPETYPE.Client:
+            isValid = true; //TODO: Add Validation
+        default:
+            throw "Invalid shape type";
+    }
+
+    return isValid;
+
+    /*/Change color for next draw in routes
+    var polygonOptions = drawingManager.get('polygonOptions');
+    polygonOptions.fillColor = colors[Math.floor(Math.random() * colors.length)];
+    drawingManager.set('polygonOptions', polygonOptions);*/
+}
+
+function IsAValidZone(polygon) {
+    //-----------------VALIDA QUE NO INTERSECTE A OTRAS ZONAS -------------------
+    var isIntersected = false;
+    for (var i = 0; i < editedPolygonArray.length; i++) {
+        if (editedPolygonArray[i].ShapeType == SHAPETYPE.Zone) {
+            isIntersected = _isPolygonIntersectedWithAnother(polygon, editedPolygonArray[i]);
+            if (isIntersected) {
+                break;
+            }
+        }
+    };
+    return !isIntersected;
+}
+
+function ValidateCreatedRoute(polygon) {
+    debugger;
+    var isValid = false;
+    //------------VALIDA QUE ESTÉ DIBUJADO DENTRO DE SU ZONA CORRESPONDIENTE---------
+    parentZone = _.findWhere(editedPolygonArray, { Id: polygon.ParentId });
+    if (parentZone)
+        isValid = isPolygonInsidePolygon(polygon, parentZone);
+    else
+        console.log("No se encontró la zona del polígono: " + polygon.ParentId + " en el array.");
+
+    //-----------------VALIDA QUE NO INTERSECTE A NINGUNA OTRA RUTA -------------------
+    if (isValid) {
+        for (var i = 0; i < editedPolygonArray.length; i++) {
+            if (editedPolygonArray[i].ShapeType == SHAPETYPE.rou) {
+                isValid = !_isPolygonIntersectedWithAnother(polygon, editedPolygonArray[i]);
+                if (isValid) {
+                    break;
+                }
+            }
+        };
+    }
+    return isValid;
+}

@@ -24,6 +24,7 @@ var polygonOptionsRoute = {
 }
 
 function isPolygonInsidePolygon(innerPolygon, outerPolygon) {
+    debugger;
     var pointsInside = 0;
     var pointsOutside = 0;
     innerPolygon.getPath().getArray().map(function (x) {
@@ -75,8 +76,19 @@ function setSelection(shape) {
 
 
 function OnCreateClick(mode) {
-    drawingMode = mode;
-    clearSelection();
+    switch (currentSelectedItem.ShapeType.toString()) {
+        case '1':
+        case '2':
+            SetDrawingManagerOptions(drawingManagerPolygonOptions);
+            break;
+        case '3':
+            SetDrawingManagerOptions(drawingManagerMarkerOptions);
+            break;
+        default:
+            break;
+    }
+    //drawingMode = mode;
+    //clearSelection();
     drawingManager.setMap(map);
     drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
     switch (mode) {

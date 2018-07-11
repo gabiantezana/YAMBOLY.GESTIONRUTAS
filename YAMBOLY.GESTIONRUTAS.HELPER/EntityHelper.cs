@@ -123,9 +123,10 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
         public string Id { get; set; }
         public ShapeType ShapeType { get; set; }
         public dynamic GeoOptions { get; set; }
-        public Zone Zone { get; set; }
-        public Route Route { get; set; }
-        public Cliente Client { get; set; }
+        public string ParentId { get; set; }
+        //public Zone Zone { get; set; }
+        //public Route Route { get; set; }
+        //public Cliente Client { get; set; }
         #endregion
     }
 

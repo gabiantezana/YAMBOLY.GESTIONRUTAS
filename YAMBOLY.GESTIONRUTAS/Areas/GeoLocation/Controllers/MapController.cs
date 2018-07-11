@@ -42,13 +42,13 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.GeoLocation.Controllers
             {
                 new Zone()
                 {
-                    Id = "001",
+                    Id = "Z001",
                     Name = "Zona 001",
                     GeoOptions = new GeoOptions()
                     {
-                        clickable = true,
-                        draggable = true,
-                        editable = true,
+                        clickable = false,
+                        draggable = false,
+                        editable = false,
                         fillColor = "Yellow",
                         fillOpacity = 0.4,
                         strokeWeight = 0.5,
@@ -61,6 +61,11 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.GeoLocation.Controllers
                              new Path(){ lat = -12.060881964600455, lng =-77.0071651899658 },
                         }
                     }
+                },
+                 new Zone()
+                {
+                    Id = "Z002",
+                    Name = "Zona 002",
                 }
             };
 
@@ -69,13 +74,13 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.GeoLocation.Controllers
             {
                 new Route()
                 {
-                    Id = "002",
+                    Id = "R001",
                     Name = "Ruta 001",
-                    ZoneId  ="001",
+                    ZoneId  ="Z001",
                     GeoOptions =  new GeoOptions(){
-                        clickable = true,
-                        draggable = true,
-                        editable = true,
+                        clickable = false,
+                        draggable = false,
+                        editable = false,
                         fillColor = "HotPink",
                         fillOpacity = 0.4,
                         strokeWeight = 0.5,
@@ -89,6 +94,13 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.GeoLocation.Controllers
                              new Path(){ lat = -12.06457512635387, lng =-77.07926296828612 },
                         }
                     },
+
+                },
+                new Route()
+                {
+                    Id = "R002",
+                    Name = "Ruta 002",
+                    ZoneId  ="Z002",
                 }
             };
 
@@ -97,12 +109,18 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.GeoLocation.Controllers
             {
                 new Cliente()
                 {
-                    Codigo = "Cliente001",
-                    RutaId = "002",
+                    Codigo = "C001",
+                    RutaId = "R001",
                     RazonSocial="Cliente 001",
                     GeoOptions = new GeoOptions() {
                     coords = new Path(){ lat = -12.067428898315784, lng =-77.08132290480955 }
                     }
+                },
+                new Cliente()
+                {
+                    Codigo = "C002",
+                    RutaId = "R002",
+                    RazonSocial="Cliente 002",
                 }
             };
 
@@ -123,7 +141,7 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.GeoLocation.Controllers
                     routeNode.text = route.Name;
                     routeNode.ShapeType = ShapeType.Route;
                     routeNode.GeoOptions = route.GeoOptions;
-
+                    routeNode.ParentId = zoneNode.Id;
                     foreach (var client in ClientList.Where(x => x.RutaId == route.Id))
                     {
                         var clientNode = new TreeViewNode();
@@ -131,7 +149,7 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.GeoLocation.Controllers
                         clientNode.text = client.RazonSocial;
                         clientNode.ShapeType = ShapeType.Client;
                         clientNode.GeoOptions = client.GeoOptions;
-
+                        clientNode.ParentId = routeNode.Id;
                         routeNode.nodes.Add(clientNode);
                     }
                     zoneNode.nodes.Add(routeNode);
