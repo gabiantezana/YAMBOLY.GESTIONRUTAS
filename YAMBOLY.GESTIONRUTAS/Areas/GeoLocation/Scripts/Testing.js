@@ -88,6 +88,7 @@ function clearSelection() {
                 break;
             case SHAPETYPE.Client:
                 currentSelectedShape.setDraggable(false);
+                break;
             default:
                 throw "Invalid shape type";
         }
@@ -105,6 +106,7 @@ function setSelection(shape) {
             break;
         case SHAPETYPE.Client:
             shape.setDraggable(true);
+            break;
         default:
             throw "Invalid shape type";
     }
@@ -146,6 +148,7 @@ function IsAValidShape(shape) {
             break;
         case SHAPETYPE.Client:
             isValid = true; //TODO: Add Validation
+            break;
         default:
             throw "Invalid shape type";
     }
@@ -173,7 +176,6 @@ function IsAValidZone(polygon) {
 }
 
 function ValidateCreatedRoute(polygon) {
-    debugger;
     var isValid = false;
     //------------VALIDA QUE ESTÉ DIBUJADO DENTRO DE SU ZONA CORRESPONDIENTE---------
     parentZone = _.findWhere(editedPolygonArray, { Id: polygon.ParentId });
