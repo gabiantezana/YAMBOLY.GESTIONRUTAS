@@ -233,7 +233,7 @@
                     var coords = item.GeoOptions.paths;
                     console.log(item)
                     var polygon = new google.maps.Polygon({
-                        clickable: false,
+                        clickable: true,
                         draggable: false,
                         editable: false,
                         fillColor: "yellow",//TODO:
@@ -252,7 +252,7 @@
                     var coords = item.GeoOptions.paths;
                     console.log(item)
                     var polygon = new google.maps.Polygon({
-                        clickable: false,
+                        clickable: true,
                         draggable: false,
                         editable: false,
                         fillColor: GetRandomColor(),
@@ -269,12 +269,20 @@
                     polygonArray.push(polygon);
                     break;
                 case SHAPETYPE.Client:
+                    debugger;
                     var marker = new google.maps.Marker({
                         position: item.GeoOptions.coords,
                         map: map,
-                        title: item.RazonSocial,
+                        title: item.text,
+                        label: {
+                            text: item.text,
+                            color: 'black',
+                            fontWeight: "",
+                            fontSize: "13px"
+                        }
                     });
                     AddAditionalPropertiesToPolygon(item, marker);
+                    AddEventHandlersForShape(marker);
                     polygonArray.push(marker);
                     break;
                 default:
@@ -298,8 +306,8 @@
         function AddEventHandlersForShape(shape) {
             console.log(shape.type);
             google.maps.event.addListener(shape, 'click', function () {
-                console.log("click");
-                setSelection(shape);
+                ShowShapeInfo(shape.Id, shape.ShapeType);
+                //setSelection(shape);
             });
 
         }
@@ -424,6 +432,23 @@
             EvaluateSelectedItem();
         }
 
+        function ShowShapeInfo(id, shapeType) {
+            $.ajax({
+                cache: false,
+                url: '@Url.Action("GetShapeInfo", "Map", new { Area = ConstantHelper.Area.GEOLOCATION})',
+                type: 'POST',
+                data: { 'id': id, 'shapeType': shapeType },
+                success: function (data) {
+                    console.log(data);
+                    //TODO: SHOW MESSAGE
+                },
+                error: function (error) {
+                    console.log(error);
+                    ShowMessage(error.statusText, error.responseJSON);
+                }
+            })
+        }
+
     </script>
     <style>
         .list-group-item {
@@ -431,6 +456,20 @@
         }
         body {
             font-size: 13px;
+        }
+
+        #floating-div {
+            position: absolute;
+            top: 10px;
+            left: 25%;
+            z-index: 5;
+            background-color: #fff;
+            padding: 5px;
+            border: 1px solid #999;
+            text-align: center;
+            font-family: 'Roboto','sans-serif';
+            line-height: 30px;
+            padding-left: 10px;
         }
     </style>
 }

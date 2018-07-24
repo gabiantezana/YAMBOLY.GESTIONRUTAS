@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------
 
 // Original file name:
-// Generation date: 23/07/2018 03:51:11 p.m.
+// Generation date: 24/07/2018 03:59:31 p.m.
 namespace MSS_YAMBOLY_GEOLOCATION.Services.ODataService
 {
     
@@ -213,6 +213,226 @@ namespace MSS_YAMBOLY_GEOLOCATION.Services.ODataService
         private string _U_MSS_RUTA;
         partial void OnU_MSS_RUTAChanging(string value);
         partial void OnU_MSS_RUTAChanged();
+        /// <summary>
+        /// There are no comments for Property Address in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        public string Address
+        {
+            get
+            {
+                return this._Address;
+            }
+            set
+            {
+                this.OnAddressChanging(value);
+                this._Address = value;
+                this.OnAddressChanged();
+                this.OnPropertyChanged("Address");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        private string _Address;
+        partial void OnAddressChanging(string value);
+        partial void OnAddressChanged();
+        /// <summary>
+        /// There are no comments for Property U_MSS_REGI in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        public string U_MSS_REGI
+        {
+            get
+            {
+                return this._U_MSS_REGI;
+            }
+            set
+            {
+                this.OnU_MSS_REGIChanging(value);
+                this._U_MSS_REGI = value;
+                this.OnU_MSS_REGIChanged();
+                this.OnPropertyChanged("U_MSS_REGI");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        private string _U_MSS_REGI;
+        partial void OnU_MSS_REGIChanging(string value);
+        partial void OnU_MSS_REGIChanged();
+        /// <summary>
+        /// There are no comments for Property State in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        public string State
+        {
+            get
+            {
+                return this._State;
+            }
+            set
+            {
+                this.OnStateChanging(value);
+                this._State = value;
+                this.OnStateChanged();
+                this.OnPropertyChanged("State");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        private string _State;
+        partial void OnStateChanging(string value);
+        partial void OnStateChanged();
+        /// <summary>
+        /// There are no comments for Property Country in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        public string Country
+        {
+            get
+            {
+                return this._Country;
+            }
+            set
+            {
+                this.OnCountryChanging(value);
+                this._Country = value;
+                this.OnCountryChanged();
+                this.OnPropertyChanged("Country");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        private string _Country;
+        partial void OnCountryChanging(string value);
+        partial void OnCountryChanged();
+        /// <summary>
+        /// There are no comments for Property U_MSS_ZONA in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        public string U_MSS_ZONA
+        {
+            get
+            {
+                return this._U_MSS_ZONA;
+            }
+            set
+            {
+                this.OnU_MSS_ZONAChanging(value);
+                this._U_MSS_ZONA = value;
+                this.OnU_MSS_ZONAChanged();
+                this.OnPropertyChanged("U_MSS_ZONA");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        private string _U_MSS_ZONA;
+        partial void OnU_MSS_ZONAChanging(string value);
+        partial void OnU_MSS_ZONAChanged();
+        /// <summary>
+        /// There are no comments for Property U_MSS_NOVE in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        public string U_MSS_NOVE
+        {
+            get
+            {
+                return this._U_MSS_NOVE;
+            }
+            set
+            {
+                this.OnU_MSS_NOVEChanging(value);
+                this._U_MSS_NOVE = value;
+                this.OnU_MSS_NOVEChanged();
+                this.OnPropertyChanged("U_MSS_NOVE");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        private string _U_MSS_NOVE;
+        partial void OnU_MSS_NOVEChanging(string value);
+        partial void OnU_MSS_NOVEChanged();
+        /// <summary>
+        /// There are no comments for Property U_MSS_SUPE in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        public string U_MSS_SUPE
+        {
+            get
+            {
+                return this._U_MSS_SUPE;
+            }
+            set
+            {
+                this.OnU_MSS_SUPEChanging(value);
+                this._U_MSS_SUPE = value;
+                this.OnU_MSS_SUPEChanged();
+                this.OnPropertyChanged("U_MSS_SUPE");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        private string _U_MSS_SUPE;
+        partial void OnU_MSS_SUPEChanging(string value);
+        partial void OnU_MSS_SUPEChanged();
+        /// <summary>
+        /// There are no comments for Property U_MSS_JEVE in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        public string U_MSS_JEVE
+        {
+            get
+            {
+                return this._U_MSS_JEVE;
+            }
+            set
+            {
+                this.OnU_MSS_JEVEChanging(value);
+                this._U_MSS_JEVE = value;
+                this.OnU_MSS_JEVEChanged();
+                this.OnPropertyChanged("U_MSS_JEVE");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        private string _U_MSS_JEVE;
+        partial void OnU_MSS_JEVEChanging(string value);
+        partial void OnU_MSS_JEVEChanged();
+        /// <summary>
+        /// There are no comments for Property CardCode_1 in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        public string CardCode_1
+        {
+            get
+            {
+                return this._CardCode_1;
+            }
+            set
+            {
+                this.OnCardCode_1Changing(value);
+                this._CardCode_1 = value;
+                this.OnCardCode_1Changed();
+                this.OnPropertyChanged("CardCode_1");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        private string _CardCode_1;
+        partial void OnCardCode_1Changing(string value);
+        partial void OnCardCode_1Changed();
+        /// <summary>
+        /// There are no comments for Property City in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        public string City
+        {
+            get
+            {
+                return this._City;
+            }
+            set
+            {
+                this.OnCityChanging(value);
+                this._City = value;
+                this.OnCityChanged();
+                this.OnPropertyChanged("City");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        private string _City;
+        partial void OnCityChanging(string value);
+        partial void OnCityChanged();
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
         public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]

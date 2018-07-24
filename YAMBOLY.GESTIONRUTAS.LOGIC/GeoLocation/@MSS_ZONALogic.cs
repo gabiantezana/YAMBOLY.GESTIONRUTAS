@@ -27,6 +27,11 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
             }).ToList();
         }
 
+        public Zone Get(DataContext dataContext, string id)
+        {
+            return GetList(dataContext).FirstOrDefault(x => x.Id== id);
+        }
+
 
         public string GetQuery(DataContext dataContext, TreeViewNode zone)
         {

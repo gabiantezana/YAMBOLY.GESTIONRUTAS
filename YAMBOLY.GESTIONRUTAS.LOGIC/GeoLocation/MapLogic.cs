@@ -140,5 +140,25 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
             }
             return geoOptions;
         }
+
+        public dynamic GetShapeInfo(DataContext dataContext, string id, ShapeType shapeType)
+        {
+            dynamic shapeInfo;
+            switch (shapeType)
+            {
+                case ShapeType.Zone:
+                    shapeInfo = new MSS_ZONALogic().Get(dataContext, id);
+                    break;
+                case ShapeType.Route:
+                    shapeInfo = new MSS_RUTALogic().Get(dataContext, id);
+                    break;
+                case ShapeType.Client:
+                    shapeInfo = new OCRDLogic().Get(dataContext, id);
+                    break;
+                default:
+                    throw new System.Exception("");//TODO:
+            }
+            return shapeInfo;
+        }
     }
 }

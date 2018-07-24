@@ -45,6 +45,7 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
         public class Area
         {
             public static readonly string ADMINISTRATION = "Administration";
+            public static readonly string GEOLOCATION = "GeoLocation";
         }
     }
 }

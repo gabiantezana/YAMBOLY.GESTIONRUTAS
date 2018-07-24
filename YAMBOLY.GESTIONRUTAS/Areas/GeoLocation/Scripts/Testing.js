@@ -95,7 +95,7 @@ function clearSelection() {
     }
 }
 
-function setSelection(shape) {
+function setSelection(shape) {//TODO:
     clearSelection();
     currentSelectedShape = shape;
     switch (shape.ShapeType) {

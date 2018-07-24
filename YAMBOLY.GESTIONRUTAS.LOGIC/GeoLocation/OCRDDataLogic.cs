@@ -22,11 +22,29 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
         {
             return GetSAPList(dataContext).Select(x => new Cliente()
             {
-                RazonSocial = x.CardName,
+                Region = x.U_MSS_REGI,
+                Departamento = x.State,
+                Provincia = x.Country,
+                Distrito = x.Country,//TODO:
+                ZonaId = x.U_MSS_ZONA,
+                Canal = string.Empty, //TODO:
+                Giro = string.Empty,//TODO:
                 Codigo = x.CardCode,
+                RazonSocial = x.CardName,
+                TipoCliente = string.Empty,
+                Vendedor = string.Empty,
+                SupervisorTerritorio = string.Empty,
+                SupervisorCampo = string.Empty,
+                SupervisorZona = string.Empty,
+                JefeDeVentas = string.Empty,
                 RutaId = x.U_MSS_RUTA,
                 GeoOptions = new MapLogic().GetGeoOptionsFromCoordinates(x.U_COORDINATESARRAY, ShapeType.Client)
             }).ToList();
+        }
+
+        public Cliente Get(DataContext dataContext, string id)
+        {
+            return GetList(dataContext).FirstOrDefault(x => x.Codigo == id);
         }
 
         public string GetQuery(DataContext dataContext, TreeViewNode client)

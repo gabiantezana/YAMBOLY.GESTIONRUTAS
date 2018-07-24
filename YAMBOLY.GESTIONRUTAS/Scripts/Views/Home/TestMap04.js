@@ -71,7 +71,7 @@ function clearSelection() {
 function setSelection(shape) {
     clearSelection();
     selectedShape = shape;
-    shape.setEditable(true);
+    shape.setEditable(true);//TODO:
 }
 
 

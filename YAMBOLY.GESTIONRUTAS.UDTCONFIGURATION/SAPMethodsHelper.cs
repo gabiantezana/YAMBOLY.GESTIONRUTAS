@@ -310,8 +310,6 @@ namespace SAPADDON.HELPER
 
         public static void CreateMenu(Application application, int menuId, string uniqueId, string title, string pathImageBmp)
         {
-
-
             var menu = application.Menus.Item(menuId.ToString());
             var subMenus = menu.SubMenus;
 
@@ -361,13 +359,9 @@ namespace SAPADDON.HELPER
             }
 
             for (int i = 1; i <= matrix.RowCount - 1; i++)
-
             {
-
                 SAPbouiCOM.EditText cellID = (SAPbouiCOM.EditText)matrix.GetCellSpecific("V_-1", i);
-
                 cellID.String = i.ToString();
-
             }
         }
     }

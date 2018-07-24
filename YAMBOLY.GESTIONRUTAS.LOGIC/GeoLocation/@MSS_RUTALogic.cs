@@ -26,6 +26,11 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
             }).ToList();
         }
 
+        public Route Get(DataContext dataContext, string id)
+        {
+            return GetList(dataContext).FirstOrDefault(x => x.Id== id);
+        }
+
         public string GetQuery(DataContext dataContext, TreeViewNode zone)
         {
             string coordinates = string.Empty;

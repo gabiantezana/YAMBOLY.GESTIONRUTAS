@@ -201,5 +201,12 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.GeoLocation.Controllers
 
         }
 
+        [HttpPost]
+        public JsonResult GetShapeInfo(string id, ShapeType shapeType)
+        {
+            var shapeInfo = new MapLogic().GetShapeInfo(GetDataContext(), id, shapeType);
+            return Json(shapeInfo);
+        }
+
     }
 }
