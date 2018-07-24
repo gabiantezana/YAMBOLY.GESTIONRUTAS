@@ -138,7 +138,7 @@ namespace YAMBOLY.GESTIONRUTAS.EXCEPTION
                 excepcion.errorTimeStamp = timeStamp.ToString();
                 DataContext.context.ErrorLog.Add(excepcion);
                 DataContext.context.SaveChanges();
-            }
+            }   
             catch (Exception intraEx)
             {
                 LogException(intraEx);
@@ -147,6 +147,6 @@ namespace YAMBOLY.GESTIONRUTAS.EXCEPTION
 
 
         private static String fileName = DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
-        private static String logFile = @"D:\" + fileName;
+        private static String logFile = @"C:\LOGS\YAMBOLY_GESTIONRUTAS\" + fileName;
     }
 }

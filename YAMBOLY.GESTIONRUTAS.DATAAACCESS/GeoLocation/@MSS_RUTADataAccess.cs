@@ -10,5 +10,9 @@ namespace YAMBOLY.GESTIONRUTAS.DATAAACCESS.GeoLocation
 {
     public class @MSS_RUTADataAccess
     {
+        public List<MSS_RUTAType> GetList(DataContext dataContext)
+        {
+            return dataContext.oDataService.MSS_RUTA.ToList();
+        }
     }
 }

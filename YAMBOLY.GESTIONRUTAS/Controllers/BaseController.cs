@@ -5,6 +5,8 @@ using YAMBOLY.GESTIONRUTAS.HELPER;
 using System.Web.Routing;
 using System.Collections.Generic;
 using YAMBOLY.GESTIONRUTAS.EXCEPTION;
+using System.Configuration;
+using MSS_YAMBOLY_GEOLOCATION.Services.ODataService;
 
 namespace YAMBOLY.GESTIONRUTAS.Controllers
 {
@@ -12,9 +14,11 @@ namespace YAMBOLY.GESTIONRUTAS.Controllers
     public class BaseController : Controller
     {
         private DataContext DataContext;
+        private ODataService ODataService { get; set; }
         public YAMBOLY_GESTIONRUTASEntities context { get; set; }
         public string currentCulture { get; set; }
         protected HttpBrowserCapabilitiesBase Browser { get; set; }
+
 
         public BaseController()
         {
@@ -31,7 +35,8 @@ namespace YAMBOLY.GESTIONRUTAS.Controllers
                     context = context,
                     session = Session,
                     currentCulture = currentCulture,
-                    Browser = this.Request.Browser
+                    Browser = this.Request.Browser,
+                    oDataService = new ODataService(new System.Uri(ConfigurationManager.AppSettings[ConstantHelper.ODATASERVICEURL_KEY]))//TODO:
                 };
             return DataContext;
         }
@@ -98,3 +103,4 @@ namespace YAMBOLY.GESTIONRUTAS.Controllers
 
     }
 }
+

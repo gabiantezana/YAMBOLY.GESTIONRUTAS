@@ -1,0 +1,42 @@
+﻿using MSS_YAMBOLY_GEOLOCATION.Services.ODataService;
+using System.Collections.Generic;
+using System.Linq;
+using YAMBOLY.GESTIONRUTAS.DATAAACCESS.GeoLocation;
+using YAMBOLY.GESTIONRUTAS.DATAAACCESS.Queries;
+using YAMBOLY.GESTIONRUTAS.HELPER;
+using YAMBOLY.GESTIONRUTAS.MODEL;
+
+namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
+{
+    public class @MSS_RUTALogic
+    {
+        public List<MSS_RUTAType> GetSAPList(DataContext dataContext)
+        {
+            return new MSS_RUTADataAccess().GetList(dataContext);
+        }
+
+        public List<Route> GetList(DataContext dataContext)
+        {
+            return GetSAPList(dataContext).Select(x => new Route()
+            {
+                ZoneId = x.U_MSS_ZONA,
+                Id = x.Code,
+                Name = x.Name,
+                GeoOptions = new MapLogic().GetGeoOptionsFromCoordinates(x.U_COORDINATESARRAY, ShapeType.Route)
+            }).ToList();
+        }
+
+        public string GetQuery(DataContext dataContext, TreeViewNode zone)
+        {
+            string coordinates = string.Empty;
+            if (zone.GeoOptions != null)
+                coordinates = new MapLogic().GetCoordinatesArray(zone.GeoOptions, PolygonType.Route);
+
+            var query = Queries.GetStringContent(EmbebbedFileName.MSS_RUTA_Update);
+            query = query.Replace("PARAM1", zone.Id)
+                         .Replace("PARAM2", coordinates);
+
+            return query;
+        }
+    }
+}

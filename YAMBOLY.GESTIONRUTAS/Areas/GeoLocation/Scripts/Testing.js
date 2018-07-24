@@ -3,7 +3,6 @@ const BUTTONMODE = Object.freeze({ Create: 1, Edit: 2, Remove: 3 });
 const SHAPETYPE = Object.freeze({ Zone: 1, Route: 2, Client: 3 });
 
 
-var colors = ['red', 'green', 'blue', 'orange', 'yellow', 'BlueViolet ', 'DarkMagenta', 'Brown ', 'Violet', 'Lime', 'GoldenRod', 'CadetBlue'];
 var latLngCenterInit = new google.maps.LatLng(-12.0912651, -77.00467609999998);
 
 var drawingManagerPolygonOptions = {
@@ -23,10 +22,10 @@ var drawingManagerMarkerOptions = {
 }
 
 var polygonOptionsZone = {
-    strokeWeight: 0.5,
-    fillOpacity: 0.40,
+    strokeWeight: 0.7,
+    fillOpacity: 0.0,
     editable: true,
-    fillColor: 'HotPink',
+    fillColor: 'yellow',
 }
 
 var polygonOptionsRoute = {
@@ -196,4 +195,10 @@ function ValidateCreatedRoute(polygon) {
         };
     }
     return isValid;
+}
+
+function GetRandomColor() {
+    var colors = ['red', 'green', 'blue', 'orange', 'yellow', 'BlueViolet ', 'DarkMagenta', 'Brown ', 'Violet', 'Lime', 'GoldenRod', 'CadetBlue'];
+    var item = colors[Math.floor(Math.random() * colors.length)];
+    return item;
 }

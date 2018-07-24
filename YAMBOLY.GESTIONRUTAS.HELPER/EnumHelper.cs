@@ -53,4 +53,14 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
         Route = 2,
         Client = 3,
     }
+
+    public enum EmbebbedFileName
+    {
+        @MSS_ZONA_Update = 0,
+        @MSS_RUTA_Update = 1,
+        CRD1_Update = 2,
+        @MSS_GEOSHAPE_D_Disable = 22,
+        @MSS_GEOSHAPE_D_Insert = 222,
+        @MSS_GEOSHAPE_Insert = 223,
+    }
 }

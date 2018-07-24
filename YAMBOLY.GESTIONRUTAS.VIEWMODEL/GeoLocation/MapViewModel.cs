@@ -14,6 +14,10 @@ namespace YAMBOLY.GESTIONRUTAS.VIEWMODEL.GeoLocation
         public List<Cliente> ClientList { get; set; }
 
         public List<TreeViewNode> ShapeList { get; set; }
-        public string JsonShapeList { get; set; }
+
+        /// <summary>
+        /// Lista de ítems modificados en el mapa. Tipo: List<TreeViewNode>
+        /// </summary>
+        public dynamic PostedShapeList { get; set; }
     }
 }

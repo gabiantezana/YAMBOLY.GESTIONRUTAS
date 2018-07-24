@@ -40,18 +40,13 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
 
     public class GeoOptions
     {
+        public GeoOptions()
+        {
+            paths = new List<Path>();
+            coords = new Path();
+        }
         #region Polygon Options
-        public bool clickable { get; set; }
-        public bool draggable { get; set; }
-        public bool editable { get; set; }
-        public string fillColor { get; set; }
-        public double? fillOpacity { get; set; }
         public List<Path> paths { get; set; }
-        public string strokeColor { get; set; }
-        public int strokeOpacity { get; set; }
-        public double? strokeWeight { get; set; }
-        public bool visible { get; set; }
-        public int zIndex { get; set; }
         #endregion
         #region Marker Options
         public Path coords { get; set; }
@@ -122,12 +117,24 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
         #region Aditional Properties
         public string Id { get; set; }
         public ShapeType ShapeType { get; set; }
-        public dynamic GeoOptions { get; set; }
+        public GeoOptions GeoOptions { get; set; }
         public string ParentId { get; set; }
         //public Zone Zone { get; set; }
         //public Route Route { get; set; }
         //public Cliente Client { get; set; }
         #endregion
+    }
+
+    /// <summary>
+    /// Para serializar y deserealizar las coordenadas guardadas en la base de datos
+    /// </summary>
+    public class RootObject
+    {
+        public RootObject()
+        {
+            coords = new List<List<double>>();
+        }
+        public List<List<double>> coords { get; set; }
     }
 
 

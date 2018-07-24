@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using YAMBOLY.GESTIONRUTAS.Controllers;
 using YAMBOLY.GESTIONRUTAS.HELPER;
+using YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation;
 using YAMBOLY.GESTIONRUTAS.VIEWMODEL.GeoLocation;
 
 namespace YAMBOLY.GESTIONRUTAS.Areas.GeoLocation.Controllers
@@ -35,6 +36,7 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.GeoLocation.Controllers
         /// El modelo no debe retornar zonas repetidas, ni rutas repetidas
         /// </summary>
         /// <returns></returns>
+        [Obsolete]
         public MapViewModel GetTestingViewModel()
         {
             //All zones in SAP
@@ -46,13 +48,6 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.GeoLocation.Controllers
                     Name = "Zona 001",
                     GeoOptions = new GeoOptions()
                     {
-                        clickable = false,
-                        draggable = false,
-                        editable = false,
-                        fillColor = "Yellow",
-                        fillOpacity = 0.4,
-                        strokeWeight = 0.5,
-                        visible = true,
                         paths = new List<Path>
                         {
                              new Path(){ lat = -12.064407256468757, lng =-77.03325771926268 },
@@ -78,13 +73,6 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.GeoLocation.Controllers
                     Name = "Ruta 001",
                     ZoneId  ="Z001",
                     GeoOptions =  new GeoOptions(){
-                        clickable = false,
-                        draggable = false,
-                        editable = false,
-                        fillColor = "HotPink",
-                        fillOpacity = 0.4,
-                        strokeWeight = 0.5,
-                        visible = true,
                         paths = new List<Path>
                         {
                              new Path(){ lat = -12.067428898315784, lng =-77.08132290480955 },
@@ -163,8 +151,7 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.GeoLocation.Controllers
                 RouteList = RouteList,
                 ZoneList = ZoneList,
                 ClientList = ClientList,
-                ShapeList = treeViewNode,
-                JsonShapeList = new JavaScriptSerializer().Serialize(treeViewNode),
+                ShapeList = treeViewNode
             };
             return model;
         }
@@ -200,8 +187,19 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.GeoLocation.Controllers
 
         public ActionResult Testing()
         {
-            var model = GetTestingViewModel();
+            var model = new MapLogic().GetMapViewModel(GetDataContext());
             return View(model);
         }
+
+        [HttpPost]
+        public ActionResult Testing(MapViewModel model)
+        {
+
+            var list = JsonConvert.DeserializeObject<List<TreeViewNode>>(model.PostedShapeList[0]);
+            new MapLogic().AddUpdateMap(GetDataContext(), model);
+            return RedirectToAction(nameof(Testing));
+
+        }
+
     }
 }

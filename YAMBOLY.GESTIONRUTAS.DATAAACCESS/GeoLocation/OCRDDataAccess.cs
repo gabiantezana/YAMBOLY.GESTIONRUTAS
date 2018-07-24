@@ -12,8 +12,7 @@ namespace YAMBOLY.GESTIONRUTAS.DATAAACCESS.GeoLocation
     {
         public List<OCRDType> GetList(DataContext dataContext)
         {
-            var myService = new ODataService(new Uri(""));
-            return myService.OCRD.ToList();
+            return dataContext.oDataService.OCRD.ToList();
         }
     }
 }

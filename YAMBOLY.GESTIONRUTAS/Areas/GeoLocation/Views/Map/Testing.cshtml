@@ -6,38 +6,57 @@
     ViewBag.Subsection = String.Empty;
 }
 
-@section Breadcrumbs{
+@*@section Breadcrumbs{
 
-}
-<div class="panel">
-    <div clss="panel-body">
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label for="input-search" class="sr-only">Search Tree:</label>
-                    <input type="input" class="form-control" id="input-search" placeholder="Buscar..." value="">
-                </div>
-                <div id="tree" class="treeview"></div>
-            </div>
-            <div class="col-md-10">
-                <input type="button" id="RemoveSelectedPolygon" value="Eliminar" onclick="RemoveSelectedPolygon(this)" style="display:none" />
-                <div>
-                    <input type="button" id="createShapeButton" value="Create shape" onclick="OnClickButton(BUTTONMODE.Create)" style="display:none" />
-                    <input type="button" id="editShapeButton" value="Edit shape" onclick="OnClickButton(BUTTONMODE.Edit)" style="display:none" />
-                    <input type="button" id="removeShapeButton" value="Remove shape" onclick="OnClickButton(BUTTONMODE.Remove)" style="display:none" />
-                </div>
+}*@
 
-                <div style="display:none">
-                    <input type="button" value="Crear zona" onclick="OnCreateClick()" />
-                    <input type="button" value="Crear ruta" onclick="OnCreateClick()" />
-                    <input type="button" id="CreateMarker" value="Crear marker" onclick="OnCreateClick()" />
-                    <div id="showonPolygon"><b> Area:</b> <span id="areaPolygon">&nbsp700;</span></div>
+@using (Html.BeginForm("Testing", "Map", FormMethod.Post, new { id = "testingForm" }))
+{
+    @Html.HiddenFor(x => x.PostedShapeList)
+    <div class="panel">
+        <div clss="panel-body">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="input-search" class="sr-only">Search Tree:</label>
+                        <input type="input" class="form-control" id="input-search" placeholder="Buscar..." value="">
+                    </div>
+                    <div id="tree" class="treeview"></div>
                 </div>
-                <div id="map" style="width:900px; height: 400px;"></div>
+                <div class="col-md-10">
+                    <input type="button" id="RemoveSelectedPolygon" value="Eliminar" onclick="RemoveSelectedPolygon(this)" style="display:none" />
+                    <div>
+                        <button  type="button" class="btn btn-sm btn-primary" id="createShapeButton" onclick="OnClickButton(BUTTONMODE.Create)">
+                            <i class="fa fa-map-marker" aria-hidden="true"></i>&nbsp; Crear
+                        </button>
+                        <button type="button"  class="btn btn-sm btn-primary" id="editShapeButton" onclick="OnClickButton(BUTTONMODE.Edit)">
+                            <i class="fa fa-pencil" aria-hidden="true"></i>&nbsp; Editar
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger" id="removeShapeButton" onclick="OnClickButton(BUTTONMODE.Remove)">
+                            <i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar
+                        </button>
+
+                        @*<input type="button" id="createShapeButton" value="Create shape" onclick="OnClickButton(BUTTONMODE.Create)" style="display:none" />*@
+                        @*<input type="button" id="editShapeButton" value="Edit shape" onclick="OnClickButton(BUTTONMODE.Edit)" style="display:none" />
+                        <input type="button" id="removeShapeButton" value="Remove shape" onclick="OnClickButton(BUTTONMODE.Remove)" style="display:none" />*@
+                    </div>
+
+                    <div style="display:none">
+                        <input type="button" value="Crear zona" onclick="OnCreateClick()" />
+                        <input type="button" value="Crear ruta" onclick="OnCreateClick()" />
+                        <input type="button" id="CreateMarker" value="Crear marker" onclick="OnCreateClick()" />
+                        <div id="showonPolygon"><b> Area:</b> <span id="areaPolygon">&nbsp700;</span></div>
+                    </div>
+                    <div id="map" style="width:1200px; height: 650px;"></div>
+                </div>
+                <div class="panel-footer text-right">
+                    <button class="btn btn-primary" id="btnGuardar"><i class="fa fa-save" aria-hidden="true"></i>&nbsp; Guardar</button>
+                </div>
             </div>
         </div>
+      
     </div>
-</div>
+}
 @section Scripts
 {
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB0hFla3KhpSUtpkjK7gqJVqfqUCI-7oFs&sensor=false&libraries=drawing"></script>
@@ -57,10 +76,79 @@
         var jsonList;
 
         $(document).ready(function () {
-            jsonList = '@Html.Raw(Model.JsonShapeList)';
+            jsonList = @Html.Raw(Json.Encode(Model.ShapeList));
             CreateInputList(jsonList);
             InitializeMap();
-            CreateShapes($.parseJSON(jsonList));
+            CreateShapes(jsonList);
+        });
+
+        function UpdateJsonList(jsonList) {
+            var shapeInMap;
+            jsonList.forEach(function (element) {
+                shapeInMap  = _.findWhere(editedPolygonArray, { Id: element.Id });
+                if (shapeInMap) {
+                    switch (element.ShapeType) {
+                        case SHAPETYPE.Zone:
+                        case SHAPETYPE.Route:
+                            if (shapeInMap.getPath()) 
+                                element.GeoOptions = { paths: shapeInMap.getPath().getArray(), coords: null }
+                            else
+                                element.GeoOptions = { paths: null, coords: null }
+                            break;
+                        case SHAPETYPE.Client:
+                            element.GeoOptions = { paths: null, coords: shapeInMap.getPosition() }
+                            break;
+                        default:
+                            throw "Error";
+                    }
+                }
+                else 
+                    element.GeoOptions = { paths: null, coords: null }
+                //
+                if (element.nodes) {
+                    UpdateJsonList(element.nodes);
+                }
+            });
+        }
+
+        $('#testingForm').submit(function () {
+            UpdateJsonList(jsonList);
+            /*
+            var allZones = jsonList;
+            var allRoutes = _.flatten(_.pluck(allZones, 'nodes'));
+            var allClients = _.flatten(_.pluck(allRoutes, 'nodes'));
+            //Actualiza coordenadas de polígonos en el array
+            for (var i = 0; i < editedPolygonArray.length; i++) {
+                var polygon = editedPolygonArray[i];
+                var item;
+                switch (polygon.ShapeType) {
+                    case SHAPETYPE.Zone:
+                        item = _.findWhere(jsonList, { Id: polygon.Id });
+                        if (item)
+                            item.GeoOptions = { paths: polygon.getPath().getArray(), coords: null }
+                        break;
+                    case SHAPETYPE.Route:
+                        item = _.find(allRoutes, function (child) { return child.Id == polygon.Id });
+                        if (item)
+                            item.GeoOptions = { paths: polygon.getPath().getArray(), coords: null }
+                        break;
+                    case SHAPETYPE.Client:
+                        debugger;
+                        item = _.find(allClients, function (child) { return child.Id == polygon.Id });
+                        if (item)
+                            item.GeoOptions = { paths: null,  coords: polygon.getPosition() }
+                        break;
+                    default:
+                        throw "Error";
+                }
+
+                if (!item) {
+                    jsonList = _.without(jsonList, _.findWhere(jsonList , { id: 3 }));
+                }
+            }*/
+            var dataToSend = JSON.stringify(jsonList);
+            $("#PostedShapeList").val(dataToSend);
+            return true;
         });
 
         function CreateInputList(jsonList) {
@@ -104,12 +192,15 @@
             drawingManager = new google.maps.drawing.DrawingManager(drawingManagerPolygonOptions);
 
             google.maps.event.addListener(drawingManager, 'polygoncomplete', function (polygon) {
+                debugger;
                 OnFinishDrawing(polygon);
             });
             google.maps.event.addListener(drawingManager, 'markercomplete', function (marker) {
+                debugger;
                 OnFinishDrawing(marker);
             });
             google.maps.event.addListener(drawingManager, 'overlaycomplete', function (e) {
+                debugger;
                 var newShape = e.overlay;
                 newShape.type = e.type;
                 //setSelection(newShape);
@@ -129,25 +220,47 @@
                     CreateShapes(element.nodes);
                 }
             });
+
+            //Create a copy of rendered polygons in editedPolygons
             editedPolygonArray = polygonArray;
         }
 
+        //Render shapes from model.
         function DrawShape(item) {
             switch (item.ShapeType)
             {
                 case SHAPETYPE.Zone:
+                    var coords = item.GeoOptions.paths;
+                    console.log(item)
+                    var polygon = new google.maps.Polygon({
+                        clickable: false,
+                        draggable: false,
+                        editable: false,
+                        fillColor: "yellow",//TODO:
+                        fillOpacity: 0.1,//TODO:
+                        strokeWeight: 0.9, //TODO:
+                        visible: true,
+                        paths: coords,
+                    });
+
+                    AddAditionalPropertiesToPolygon(item, polygon);
+                    AddEventHandlersForShape(polygon);
+                    polygon.setMap(map);
+                    polygonArray.push(polygon);
+                    break;
                 case SHAPETYPE.Route:
                     var coords = item.GeoOptions.paths;
                     console.log(item)
                     var polygon = new google.maps.Polygon({
-                        clickable: item.GeoOptions.clickable,
-                        draggable: item.GeoOptions.draggable,
-                        editable: item.GeoOptions.editable,
-                        fillColor: item.GeoOptions.fillColor,
-                        fillOpacity: item.GeoOptions.fillOpacity,
-                        strokeWeight: item.GeoOptions.strokeWeight,
-                        visible: item.GeoOptions.visible,
+                        clickable: false,
+                        draggable: false,
+                        editable: false,
+                        fillColor: GetRandomColor(),
+                        fillOpacity: 0.40,//TODO:
+                        strokeWeight: 0.5, //TODO:
+                        visible: true,
                         paths: coords,
+                        //zindex = 10,
                     });
 
                     AddAditionalPropertiesToPolygon(item, polygon);
@@ -195,23 +308,31 @@
             var shapeType = currentSelectedItem.ShapeType;
             var shape = GetShapeFromMap(currentSelectedItem.Id);
             var drawingMode;
-
             switch (_buttonMode) {
                 case BUTTONMODE.Create:
                     if (shape)
                         throw "No se puede crear, ya existe en el mapa";
                     switch (shapeType) {
                         case SHAPETYPE.Zone:
+                            drawingManager.setOptions({
+                                drawingMode: google.maps.drawing.OverlayType.POLYGON,
+                                polygonOptions: polygonOptionsZone
+                            });
+                            break;
                         case SHAPETYPE.Route:
-                            drawingMode = google.maps.drawing.OverlayType.POLYGON;
+                            drawingManager.setOptions({
+                                drawingMode: google.maps.drawing.OverlayType.POLYGON,
+                                polygonOptions: polygonOptionsRoute
+                            });
                             break;
                         case SHAPETYPE.Client:
-                            drawingMode = google.maps.drawing.OverlayType.MARKER
+                            drawingManager.setOptions({
+                                drawingMode: google.maps.drawing.OverlayType.MARKER,
+                            });
                             break;
                         default:
                             throw "No se reconoce el tipo de forma";
                     }
-                    drawingManager.setDrawingMode(drawingMode);
                     drawingManager.setMap(map);
                     break;
                 case BUTTONMODE.Edit:
@@ -237,6 +358,26 @@
         }
 
         function EvaluateSelectedItem() {
+            var prefixTitle;
+            var shapeType = currentSelectedItem.ShapeType;
+            switch (currentSelectedItem.ShapeType) {
+                case SHAPETYPE.Zone:
+                    prefixTitle = " zona";
+                    break;
+                case SHAPETYPE.Route:
+                    prefixTitle = " ruta";
+                    break;
+                case SHAPETYPE.Client:
+                    prefixTitle = " cliente";
+                    break;
+                default:
+                    throw "Invalid shape";
+            }
+
+            $("#editShapeButton").html("Editar " + prefixTitle);
+            $("#removeShapeButton").html("Eliminar " + prefixTitle);
+            $("#createShapeButton").html("Crear" + prefixTitle);
+
             var shape = GetShapeFromMap(currentSelectedItem.Id);
             if (shape) {
                 currentSelectedShape = shape;
@@ -252,6 +393,8 @@
                     default:
                         throw "Invalid shape";
                 }
+
+
                 $("#editShapeButton").slideDown();
                 $("#removeShapeButton").slideDown();
                 $("#createShapeButton").slideUp();
@@ -265,6 +408,7 @@
         }
 
         function OnFinishDrawing(shape) {
+            debugger;
             currentSelectedShape = shape;
             AddAditionalPropertiesToPolygon(currentSelectedItem, shape);
 
@@ -276,8 +420,17 @@
                 RemoveSelectedPolygon();
                 shape.setMap(null);
             }
+
             EvaluateSelectedItem();
         }
-    </script>
-}
 
+    </script>
+    <style>
+        .list-group-item {
+            padding: 3px 3px;
+        }
+        body {
+            font-size: 13px;
+        }
+    </style>
+}

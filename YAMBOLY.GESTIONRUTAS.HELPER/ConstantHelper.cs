@@ -19,6 +19,8 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
         public static readonly string ESTADO_ACTIVO = "Activo";
         public static readonly string ESTADO_INACTIVO = "Inactivo";
 
+        public static string ODATASERVICEURL_KEY = "ODataUrl";
+
         public class Views
         {
             public class Administration

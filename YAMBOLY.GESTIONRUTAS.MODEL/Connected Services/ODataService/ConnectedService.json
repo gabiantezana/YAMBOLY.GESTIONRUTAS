@@ -6,7 +6,7 @@
   },
   "ExtendedData": {
     "ServiceName": "ODataService",
-    "Endpoint": "https://172.16.7.51:4300/MSS_YAMBOLY_GEOLOCATION/Services/ODataService.xsodata/$metadata",
+    "Endpoint": "https://172.16.7.51:4300//MSS_YAMBOLY_GEOLOCATION/Services/ODataService.xsodata/$metadata",
     "EdmxVersion": {
       "Major": 1,
       "Minor": 0,
@@ -15,7 +15,7 @@
       "MajorRevision": 0,
       "MinorRevision": 0
     },
-    "GeneratedFileNamePrefix": "ODataService",
+    "GeneratedFileNamePrefix": "Reference",
     "UseNameSpacePrefix": false,
     "NamespacePrefix": null,
     "UseDataServiceCollection": true
