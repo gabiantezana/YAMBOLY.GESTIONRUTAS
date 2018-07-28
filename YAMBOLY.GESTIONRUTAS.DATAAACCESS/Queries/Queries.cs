@@ -8,7 +8,7 @@ namespace YAMBOLY.GESTIONRUTAS.DATAAACCESS.Queries
         public static string GetStringContent(EmbebbedFileName embebbedFileName)
         {
             var query = XMLHelper.GetXMLString(System.Reflection.Assembly.GetExecutingAssembly(), embebbedFileName);
-            query = query .Substring((query.IndexOf("--BEGINQUERY") + 12) , (query.Length.ToInteger() - query.IndexOf("BEGINQUERY").ToInteger() -10)).Trim();//TODO:
+            query = query.Substring((query.IndexOf(ConstantHelper.BEGINQUERY) + (ConstantHelper.BEGINQUERY).Length), (query.Length.ToInteger() - query.IndexOf(ConstantHelper.BEGINQUERY).ToInteger() - 10)).Trim();//TODO:
             return query;
         }
 

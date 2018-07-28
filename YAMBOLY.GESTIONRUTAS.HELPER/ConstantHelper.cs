@@ -21,6 +21,8 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
 
         public static string ODATASERVICEURL_KEY = "ODataUrl";
 
+        public static string BEGINQUERY = "--BEGINQUERY";
+
         public class Views
         {
             public class Administration

@@ -1,7 +1,9 @@
 ﻿-------------------------------------------------------UPDATE CRD1 - Dirección fiscal-------------------------------------------------------
 --PARAM0: DbName
 --PARAM1: ClientCardCode
---PARAM2: Coordinates	
+--PARAM2: Latitud
+--PARAM3: Longitud
+--PARAM4: Address
 
 --BEGINQUERY
-UPDATE "HELATONYS_PRUEBAS"."CRD1" SET "U_COORDINATESARRAY" ='PARAM2' WHERE "Address" = 'DIRECCION FISCAL' AND "CardCode" = 'PARAM1';
+UPDATE "SBO_HELATONYS"."CRD1" SET "U_MSSM_LAT" ='PARAM2', "U_MSSM_LON" = 'PARAM3' WHERE "Address" = 'PARAM4' AND "CardCode" = 'PARAM1';

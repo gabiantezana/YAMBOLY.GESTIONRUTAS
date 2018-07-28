@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using YAMBOLY.GESTIONRUTAS.HELPER;
 
 public static class ConvertHelper
 {
@@ -215,5 +216,19 @@ public static class ConvertHelper
         return b;
     }
 
+    public partial class JsonEntityComparer : IEqualityComparer<JsonEntityTwoString>
+    {
+        public bool Equals(JsonEntityTwoString b1, JsonEntityTwoString b2)
+        {
+            if (b1.id == b2.id && b1.text == b2.text)
+                return true;
+            else
+                return false;
+        }
 
+        public int GetHashCode(JsonEntityTwoString bx)
+        {
+            return bx.id.GetHashCode() ^ bx.text.GetHashCode();
+        }
+    }
 }

@@ -46,8 +46,15 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
             coords = new Path();
         }
         #region Polygon Options
+        /// <summary>
+        /// Coordinates path list 
+        /// </summary>
         public List<Path> paths { get; set; }
         #endregion
+
+        /// <summary>
+        /// The coordinates  of  marker
+        /// </summary>
         #region Marker Options
         public Path coords { get; set; }
         #endregion
@@ -72,10 +79,10 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
     {
         public List<Zone> ZoneList { get; set; }
         public List<Route> RouteList { get; set; }
-        public List<Cliente> ClientList { get; set; }
+        public List<Address> ClientList { get; set; }
     }
 
-    public class Cliente
+    public class Address
     {
         public GeoOptions GeoOptions { get; set; }
         public string RutaId { get; set; }
@@ -87,6 +94,7 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
         public string Canal { get; set; }
         public string Giro { get; set; }
         public string Codigo { get; set; }
+        public string Ruc { get; set; }
         public string RazonSocial { get; set; }
         public string TipoCliente { get; set; }
         public string Vendedor { get; set; }
@@ -94,12 +102,14 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
         public string SupervisorTerritorio { get; set; }
         public string SupervisorZona { get; set; }
         public string JefeDeVentas { get; set; }
+        public double VentasMontoMinimo { get; set; }
+        public double VentasMontoMaximo { get; set; }
     }
 
     public class Path
     {
-        public double lat { get; set; }
-        public double lng { get; set; }
+        public double? lat { get; set; }
+        public double? lng { get; set; }
     }
 
     public class TreeViewNode
@@ -115,13 +125,21 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
         #endregion
 
         #region Aditional Properties
+        /// <summary>
+        /// ShapeId
+        /// </summary>
         public string Id { get; set; }
         public ShapeType ShapeType { get; set; }
+        /// <summary>
+        /// Google maps GeoOptions
+        /// </summary>
         public GeoOptions GeoOptions { get; set; }
+
+        /// <summary>
+        /// ParentId of Shape (Zone-Route-Direction)
+        /// </summary>
         public string ParentId { get; set; }
-        //public Zone Zone { get; set; }
-        //public Route Route { get; set; }
-        //public Cliente Client { get; set; }
+
         #endregion
     }
 
@@ -132,9 +150,9 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
     {
         public RootObject()
         {
-            coords = new List<List<double>>();
+            coords = new List<List<double?>>();
         }
-        public List<List<double>> coords { get; set; }
+        public List<List<double?>> coords { get; set; }
     }
 
 

@@ -14,10 +14,27 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
         public MapViewModel GetMapViewModel(DataContext dataConext)
         {
             var model = new MapViewModel();
-            model.ZoneList = new @MSS_ZONALogic().GetList(dataConext);
-            model.RouteList = new @MSS_RUTALogic().GetList(dataConext);
-            model.ClientList = new OCRDLogic().GetList(dataConext);
+            model.ZoneList = new ZonaLogic().GetList(dataConext);
+            model.RouteList = new RutaLogic().GetList(dataConext);
+            model.ClientList = new AddressLogic().GetList(dataConext);
             model.ShapeList = GetShapeList(ref model);
+
+            #region JsonList
+            model.CanalJList = new CanalLogic().GetJList(dataConext);
+            model.DepartamentoJList = new DepartamentoLogic().GetJList(dataConext);
+            model.DistritoJList = new DistritoLogic().GetJList(dataConext, string.Empty);
+            model.GiroJList = new GiroLogic().GetJList(dataConext);
+            model.JefeVentasJList = new List<JsonEntityTwoString>();//TODO:
+            model.ProvinciaJList = new ProvinciaLogic().GetJList(dataConext, string.Empty);
+            model.RegionJList = new RegionLogic().GetJList(dataConext);
+            model.ZonaJList = new ZonaLogic().GetJList(dataConext);
+            model.RutaJList = new RutaLogic().GetJList(dataConext);
+            model.SupervisorTerritorioJList = new SupervisorLogic().GetJList(dataConext);
+            model.SupervisorZonaJList = new SupervisorLogic().GetJList(dataConext);
+            model.TipoClienteJList = new List<JsonEntityTwoString>();//TODO:
+            model.VendedorJList = new VendedorLogic().GetJList(dataConext);
+            #endregion
+
             return model;
         }
 
@@ -32,7 +49,7 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
                 zoneNode.ShapeType = ShapeType.Zone;
                 zoneNode.GeoOptions = zone.GeoOptions;
 
-                foreach (var route in model.RouteList.Where(x => x.ZoneId == zone.Name))
+                foreach (var route in model.RouteList.Where(x => x.ZoneId == zone.Id))
                 {
                     var routeNode = new TreeViewNode();
                     routeNode.Id = route.Id;
@@ -44,8 +61,8 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
                     {
                         var clientNode = new TreeViewNode();
                         clientNode.Id = client.Codigo;
-                        clientNode.text = client.RazonSocial;
-                        clientNode.ShapeType = ShapeType.Client;
+                        clientNode.text = client.Ruc + " - " + client.RazonSocial;
+                        clientNode.ShapeType = ShapeType.Address;
                         clientNode.GeoOptions = client.GeoOptions;
                         clientNode.ParentId = routeNode.Id;
                         routeNode.nodes.Add(clientNode);
@@ -59,18 +76,18 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
 
         public void AddUpdateMap(DataContext dataContext, MapViewModel model)
         {
-            List<TreeViewNode> postedObjects = JsonConvert.DeserializeObject<List<TreeViewNode>>(model.PostedShapeList[0]);
+            List<TreeViewNode> postedObjects = JsonConvert.DeserializeObject<List<TreeViewNode>>(model.PostedShapeList[0]);//TODO:
 
             var queries = new List<string>();
             foreach (var zone in postedObjects)
             {
-                queries.Add(new MSS_ZONALogic().GetQuery(dataContext, zone));
+                queries.Add(new ZonaLogic().GetQuery(dataContext, zone));
                 foreach (var route in zone.nodes)
                 {
-                    queries.Add(new MSS_RUTALogic().GetQuery(dataContext, route));
+                    queries.Add(new RutaLogic().GetQuery(dataContext, route));
                     foreach (var client in route.nodes)
                     {
-                        queries.Add(new OCRDLogic().GetQuery(dataContext, client));
+                        queries.Add(new AddressLogic().GetQuery(dataContext, client));
                     }
                 }
             }
@@ -78,14 +95,14 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
             WebHelper.GetJsonPostResponse(Queries.GetUrlPath(), finalQuery);
         }
 
-        public string GetCoordinatesArray(GeoOptions geoOptions, PolygonType polygonType)
+        public string GetCoordinatesArray(GeoOptions geoOptions, ShapeType polygonType)
         {
             var rootObject = new RootObject();
-            double[] coordinates = new double[2];
+            double?[] coordinates = new double?[2];
             switch (polygonType)
             {
-                case PolygonType.Zone:
-                case PolygonType.Route:
+                case ShapeType.Zone:
+                case ShapeType.Route:
                     if (geoOptions.paths != null)
                     {
                         foreach (var item in geoOptions.paths)
@@ -99,7 +116,7 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
                     }
 
                     break;
-                case PolygonType.Point:
+                case ShapeType.Address:
                     if (geoOptions.coords != null)
                     {
                         coordinates[0] = geoOptions.coords.lat;
@@ -129,7 +146,7 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
                         geoOptions.paths.Add(new Path() { lat = item[0], lng = item[1] });
                     }
                     break;
-                case ShapeType.Client:
+                case ShapeType.Address:
                     foreach (var item in obj.coords)
                     {
                         geoOptions.coords = new Path() { lat = item[0], lng = item[1] };
@@ -147,18 +164,39 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
             switch (shapeType)
             {
                 case ShapeType.Zone:
-                    shapeInfo = new MSS_ZONALogic().Get(dataContext, id);
+                    shapeInfo = new ZonaLogic().Get(dataContext, id);
                     break;
                 case ShapeType.Route:
-                    shapeInfo = new MSS_RUTALogic().Get(dataContext, id);
+                    shapeInfo = new RutaLogic().Get(dataContext, id);
                     break;
-                case ShapeType.Client:
-                    shapeInfo = new OCRDLogic().Get(dataContext, id);
+                case ShapeType.Address:
+                    shapeInfo = new AddressLogic().Get(dataContext, id);
                     break;
                 default:
                     throw new System.Exception("");//TODO:
             }
             return shapeInfo;
         }
+
+        public List<string> GetFilteredClientList(DataContext dataContext, MapViewModel model)
+        {
+            var list = new AddressLogic().GetList(dataContext).AsQueryable();
+
+            var cardCodeList = list.Where(x => string.IsNullOrEmpty(model.Region) | x.Region == model.Region
+                                        && string.IsNullOrEmpty(model.Departamento) | x.Departamento == model.Departamento
+                                        && string.IsNullOrEmpty(model.Provincia) | x.Provincia == model.Provincia
+                                        && string.IsNullOrEmpty(model.Distrito) | x.Distrito == model.Distrito
+                                        && string.IsNullOrEmpty(model.Zona) | x.ZonaId == model.Zona
+                                        && string.IsNullOrEmpty(model.Ruta) | x.RutaId == model.Ruta
+                                        && string.IsNullOrEmpty(model.Canal) | x.Canal == model.Canal
+                                        && string.IsNullOrEmpty(model.Giro) | x.Giro == model.Giro
+                                        && string.IsNullOrEmpty(model.Vendedor) | x.Vendedor == model.Vendedor
+                                        && string.IsNullOrEmpty(model.SupervisorTerritorio) | x.SupervisorCampo == model.SupervisorTerritorio
+                                        && string.IsNullOrEmpty(model.SupervisorZona) | x.SupervisorZona == model.SupervisorZona
+                                        && string.IsNullOrEmpty(model.JefeVentas) | x.JefeDeVentas == model.JefeVentas)
+                                    .Select(x => x.Codigo).ToList();
+            return cardCodeList;
+        }
+
     }
 }

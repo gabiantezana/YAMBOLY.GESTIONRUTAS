@@ -1,6 +1,6 @@
 ﻿//const drawingModes = Object.freeze({ drawZoneMode: 1, drawRouteMode: 2 });
 const BUTTONMODE = Object.freeze({ Create: 1, Edit: 2, Remove: 3 });
-const SHAPETYPE = Object.freeze({ Zone: 1, Route: 2, Client: 3 });
+const SHAPETYPE = Object.freeze({ Zone: 1, Route: 2, Address: 3 });
 
 
 var latLngCenterInit = new google.maps.LatLng(-12.0912651, -77.00467609999998);
@@ -45,6 +45,7 @@ function isPolygonInsidePolygon(innerPolygon, outerPolygon) {
 };
 
 function _isPolygonIntersectedWithAnother(innerPolygon, outerPolygon) {
+    debugger;
     var pointsInside = 0;
     var pointsOutside = 0;
     innerPolygon.getPath().getArray().map(function (x) {
@@ -74,7 +75,7 @@ function RemoveSelectedPolygon() {
     if (currentSelectedShape) {
         currentSelectedShape.setMap(null);
         drawingManager.setMap(null);
-        editedPolygonArray = _.without(editedPolygonArray, _.findWhere(editedPolygonArray, { Id: currentSelectedShape.Id }));
+        editedPolygonArray = _.without(editedPolygonArray, _.findWhere(editedPolygonArray, { Id: currentSelectedShape.Id, ShapeType : currentSelectedShape.ShapeType }));
     }
 }
 
@@ -85,7 +86,7 @@ function clearSelection() {
             case SHAPETYPE.Route:
                 currentSelectedShape.setEditable(false);
                 break;
-            case SHAPETYPE.Client:
+            case SHAPETYPE.Address:
                 currentSelectedShape.setDraggable(false);
                 break;
             default:
@@ -103,7 +104,7 @@ function setSelection(shape) {//TODO:
         case SHAPETYPE.Route:
             shape.setEditable(true);
             break;
-        case SHAPETYPE.Client:
+        case SHAPETYPE.Address:
             shape.setDraggable(true);
             break;
         default:
@@ -145,7 +146,7 @@ function IsAValidShape(shape) {
         case SHAPETYPE.Route:
             isValid = ValidateCreatedRoute(shape);
             break;
-        case SHAPETYPE.Client:
+        case SHAPETYPE.Address:
             isValid = true; //TODO: Add Validation
             break;
         default:
@@ -186,9 +187,9 @@ function ValidateCreatedRoute(polygon) {
     //-----------------VALIDA QUE NO INTERSECTE A NINGUNA OTRA RUTA -------------------
     if (isValid) {
         for (var i = 0; i < editedPolygonArray.length; i++) {
-            if (editedPolygonArray[i].ShapeType == SHAPETYPE.rou) {
+            if (editedPolygonArray[i].ShapeType == SHAPETYPE.Route) {
                 isValid = !_isPolygonIntersectedWithAnother(polygon, editedPolygonArray[i]);
-                if (isValid) {
+                if (!isValid) {
                     break;
                 }
             }
@@ -202,3 +203,4 @@ function GetRandomColor() {
     var item = colors[Math.floor(Math.random() * colors.length)];
     return item;
 }
+

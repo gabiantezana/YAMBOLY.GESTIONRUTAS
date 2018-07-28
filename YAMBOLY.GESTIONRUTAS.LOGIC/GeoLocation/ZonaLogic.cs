@@ -10,11 +10,11 @@ using YAMBOLY.GESTIONRUTAS.MODEL;
 
 namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
 {
-    public class @MSS_ZONALogic
+    public class ZonaLogic
     {
         private List<MSS_ZONAType> GetSAPList(DataContext dataContext)
         {
-            return new MSS_ZONADataAccess().GetList(dataContext);
+            return new ZonaDataAccess().GetList(dataContext);
         }
 
         public List<Zone> GetList(DataContext dataContext)
@@ -37,7 +37,7 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
         {
             string coordinates = string.Empty;
             if (zone.GeoOptions != null)
-                coordinates = new MapLogic().GetCoordinatesArray(zone.GeoOptions, PolygonType.Zone);
+                coordinates = new MapLogic().GetCoordinatesArray(zone.GeoOptions, ShapeType.Zone);
 
             var query = Queries.GetStringContent(EmbebbedFileName.MSS_ZONA_Update);
             query = query.Replace("PARAM1", zone.Id)
@@ -50,6 +50,15 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
         {
             var response = WebHelper.GetJsonResponse(finalQuery, null, null);
 
+        }
+
+        public List<JsonEntityTwoString> GetJList(DataContext dataContext)
+        {
+            return GetSAPList(dataContext).Select(x => new JsonEntityTwoString()
+            {
+                id = x.Code,
+                text = x.Name,
+            }).ToList();
         }
 
     }

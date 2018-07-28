@@ -8,11 +8,11 @@ using YAMBOLY.GESTIONRUTAS.MODEL;
 
 namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
 {
-    public class @MSS_RUTALogic
+    public class RutaLogic
     {
         public List<MSS_RUTAType> GetSAPList(DataContext dataContext)
         {
-            return new MSS_RUTADataAccess().GetList(dataContext);
+            return new RutaDataAccess().GetList(dataContext);
         }
 
         public List<Route> GetList(DataContext dataContext)
@@ -35,13 +35,22 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
         {
             string coordinates = string.Empty;
             if (zone.GeoOptions != null)
-                coordinates = new MapLogic().GetCoordinatesArray(zone.GeoOptions, PolygonType.Route);
+                coordinates = new MapLogic().GetCoordinatesArray(zone.GeoOptions, ShapeType.Route);
 
             var query = Queries.GetStringContent(EmbebbedFileName.MSS_RUTA_Update);
             query = query.Replace("PARAM1", zone.Id)
                          .Replace("PARAM2", coordinates);
 
             return query;
+        }
+
+        public List<JsonEntityTwoString> GetJList(DataContext dataContext)
+        {
+            return GetSAPList(dataContext).Select(x => new JsonEntityTwoString()
+            {
+                id = x.Code,
+                text = x.Name,
+            }).ToList();
         }
     }
 }

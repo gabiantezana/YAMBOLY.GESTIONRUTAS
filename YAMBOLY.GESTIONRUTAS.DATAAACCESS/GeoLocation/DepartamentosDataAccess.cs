@@ -8,11 +8,11 @@ using YAMBOLY.GESTIONRUTAS.MODEL;
 
 namespace YAMBOLY.GESTIONRUTAS.DATAAACCESS.GeoLocation
 {
-    public class @MSS_ZONADataAccess
+    public class DepartamentosDataAccess
     {
-        public List<MSS_ZONAType> GetList(DataContext dataContext)
+        public List<OCSTType> GetSAPList(DataContext dataContext)
         {
-            return dataContext.oDataService.MSS_ZONA.ToList();
+            return dataContext.oDataService.OCST.Where(x => x.Country == "PE").ToList();//TODO:
         }
     }
 }

@@ -8,11 +8,11 @@ using YAMBOLY.GESTIONRUTAS.MODEL;
 
 namespace YAMBOLY.GESTIONRUTAS.DATAAACCESS.GeoLocation
 {
-    public class @MSS_GEOSHAPE_DDataAccess
+    public class RegionDataAccess
     {
-        public List<MSS_GEOSHAPE_DType> GetList(DataContext dataContext)
+        public List<MSS_REGIType> GetSAPList(DataContext dataContext)
         {
-            return dataContext.oDataService.MSS_GEOSHAPE_D.ToList();
+            return dataContext.oDataService.MSS_REGI.ToList();
         }
     }
 }

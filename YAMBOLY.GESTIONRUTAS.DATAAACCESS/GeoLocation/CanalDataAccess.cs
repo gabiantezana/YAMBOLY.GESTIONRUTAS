@@ -8,11 +8,11 @@ using YAMBOLY.GESTIONRUTAS.MODEL;
 
 namespace YAMBOLY.GESTIONRUTAS.DATAAACCESS.GeoLocation
 {
-    public class CRD1DataAccess
+    public class CanalDataAccess
     {
-        public List<CRD1Type> GetList(DataContext dataContext)
+        public List<MSS_CANAType> GetList(DataContext dataContext)
         {
-            return dataContext.oDataService.CRD1.ToList();
+            return dataContext.oDataService.MSS_CANA.ToList();
         }
     }
 }

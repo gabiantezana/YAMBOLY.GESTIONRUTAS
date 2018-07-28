@@ -8,7 +8,7 @@
 
 @*@section Breadcrumbs{
 
-}*@
+    }*@
 
 @using (Html.BeginForm("Testing", "Map", FormMethod.Post, new { id = "testingForm" }))
 {
@@ -17,49 +17,197 @@
         <div clss="panel-body">
             <div class="row">
                 <div class="col-md-2">
-                    <div class="form-group">
-                        <label for="input-search" class="sr-only">Search Tree:</label>
-                        <input type="input" class="form-control" id="input-search" placeholder="Buscar..." value="">
+                    <!-- Nav tabs --><div class="card">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Zonas</a></li>
+                            <li role="presentation"><a href="#searchByClient" aria-controls="profile" role="tab" data-toggle="tab">Filtro avanzado</a></li>
+                        </ul>
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="home">
+                                <div class="form-group">
+                                    <label for="input-search" class="sr-only">Search Tree:</label>
+                                    <input type="input" class="form-control" id="input-search" placeholder="Buscar..." value="">
+                                </div>
+                                <div id="tree" class="treeview"></div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="searchByClient">
+                                <div class="row">
+                                    @Html.LabelFor(x => Model.Region, new { @class = "col-sm-3 control-label" })
+                                    <div class="col-sm-9">
+                                        @Html.DropDownListFor(x => Model.Region, new SelectList(Model.RegionJList, "id", "text"), new { @class = "form-control form-group-margin", @data_plugin = "select2", @data_isedit = "false" })
+                                        @Html.ValidationMessageFor(x => x.Region)
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    @Html.LabelFor(x => Model.Departamento, new { @class = "col-sm-3 control-label" })
+                                    <div class="col-sm-9">
+                                        @Html.DropDownListFor(x => Model.Departamento, new SelectList(Model.DepartamentoJList, "id", "text"),
+                                        new
+                                        {
+                                            @class = "form-control form-group-margin",
+                                            @data_plugin = "select2",
+                                            @onchange = "OnChangeSelect2(this)",
+                                            @data_select = "select",
+                                            @data_url = @Url.Action("GetProvinciaJList", "Map"),
+                                            @data_target = "Provincia",
+                                            @data_isEdit = "false",
+                                        })
+                                        @Html.ValidationMessageFor(x => x.Departamento)
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    @Html.LabelFor(x => Model.Provincia, new { @class = "col-sm-3 control-label" })
+                                    <div class="col-sm-9">
+                                        @Html.DropDownListFor(x => Model.Provincia, new SelectList(Model.ProvinciaJList, "id", "text")
+                                        , new
+                                        {
+                                            @class = "form-control form-group-margin",
+                                            @data_plugin = "select2",
+                                            @onchange = "OnChangeSelect2(this)",
+                                            @data_select = "select",
+                                            @data_url = @Url.Action("GetDistritoJList", "Map"),
+                                            @data_target = "Distrito",
+                                            @data_isedit = "false"
+                                        })
+                                        @Html.ValidationMessageFor(x => Model.Provincia)
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    @Html.LabelFor(x => Model.Distrito, new { @class = "col-sm-3 control-label" })
+                                    <div class="col-sm-9">
+                                        @Html.DropDownListFor(x => Model.Distrito, new SelectList(Model.DistritoJList, "id", "text"), new { @class = "form-control form-group-margin", @data_plugin = "select2", @data_isedit = "false" })
+                                        @Html.ValidationMessageFor(x => x.Distrito)
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    @Html.LabelFor(x => Model.Zona, new { @class = "col-sm-3 control-label" })
+                                    <div class="col-sm-9">
+                                        @Html.DropDownListFor(x => Model.Zona, new SelectList(Model.ZonaJList, "id", "text"), new { @class = "form-control form-group-margin", @data_plugin = "select2", @data_isedit = "false" })
+                                        @Html.ValidationMessageFor(x => x.Zona)
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    @Html.LabelFor(x => Model.Ruta, new { @class = "col-sm-3 control-label" })
+                                    <div class="col-sm-9">
+                                        @Html.DropDownListFor(x => Model.Ruta, new SelectList(Model.RutaJList, "id", "text"), new { @class = "form-control form-group-margin", @data_plugin = "select2", @data_isedit = "false" })
+                                        @Html.ValidationMessageFor(x => x.Ruta)
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    @Html.LabelFor(x => Model.Canal, new { @class = "col-sm-3 control-label" })
+                                    <div class="col-sm-9">
+                                        @Html.DropDownListFor(x => Model.Canal, new SelectList(Model.CanalJList, "id", "text"), new { @class = "form-control form-group-margin", @data_plugin = "select2", @data_isedit = "false" })
+                                        @Html.ValidationMessageFor(x => x.Canal)
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    @Html.LabelFor(x => Model.Giro, new { @class = "col-sm-3 control-label" })
+                                    <div class="col-sm-9">
+                                        @Html.DropDownListFor(x => Model.Giro, new SelectList(Model.GiroJList, "id", "text"), new { @class = "form-control form-group-margin", @data_plugin = "select2", @data_isedit = "false" })
+                                        @Html.ValidationMessageFor(x => x.Giro)
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    @Html.LabelFor(x => Model.ConActivos, new { @class = "col-sm-3 control-label" })
+                                    <div class="col-sm-9">
+                                        @Html.TextBoxFor(x => Model.ConActivos, new { @class = "form-control " })
+                                        @Html.ValidationMessageFor(x => x.ConActivos)
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    @Html.LabelFor(x => Model.TipoCliente, new { @class = "col-sm-3 control-label" })
+                                    <div class="col-sm-9">
+                                        @Html.DropDownListFor(x => Model.TipoCliente, new SelectList(Model.TipoClienteJList, "id", "text"), new { @class = "form-control form-group-margin", @data_plugin = "select2", @data_isedit = "false" })
+                                        @Html.ValidationMessageFor(x => x.TipoCliente)
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    @Html.LabelFor(x => Model.Vendedor, new { @class = "col-sm-3 control-label" })
+                                    <div class="col-sm-9">
+                                        @Html.DropDownListFor(x => Model.Vendedor, new SelectList(Model.VendedorJList, "id", "text"), new { @class = "form-control form-group-margin", @data_plugin = "select2", @data_isedit = "false" })
+                                        @Html.ValidationMessageFor(x => x.Vendedor)
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    @Html.LabelFor(x => Model.SupervisorTerritorio, new { @class = "col-sm-3 control-label" })
+                                    <div class="col-sm-9">
+                                        @Html.DropDownListFor(x => Model.SupervisorTerritorio, new SelectList(Model.SupervisorTerritorioJList, "id", "text"), new { @class = "form-control form-group-margin", @data_plugin = "select2", @data_isedit = "false" })
+                                        @Html.ValidationMessageFor(x => x.SupervisorTerritorio)
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    @Html.LabelFor(x => Model.SupervisorZona, new { @class = "col-sm-3 control-label" })
+                                    <div class="col-sm-9">
+                                        @Html.DropDownListFor(x => Model.SupervisorZona, new SelectList(Model.SupervisorZonaJList, "id", "text"), new { @class = "form-control form-group-margin", @data_plugin = "select2", @data_isedit = "false" })
+                                        @Html.ValidationMessageFor(x => x.SupervisorZona)
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    @Html.LabelFor(x => Model.JefeVentas, new { @class = "col-sm-3 control-label" })
+                                    <div class="col-sm-9">
+                                        @Html.DropDownListFor(x => Model.JefeVentas, new SelectList(Model.JefeVentasJList, "id", "text"), new { @class = "form-control form-group-margin", @data_plugin = "select2", @data_isedit = "false" })
+                                        @Html.ValidationMessageFor(x => x.JefeVentas)
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    @Html.LabelFor(x => Model.VentasMontoMinimo, new { @class = "col-sm-3 control-label" })
+                                    <div class="col-sm-9">
+                                        @Html.TextBoxFor(x => Model.VentasMontoMinimo, new { @class = "form-control " })
+                                        @Html.ValidationMessageFor(x => x.VentasMontoMinimo)
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    @Html.LabelFor(x => Model.VentasMontoMaximo, new { @class = "col-sm-3 control-label" })
+                                    <div class="col-sm-9">
+                                        @Html.TextBoxFor(x => Model.VentasMontoMaximo, new { @class = "form-control " })
+                                        @Html.ValidationMessageFor(x => x.VentasMontoMaximo)
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary" id="btnBuscarCliente" type="button" onclick="SearchClient()"><i class="fa fa-save" aria-hidden="true"></i>&nbsp; Filtrar</button>
+
+                                @*<div class="form-group">
+                                    @Html.LabelFor(x => Model.Codigo, new { @class = "control-label" })
+                                    <div class="col-sm-9">
+                                    @Html.DropDownListFor(x => Model.Codigo, new SelectList(Model.LstFuente, "id", "text"), new { @class = "form-control form-group-margin", @data_plugin = "select2", @data_isedit = "true" })
+                                    @Html.ValidationMessageFor(x => x.Codigo)
+                                    </div>
+                                    </div>*@
+
+                            </div>
+                        </div>
                     </div>
-                    <div id="tree" class="treeview"></div>
+
                 </div>
                 <div class="col-md-10">
                     <input type="button" id="RemoveSelectedPolygon" value="Eliminar" onclick="RemoveSelectedPolygon(this)" style="display:none" />
                     <div>
-                        <button  type="button" class="btn btn-sm btn-primary" id="createShapeButton" onclick="OnClickButton(BUTTONMODE.Create)">
+                        <button type="button" class="btn btn-sm btn-primary" id="createShapeButton" onclick="OnClickButton(BUTTONMODE.Create)" style="display:none">
                             <i class="fa fa-map-marker" aria-hidden="true"></i>&nbsp; Crear
                         </button>
-                        <button type="button"  class="btn btn-sm btn-primary" id="editShapeButton" onclick="OnClickButton(BUTTONMODE.Edit)">
+                        <button type="button" class="btn btn-sm btn-primary" id="editShapeButton" onclick="OnClickButton(BUTTONMODE.Edit)" style="display:none">
                             <i class="fa fa-pencil" aria-hidden="true"></i>&nbsp; Editar
                         </button>
-                        <button type="button" class="btn btn-sm btn-danger" id="removeShapeButton" onclick="OnClickButton(BUTTONMODE.Remove)">
+                        <button type="button" class="btn btn-sm btn-danger" id="removeShapeButton" onclick="OnClickButton(BUTTONMODE.Remove)" style="display:none">
                             <i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar
                         </button>
-
-                        @*<input type="button" id="createShapeButton" value="Create shape" onclick="OnClickButton(BUTTONMODE.Create)" style="display:none" />*@
-                        @*<input type="button" id="editShapeButton" value="Edit shape" onclick="OnClickButton(BUTTONMODE.Edit)" style="display:none" />
-                        <input type="button" id="removeShapeButton" value="Remove shape" onclick="OnClickButton(BUTTONMODE.Remove)" style="display:none" />*@
-                    </div>
-
-                    <div style="display:none">
-                        <input type="button" value="Crear zona" onclick="OnCreateClick()" />
-                        <input type="button" value="Crear ruta" onclick="OnCreateClick()" />
-                        <input type="button" id="CreateMarker" value="Crear marker" onclick="OnCreateClick()" />
-                        <div id="showonPolygon"><b> Area:</b> <span id="areaPolygon">&nbsp700;</span></div>
                     </div>
                     <div id="map" style="width:1200px; height: 650px;"></div>
+                    <input class="" id="pac-input" placeholder="SearchBox" value="">
                 </div>
                 <div class="panel-footer text-right">
                     <button class="btn btn-primary" id="btnGuardar"><i class="fa fa-save" aria-hidden="true"></i>&nbsp; Guardar</button>
                 </div>
             </div>
         </div>
-      
+
     </div>
 }
 @section Scripts
 {
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB0hFla3KhpSUtpkjK7gqJVqfqUCI-7oFs&sensor=false&libraries=drawing"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB0hFla3KhpSUtpkjK7gqJVqfqUCI-7oFs&sensor=false&libraries=drawing,places"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <script src="~/Scripts/bootstrap-treeview.js"></script>
     <script src="~/Areas/GeoLocation/Scripts/Testing.js"></script>
@@ -70,6 +218,8 @@
         var editedPolygonArray = [];
         var currentSelectedItem = null
         var currentSelectedShape = null;
+        var infoWindow = new google.maps.InfoWindow;
+
 
         var map;
         var drawingManager;
@@ -85,24 +235,24 @@
         function UpdateJsonList(jsonList) {
             var shapeInMap;
             jsonList.forEach(function (element) {
-                shapeInMap  = _.findWhere(editedPolygonArray, { Id: element.Id });
+                shapeInMap  = _.findWhere(editedPolygonArray, { Id: element.Id, ShapeType: element.ShapeType});
                 if (shapeInMap) {
                     switch (element.ShapeType) {
                         case SHAPETYPE.Zone:
                         case SHAPETYPE.Route:
-                            if (shapeInMap.getPath()) 
+                            if (shapeInMap.getPath())
                                 element.GeoOptions = { paths: shapeInMap.getPath().getArray(), coords: null }
                             else
                                 element.GeoOptions = { paths: null, coords: null }
                             break;
-                        case SHAPETYPE.Client:
+                        case SHAPETYPE.Address:
                             element.GeoOptions = { paths: null, coords: shapeInMap.getPosition() }
                             break;
                         default:
                             throw "Error";
                     }
                 }
-                else 
+                else
                     element.GeoOptions = { paths: null, coords: null }
                 //
                 if (element.nodes) {
@@ -132,7 +282,7 @@
                         if (item)
                             item.GeoOptions = { paths: polygon.getPath().getArray(), coords: null }
                         break;
-                    case SHAPETYPE.Client:
+                    case SHAPETYPE.Address:
                         debugger;
                         item = _.find(allClients, function (child) { return child.Id == polygon.Id });
                         if (item)
@@ -157,6 +307,8 @@
             });
 
             $('#tree').on('nodeSelected', function (event, data) { onNodeClick(data) })
+            $('#tree').treeview('collapseAll', { silent: true });
+
             //Search
             var search = function (e) {
                 var pattern = $('#input-search').val();
@@ -192,15 +344,12 @@
             drawingManager = new google.maps.drawing.DrawingManager(drawingManagerPolygonOptions);
 
             google.maps.event.addListener(drawingManager, 'polygoncomplete', function (polygon) {
-                debugger;
                 OnFinishDrawing(polygon);
             });
             google.maps.event.addListener(drawingManager, 'markercomplete', function (marker) {
-                debugger;
                 OnFinishDrawing(marker);
             });
             google.maps.event.addListener(drawingManager, 'overlaycomplete', function (e) {
-                debugger;
                 var newShape = e.overlay;
                 newShape.type = e.type;
                 //setSelection(newShape);
@@ -210,6 +359,32 @@
             });
             //google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection);
             //google.maps.event.addListener(map, 'click', clearSelection);
+
+            //SearchBox
+            var searchBox = new google.maps.places.SearchBox(document.getElementById('pac-input'));
+            map.controls[google.maps.ControlPosition.TOP_CENTER].push(document.getElementById('pac-input'));
+            google.maps.event.addListener(searchBox, 'places_changed', function () {
+                searchBox.set('map', null);
+                var places = searchBox.getPlaces();
+                var bounds = new google.maps.LatLngBounds();
+                var i, place;
+                for (i = 0; place = places[i]; i++) {
+                    (function (place) {
+                        var marker = new google.maps.Marker({ position: place.geometry.location });
+                        marker.bindTo('map', searchBox, 'map');
+                        google.maps.event.addListener(marker, 'map_changed', function () {
+                            if (!this.getMap()) {
+                                this.unbindAll();
+                            }
+                        });
+                        bounds.extend(place.geometry.location);
+                    }(place));
+                };
+                map.fitBounds(bounds);
+                searchBox.set('map', map);
+                map.setZoom(Math.min(map.getZoom(), 12));
+            });
+            ////////////////////////////
         }
 
         function CreateShapes(json) {
@@ -268,8 +443,7 @@
                     polygon.setMap(map);
                     polygonArray.push(polygon);
                     break;
-                case SHAPETYPE.Client:
-                    debugger;
+                case SHAPETYPE.Address:
                     var marker = new google.maps.Marker({
                         position: item.GeoOptions.coords,
                         map: map,
@@ -290,15 +464,16 @@
             }
         }
 
-        function GetShapeFromMap(shapeId) {
-            return _.findWhere(editedPolygonArray, { Id: shapeId });
+        function GetShapeFromMap(shapeId, shapeType) {
+            var shape = _.findWhere(editedPolygonArray, { Id: shapeId, ShapeType: shapeType });
+            return shape;
         }
 
         function AddAditionalPropertiesToPolygon(item, shape) {
             shape.Id = item.Id;
-            shape.Name = item.Name;
+            shape.Name = item   .Name;
             shape.ShapeType = item.ShapeType;
-            if (shape.ShapeType == SHAPETYPE.Route|| shape.ShapeType == SHAPETYPE.Client)
+            if (shape.ShapeType == SHAPETYPE.Route|| shape.ShapeType == SHAPETYPE.Address)
                 shape.ParentId = item.ParentId;
 
         }
@@ -306,7 +481,7 @@
         function AddEventHandlersForShape(shape) {
             console.log(shape.type);
             google.maps.event.addListener(shape, 'click', function () {
-                ShowShapeInfo(shape.Id, shape.ShapeType);
+                ShowShapeInfo(shape);
                 //setSelection(shape);
             });
 
@@ -314,7 +489,7 @@
 
         function OnClickButton(_buttonMode) {
             var shapeType = currentSelectedItem.ShapeType;
-            var shape = GetShapeFromMap(currentSelectedItem.Id);
+            var shape = GetShapeFromMap(currentSelectedItem.Id, currentSelectedItem.ShapeType);
             var drawingMode;
             switch (_buttonMode) {
                 case BUTTONMODE.Create:
@@ -333,7 +508,7 @@
                                 polygonOptions: polygonOptionsRoute
                             });
                             break;
-                        case SHAPETYPE.Client:
+                        case SHAPETYPE.Address:
                             drawingManager.setOptions({
                                 drawingMode: google.maps.drawing.OverlayType.MARKER,
                             });
@@ -375,7 +550,7 @@
                 case SHAPETYPE.Route:
                     prefixTitle = " ruta";
                     break;
-                case SHAPETYPE.Client:
+                case SHAPETYPE.Address:
                     prefixTitle = " cliente";
                     break;
                 default:
@@ -386,7 +561,7 @@
             $("#removeShapeButton").html("Eliminar " + prefixTitle);
             $("#createShapeButton").html("Crear" + prefixTitle);
 
-            var shape = GetShapeFromMap(currentSelectedItem.Id);
+            var shape = GetShapeFromMap(currentSelectedItem.Id, currentSelectedItem.ShapeType);
             if (shape) {
                 currentSelectedShape = shape;
                 //---------Activa efecto zoom en el mapa---------
@@ -395,7 +570,7 @@
                     case SHAPETYPE.Route:
                         map.panTo(GetPolygonCenter(shape));
                         break;
-                    case SHAPETYPE.Client:
+                    case SHAPETYPE.Address:
                         map.panTo(shape.getPosition());
                         break;
                     default:
@@ -416,7 +591,6 @@
         }
 
         function OnFinishDrawing(shape) {
-            debugger;
             currentSelectedShape = shape;
             AddAditionalPropertiesToPolygon(currentSelectedItem, shape);
 
@@ -432,28 +606,156 @@
             EvaluateSelectedItem();
         }
 
-        function ShowShapeInfo(id, shapeType) {
+        function ShowShapeInfo(shape) {
+            var responseData;
             $.ajax({
                 cache: false,
                 url: '@Url.Action("GetShapeInfo", "Map", new { Area = ConstantHelper.Area.GEOLOCATION})',
                 type: 'POST',
-                data: { 'id': id, 'shapeType': shapeType },
+                data: { 'id': shape.Id, 'shapeType': shape.ShapeType },
                 success: function (data) {
-                    console.log(data);
-                    //TODO: SHOW MESSAGE
+                    var content;
+                    var position;
+                    switch (shape.ShapeType) {
+                        case SHAPETYPE.Zone:
+                            position = GetPolygonCenter(shape);
+                            content = "ZONA " + data.Name + "<br>";
+                            content += data.Id;
+                            break;
+                        case SHAPETYPE.Route:
+                            position = GetPolygonCenter(shape);
+                            content = "RUTA " + data.Name + "<br>";
+                            content += data.Id;
+                            break;
+                        case SHAPETYPE.Address:
+                            position = shape.getPosition();
+                            content = data.RazonSocial + "<br>" +
+                                data.Ruc + "<br>" +
+                                data.Address + "<br>" +
+                                "Distrito: " + data.Distrito + "<br>" +
+                                "Provincia: " + data.Provincia + "<br>" +
+                                "Departamento: " + data.Departamento + "<br>"
+                                "Canal: " + data.Canal + "<br>"
+                                "Activos fijos: " + data.ActivosFijos + "<br>";
+                            break;
+                        default:
+                    }
+                    infoWindow.setContent(content);
+                    infoWindow.setPosition(position);
+                    infoWindow.open(map);
                 },
                 error: function (error) {
                     console.log(error);
                     ShowMessage(error.statusText, error.responseJSON);
                 }
             })
+
+        }
+
+        function SearchClient() {
+            var model = {
+                Region: $("#Region").val(),
+                Departamento: $("#Departamento").val(),
+                Provincia: $("#Provincia").val(),
+                Distrito: $("#Distrito").val(),
+                Zona: $("#Zona").val(),
+                Ruta: $("#Ruta").val(),
+                Canal: $("#Canal").val(),
+                Giro: $("#Giro").val(),
+                Codigo: $("#Codigo").val(),
+                RazonSocial: $("#RazonSocial").val(),
+                ConActivos: $("#ConActivos").val(),
+                TipoCliente: $("#TipoCliente").val(),
+                Vendedor: $("#Vendedor").val(),
+                SupervisorTerritorio: $("#SupervisorTerritorio").val(),
+                SupervisorZona: $("#SupervisorZona").val(),
+                JefeVentas: $("#JefeVentas").val(),
+            }
+            $.ajax({
+            cache: false,
+            url: '@Url.Action("SearchClient", "Map", new { Area = ConstantHelper.Area.GEOLOCATION})',
+            type: 'POST',
+            data: { 'model': model },
+            success: function (data) {
+                SetMarkersAsVisible(data);
+            },
+            error: function (error) {
+                console.log(error);
+                ShowMessage(error.statusText, error.responseJSON);
+            }
+        })
+        }
+
+        function OnChangeSelect2(selectInput) {
+            var $this = $(selectInput);
+            var value = $this.val();
+            var url = $this.data('url');
+            var target = $('#' + $this.data('target'));
+            console.log(url);
+            target.select2("val", "");
+            //$('#main-loader').fadeIn(),
+            $.ajax({
+                cache: false,
+                method: 'post',
+                url: url,
+                type: 'json',
+                data: { 'CadenaBuscar': value },
+                success: function (dataX) {
+                    console.log(dataX);
+                    target.html('').select2({ data: [{ id: '', text: '' }] });
+                    target.select2({
+                        data: '',
+                        data: dataX,
+                        language: 'es',
+                        placeholder: "[ -- Seleccione -- ]",
+                        allowClear: true
+                    });
+                    //$('#main-loader').fadeOut();
+                }
+            })
+        }
+
+        function SetMarkersAsVisible(clientCodesArray) {
+            debugger;
+            DisableAllMarkers();
+            clientCodesArray.forEach(function (element) {
+                shapeInMap = _.findWhere(editedPolygonArray, { Id: element, ShapeType : SHAPETYPE.Address});
+                if (shapeInMap)
+                    shapeInMap.setVisible(true);
+            });
+        }
+
+        function DisableAllMarkers() {
+            editedPolygonArray.forEach(function (element) {
+                if(element.ShapeType == SHAPETYPE.Address)
+                    element.setVisible(false);
+            })
         }
 
     </script>
     <style>
+        .row {
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+
+        .form-control {
+            height: 24px;
+        }
+
+
+        /*.form-group {
+            margin-bottom: 0px;
+        }
+
+        .form-control {
+            height: 24px;
+        }
+
         .list-group-item {
             padding: 3px 3px;
         }
+
         body {
             font-size: 13px;
         }
@@ -470,6 +772,6 @@
             font-family: 'Roboto','sans-serif';
             line-height: 30px;
             padding-left: 10px;
-        }
+        }*/
     </style>
 }

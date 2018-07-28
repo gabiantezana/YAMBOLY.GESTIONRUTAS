@@ -40,18 +40,12 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
     }
     #endregion
 
-    public enum PolygonType
-    {
-        Zone = 1,
-        Route = 2,
-        Point = 3,
-    }
 
     public enum ShapeType
     {
         Zone = 1,
         Route = 2,
-        Client = 3,
+        Address = 3,
     }
 
     public enum EmbebbedFileName
