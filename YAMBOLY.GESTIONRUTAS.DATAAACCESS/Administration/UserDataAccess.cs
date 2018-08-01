@@ -35,6 +35,10 @@ namespace YAMBOLY.GESTIONRUTAS.DATAAACCESS.Administration
             }
             user.UserName = model.UserName;
             user.RolId = model.RolId;
+            user.Nombres = model.Nombres;
+            user.Documento = model.Documento;
+            user.Correo = model.Correo;
+            user.Telefono = model.Telefono;
 
             if (itsUpdate)
                 dataContext.context.Entry(user);

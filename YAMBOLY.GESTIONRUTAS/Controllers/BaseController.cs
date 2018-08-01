@@ -43,7 +43,6 @@ namespace YAMBOLY.GESTIONRUTAS.Controllers
 
         protected override void OnException(ExceptionContext filterContext)
         {
-
             var context = GetDataContext();
             System.Exception ex = filterContext.Exception;
             var action = "Index";
@@ -61,7 +60,7 @@ namespace YAMBOLY.GESTIONRUTAS.Controllers
             base.OnException(filterContext);
             PostMessage(MessageType.Error, ConstantHelper.EXCEPTION_MESSAGE + " " + filterContext.Exception.Message);
             //TODO:
-            //PostMessage(MessageType.Warning, filterContext.Exception.Message);
+            //PostMessage(MessageType.Error, ConstantHelper.EXCEPTION_MESSAGE);
         }
 
         public void PostMessage(MessageType messageType)

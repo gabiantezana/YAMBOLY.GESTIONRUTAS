@@ -44,6 +44,10 @@
           <Property Name="Pass" Type="varbinary(max)" />
           <Property Name="isActive" Type="bit" />
           <Property Name="RolId" Type="int" />
+          <Property Name="Nombres" Type="nvarchar(max)" />
+          <Property Name="Documento" Type="nvarchar(max)" />
+          <Property Name="Correo" Type="nvarchar(max)" />
+          <Property Name="Telefono" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="ViewGroup">
           <Key>
@@ -145,39 +149,11 @@
           <Property Name="RolId" Type="Int32" Nullable="false" />
           <Property Name="RolName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="RolDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Users" Relationship="Self.FK__Users__RolId__1273C1CD" FromRole="Roles" ToRole="Users" />
           <NavigationProperty Name="RolesViews" Relationship="YAMBOLY_GESTIONRUTASModel.FK__RolesView__RolId__24927208" FromRole="Roles" ToRole="RolesViews" />
+          <NavigationProperty Name="Users" Relationship="YAMBOLY_GESTIONRUTASModel.FK__Users__RolId__1CF15040" FromRole="Roles" ToRole="Users" />
         </EntityType>
-        <EntityType Name="Users">
-          <Key>
-            <PropertyRef Name="UserId" />
-          </Key>
-          <Property Name="UserId" Type="Int32" Nullable="false" />
-          <Property Name="UserName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Pass" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <Property Name="RolId" Type="Int32" />
-          <NavigationProperty Name="Roles" Relationship="Self.FK__Users__RolId__1273C1CD" FromRole="Users" ToRole="Roles" />
-          <Property Name="isActive" Type="Boolean" />
-        </EntityType>
-        <Association Name="FK__Users__RolId__1273C1CD">
-          <End Role="Roles" Type="Self.Roles" Multiplicity="0..1" />
-          <End Role="Users" Type="Self.Users" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Roles">
-              <PropertyRef Name="RolId" />
-            </Principal>
-            <Dependent Role="Users">
-              <PropertyRef Name="RolId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="YAMBOLY_GESTIONRUTASEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Roles" EntityType="Self.Roles" />
-          <EntitySet Name="Users" EntityType="Self.Users" />
-          <AssociationSet Name="FK__Users__RolId__1273C1CD" Association="Self.FK__Users__RolId__1273C1CD">
-            <End Role="Roles" EntitySet="Roles" />
-            <End Role="Users" EntitySet="Users" />
-          </AssociationSet>
           <EntitySet Name="ErrorLog" EntityType="YAMBOLY_GESTIONRUTASModel.ErrorLog" />
           <EntitySet Name="RolesViews" EntityType="YAMBOLY_GESTIONRUTASModel.RolesViews" />
           <EntitySet Name="ViewGroup" EntityType="YAMBOLY_GESTIONRUTASModel.ViewGroup" />
@@ -193,6 +169,11 @@
           <AssociationSet Name="FK__Views__ViewGroup__21B6055D" Association="YAMBOLY_GESTIONRUTASModel.FK__Views__ViewGroup__21B6055D">
             <End Role="ViewGroup" EntitySet="ViewGroup" />
             <End Role="Views" EntitySet="Views" />
+          </AssociationSet>
+          <EntitySet Name="Users" EntityType="YAMBOLY_GESTIONRUTASModel.Users" />
+          <AssociationSet Name="FK__Users__RolId__1CF15040" Association="YAMBOLY_GESTIONRUTASModel.FK__Users__RolId__1CF15040">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="Users" EntitySet="Users" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="ErrorLog">
@@ -275,6 +256,33 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Pass" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="isActive" Type="Boolean" />
+          <Property Name="RolId" Type="Int32" />
+          <Property Name="Nombres" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Documento" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Correo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Telefono" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Roles" Relationship="YAMBOLY_GESTIONRUTASModel.FK__Users__RolId__1CF15040" FromRole="Users" ToRole="Roles" />
+        </EntityType>
+        <Association Name="FK__Users__RolId__1CF15040">
+          <End Type="YAMBOLY_GESTIONRUTASModel.Roles" Role="Roles" Multiplicity="0..1" />
+          <End Type="YAMBOLY_GESTIONRUTASModel.Users" Role="Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="RolId" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="RolId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -287,17 +295,6 @@
                 <ScalarProperty Name="RolId" ColumnName="RolId" />
                 <ScalarProperty Name="RolName" ColumnName="RolName" />
                 <ScalarProperty Name="RolDescription" ColumnName="RolDescription" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Users">
-            <EntityTypeMapping TypeName="YAMBOLY_GESTIONRUTASModel.Users">
-              <MappingFragment StoreEntitySet="Users">
-                <ScalarProperty Name="isActive" ColumnName="isActive" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="UserName" ColumnName="UserName" />
-                <ScalarProperty Name="Pass" ColumnName="Pass" />
-                <ScalarProperty Name="RolId" ColumnName="RolId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -341,6 +338,21 @@
                 <ScalarProperty Name="ViewCode" ColumnName="ViewCode" />
                 <ScalarProperty Name="ViewName" ColumnName="ViewName" />
                 <ScalarProperty Name="ViewId" ColumnName="ViewId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="YAMBOLY_GESTIONRUTASModel.Users">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="Telefono" ColumnName="Telefono" />
+                <ScalarProperty Name="Correo" ColumnName="Correo" />
+                <ScalarProperty Name="Documento" ColumnName="Documento" />
+                <ScalarProperty Name="Nombres" ColumnName="Nombres" />
+                <ScalarProperty Name="RolId" ColumnName="RolId" />
+                <ScalarProperty Name="isActive" ColumnName="isActive" />
+                <ScalarProperty Name="Pass" ColumnName="Pass" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

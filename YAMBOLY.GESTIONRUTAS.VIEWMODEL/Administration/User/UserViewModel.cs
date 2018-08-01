@@ -20,5 +20,19 @@ namespace YAMBOLY.GESTIONRUTAS.VIEWMODEL.Administration.User
         [Display(Name ="Rol")]
         public int? RolId { get; set; }
         public List<JsonEntity> Roles { get; set; }
+
+
+        [Required]
+        public string Nombres { get; set; }
+
+        [Required]
+        
+        public string Documento { get; set; }
+
+        [DataType(DataType.EmailAddress)]
+        [EmailAddress]
+        public string Correo { get; set; }
+
+        public string Telefono { get; set; }
     }
 }

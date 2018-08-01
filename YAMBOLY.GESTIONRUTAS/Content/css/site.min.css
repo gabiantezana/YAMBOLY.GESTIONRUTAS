@@ -1,4 +1,5 @@
 ﻿
+
 .site-navbar {
     background-color: #232323;
 }
@@ -651,6 +652,18 @@ body.site-gridmenu-active {
     display: block;
 }
 
+
+.layout-full .page {
+    height: 100%;
+    margin: 0 !important;
+    padding: 0;
+    background-color: transparent;
+    /*background-image: url('../recursos/geolocation.jpg');*/
+    width: 100%;
+    position: relative;
+    background-size: 100% 100%;
+}
+
 @media(max-width:767px) {
     .site-action .btn-floating {
         width: 46px;
@@ -1258,13 +1271,6 @@ body.site-gridmenu-active {
 
 body.layout-full {
     padding-top: 0;
-}
-
-.layout-full .page {
-    height: 100%;
-    margin: 0 !important;
-    padding: 0;
-    background-color: transparent;
 }
 
 .layout-full > .loader {

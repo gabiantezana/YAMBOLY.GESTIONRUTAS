@@ -105,11 +105,11 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
         #region GetName
         public static String GetName(this HttpSessionStateBase Session)
         {
-            return Get(Session, SessionKey.UserNames).ToString();
+            return Get(Session, SessionKey.UserNames).ToSafeString();
         }
-        public static String GetNombre(this HttpSessionState Session)
+        public static String GetName(this HttpSessionState Session)
         {
-            return Get(Session, SessionKey.UserNames).ToString();
+            return Get(Session, SessionKey.UserNames).ToSafeString();
         }
         #endregion
 

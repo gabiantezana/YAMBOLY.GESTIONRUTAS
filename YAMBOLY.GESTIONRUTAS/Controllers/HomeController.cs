@@ -22,6 +22,11 @@ namespace YAMBOLY.GESTIONRUTAS.Controllers
             return View();
         }
 
+        public ActionResult ChangePassword()
+        {
+            return View();
+        }
+
         [HttpPost]
         public ActionResult Login(LoginViewModel model)
         {
@@ -33,8 +38,6 @@ namespace YAMBOLY.GESTIONRUTAS.Controllers
                 var hasChangePassword = true;
                 if (entity != null)
                 {
-#if DEBUG
-#else
                     var byteArrayPassword = EncryptionHelper.EncryptTextToMemory(model.Password, ConstantHelper.ENCRIPT_KEY, ConstantHelper.ENCRIPT_METHOD);
 
                     if (!byteArrayPassword.SequenceEqual(entity.Pass))
@@ -42,7 +45,7 @@ namespace YAMBOLY.GESTIONRUTAS.Controllers
                         PostMessage(MessageType.Error, "Contraseña incorrecta");
                         return RedirectToAction(nameof(Login));
                     }
-                    if (entity.isActive ?? false)
+                    if (entity.isActive == false)
                     {
                         PostMessage(MessageType.Error, "Su usuario no se encuentra activo");
                         return RedirectToAction(nameof(Login));
@@ -52,12 +55,11 @@ namespace YAMBOLY.GESTIONRUTAS.Controllers
 
                     if (entity.Pass.SequenceEqual(basePasswordEncryp) || entity.Pass.ToSafeString().Equals(String.Empty))
                         hasChangePassword = false;
-#endif
-                    //TODO:
-                    Session.Set(SessionKey.UserNames, "TEST USERNAMESS");
+
+                    Session.Set(SessionKey.UserNames, entity.Nombres);
                     Session.Set(SessionKey.UserName, entity.UserName);
 
-                    Session.Set(SessionKey.Views, entity.Roles.RolesViews.Where(x => x.RolesViewsState == true).Select(x => x.Views.ViewCode).ToArray());
+                    Session.Set(SessionKey.Views, entity.Roles.RolesViews?.Where(x => x.RolesViewsState == true).Select(x => x.Views.ViewCode).ToArray());
                     Session.Set(SessionKey.UserId, entity.UserId);
 
                     var appRol = Enum.Parse(typeof(AppRol), entity.Roles.RolName);

@@ -47,13 +47,13 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
         }
         #region Polygon Options
         /// <summary>
-        /// Coordinates path list 
+        /// Coordinates of polygon
         /// </summary>
         public List<Path> paths { get; set; }
         #endregion
 
         /// <summary>
-        /// The coordinates  of  marker
+        /// The coordinates of  marker
         /// </summary>
         #region Marker Options
         public Path coords { get; set; }

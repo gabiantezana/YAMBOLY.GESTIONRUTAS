@@ -173,7 +173,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\GeoLocation\Scripts\Testing.js" />
+    <Content Include="Areas\GeoLocation\Scripts\Map\Index.js" />
     <Content Include="Content\assets\daterangepicker\daterangepicker.css" />
     <Content Include="Content\assets\daterangepicker\daterangepicker.js" />
     <Content Include="Content\assets\daterangepicker\moment.js" />
@@ -359,8 +359,7 @@
     <Content Include="Areas\GeoLocation\Views\web.config" />
     <Content Include="Areas\GeoLocation\Views\_ViewStart.cshtml" />
     <Content Include="Areas\GeoLocation\Views\Shared\_Layout.cshtml" />
-    <Content Include="Areas\GeoLocation\Views\Map\AddUpdate.cshtml" />
-    <Content Include="Areas\GeoLocation\Views\Map\Testing.cshtml" />
+    <Content Include="Areas\GeoLocation\Views\Map\Index.cshtml" />
     <None Include="Content\assets\js\jquery-1.10.2.intellisense.js" />
     <Content Include="Content\assets\js\jquery-1.10.2.js" />
     <Content Include="Content\assets\js\jquery-1.10.2.min.js" />
@@ -967,7 +966,6 @@
     <Folder Include="Areas\Administration\Models\" />
     <Folder Include="Areas\Administration\Views\Zone\" />
     <Folder Include="Areas\GeoLocation\Models\" />
-    <Folder Include="Areas\GeoLocation\Scripts\Map\" />
     <Folder Include="Content\assets\css\" />
     <Folder Include="Content\vendor\flag-icon-css\flags\" />
     <Folder Include="Models\" />

@@ -9,6 +9,7 @@ using YAMBOLY.GESTIONRUTAS.DATAAACCESS.GeoLocation;
 using YAMBOLY.GESTIONRUTAS.DATAAACCESS.Queries;
 using YAMBOLY.GESTIONRUTAS.HELPER;
 using YAMBOLY.GESTIONRUTAS.MODEL;
+using static YAMBOLY.GESTIONRUTAS.HELPER.ConstantHelper;
 
 namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
 {
@@ -16,9 +17,9 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
     {
         public List<Address> GetList(DataContext dataContext)
         {
-            return new ClienteDataAccess().GetList(dataContext).Select(x => new Address()
+            return new DireccionesDataAccess().GetList(dataContext).Select(x => new Address()
             {
-                Codigo = x.CardCode + " - " + x.Address,//TODO:
+                Codigo = GetCodeForAddress(x),
                 Region = x.U_MSS_REGI,
                 Departamento = x.State,
                 Provincia = x.County,
@@ -35,7 +36,7 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
                 SupervisorZona = x.U_MSS_SUPE,
                 JefeDeVentas = x.U_MSS_JEVE,
                 RutaId = x.U_MSS_RUTA,
-                GeoOptions = (x.U_MSSM_LAT != null && x.U_MSSM_LON != null)? new GeoOptions() { coords = new Path() { lat = Convert.ToDouble(x.U_MSSM_LAT), lng = Convert.ToDouble(x.U_MSSM_LON) } } : null, //TODO:
+                GeoOptions = (!string.IsNullOrEmpty( x.U_MSSM_LAT) && string.IsNullOrEmpty( x.U_MSSM_LON)) ? new GeoOptions() { coords = new Path() { lat = Convert.ToDouble(x.U_MSSM_LAT), lng = Convert.ToDouble(x.U_MSSM_LON) } } : null, //TODO:
             }).ToList();
         }
 
@@ -54,13 +55,25 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
             }
 
             var query = Queries.GetStringContent(EmbebbedFileName.CRD1_Update);
-            var name = node.Id.Split('-')[0].Trim();//TODO:
-            var address = node.Id.Split('-')[1].Trim();//TODO:
-            query = query.Replace("PARAM1", name)
-                         .Replace("PARAM2", geoOptions?.coords?.lat.ToSafeString())
-                         .Replace("PARAM3", geoOptions?.coords?.lng.ToSafeString())
-                         .Replace("PARAM4", address);
+            query = query.Replace(QueryParameters.PARAM1, GetCardCodeAndAddressFromCode(node.Id)[0])
+                         .Replace(QueryParameters.PARAM2, geoOptions?.coords?.lat.ToSafeString())
+                         .Replace(QueryParameters.PARAM3, geoOptions?.coords?.lng.ToSafeString())
+                         .Replace(QueryParameters.PARAM4, GetCardCodeAndAddressFromCode(node.Id)[1]);
             return query;
+        }
+
+        public string GetCodeForAddress(OCRDType address)
+        {
+            return address.CardCode + "-" + address.Address;
+        }
+
+        public string[] GetCardCodeAndAddressFromCode(string code)
+        {
+            string[] values = new string[2] { string.Empty, string.Empty };
+            var items = code.Split('-');
+            if (items?.Length > 1 && items?.Length == 2)
+                values = items;
+            return values;
         }
 
     }

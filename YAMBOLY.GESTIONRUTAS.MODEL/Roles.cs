@@ -17,8 +17,8 @@ namespace YAMBOLY.GESTIONRUTAS.MODEL
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Roles()
         {
-            this.Users = new HashSet<Users>();
             this.RolesViews = new HashSet<RolesViews>();
+            this.Users = new HashSet<Users>();
         }
     
         public int RolId { get; set; }
@@ -26,8 +26,8 @@ namespace YAMBOLY.GESTIONRUTAS.MODEL
         public string RolDescription { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Users> Users { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RolesViews> RolesViews { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Users> Users { get; set; }
     }
 }

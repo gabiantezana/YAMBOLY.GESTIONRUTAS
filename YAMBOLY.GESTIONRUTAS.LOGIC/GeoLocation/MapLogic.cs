@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -79,18 +80,19 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
             List<TreeViewNode> postedObjects = JsonConvert.DeserializeObject<List<TreeViewNode>>(model.PostedShapeList[0]);//TODO:
 
             var queries = new List<string>();
-            foreach (var zone in postedObjects)
-            {
-                queries.Add(new ZonaLogic().GetQuery(dataContext, zone));
-                foreach (var route in zone.nodes)
+            if (postedObjects != null)
+                foreach (var zone in postedObjects?.ToList())
                 {
-                    queries.Add(new RutaLogic().GetQuery(dataContext, route));
-                    foreach (var client in route.nodes)
+                    queries.Add(new ZonaLogic().GetQuery(dataContext, zone));
+                    foreach (var route in zone.nodes)
                     {
-                        queries.Add(new AddressLogic().GetQuery(dataContext, client));
+                        queries.Add(new RutaLogic().GetQuery(dataContext, route));
+                        foreach (var client in route.nodes)
+                        {
+                            queries.Add(new AddressLogic().GetQuery(dataContext, client));
+                        }
                     }
                 }
-            }
             var finalQuery = string.Join(" ", queries);
             WebHelper.GetJsonPostResponse(Queries.GetUrlPath(), finalQuery);
         }
@@ -109,7 +111,6 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
                         {
                             coordinates[0] = item.lat;
                             coordinates[1] = item.lng;
-                            //var coordinate = new List<double> { item.lat, item.lng };
                             rootObject.coords.Add(coordinates.ToList());
                         }
                         return JsonConvert.SerializeObject(rootObject);
@@ -126,7 +127,7 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
                     }
                     break;
                 default:
-                    throw new System.Exception("Polygon Type nulo"); //TODO:
+                    throw new InvalidOperationException();
             }
             return string.Empty;
         }
@@ -173,7 +174,7 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
                     shapeInfo = new AddressLogic().Get(dataContext, id);
                     break;
                 default:
-                    throw new System.Exception("");//TODO:
+                    throw new InvalidOperationException();
             }
             return shapeInfo;
         }

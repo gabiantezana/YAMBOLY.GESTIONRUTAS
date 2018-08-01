@@ -38,6 +38,7 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.Administration.Controllers
         [AppViewAuthorize(ConstantHelper.Views.Administration.User.ADD_UPDATE)]
         public ActionResult AddUpdate(UserViewModel model)
         {
+            ModelState.Remove("Roles");
             if (!ModelState.IsValid) return RedirectToAction(nameof(AddUpdate), model);
             try
             {
@@ -66,6 +67,23 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.Administration.Controllers
             {
                 PostMessage(ex);
                 return RedirectToAction(nameof(List));
+            }
+        }
+
+        [HttpPost]
+        [AppViewAuthorize(ConstantHelper.Views.Administration.User.ADD_UPDATE)]
+        public ActionResult ResetPass(int? userId)
+        {
+            try
+            {
+                new UserLogic().ChangeState(GetDataContext(), userId);
+                PostMessage(MessageType.Success);
+                return RedirectToAction(nameof(List));
+            }
+            catch (CustomException ex)
+            {
+                PostMessage(ex);
+                return RedirectToAction(nameof(AddUpdate), userId);
             }
         }
 
