@@ -10,9 +10,14 @@ namespace YAMBOLY.GESTIONRUTAS.DATAAACCESS.GeoLocation
 {
     public class SupervisorDataAccess
     {
-        public List<MSS_SUPEType> GetSAPList(DataContext dataContext)
+        //TODO: REFACTORIZAR!!!!!!!!!!!!!!!
+        public List<MSS_SUPEType> GetSAPList(DataContext dataContext, int? codigoVendedor)
         {
-            return dataContext.oDataService.MSS_SUPE.ToList();
+            var list = dataContext.oDataService.OSLP.ToList();
+            var codigoSupervisor = (list.Where(x => x.SlpCode == codigoVendedor).ToList().FirstOrDefault())?.U_MSS_SUPE.ToSafeString();
+            codigoSupervisor = codigoSupervisor.ToSafeString();
+            var supervisorList = dataContext.oDataService.MSS_SUPE.ToList();
+            return supervisorList.Where(x => x.Code == codigoSupervisor).ToList();
         }
     }
 }

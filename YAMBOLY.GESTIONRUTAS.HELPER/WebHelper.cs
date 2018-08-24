@@ -89,14 +89,18 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
             }*/
         }
 
-        public static void GetJsonPostResponse(string url, string content)
+        public static void GetJsonPostResponse(string url, string content)//TODO: RETURN ERROR EN CATCH, SHOW ERROR IN SCREEN
         {
             using (var wb = new WebClient())
             {
                 var data = new NameValueCollection();
-                var _content = Uri.EscapeDataString(content);
-                data["queries"] = content;
+                var _content = string.Empty;
+                foreach(var line in content.Split(';'))
+                {
+                    _content += Uri.EscapeDataString(line);
+                }
 
+                data["queries"] = content;
                 var response = wb.UploadValues(url, "POST", data);
                 string responseInString = Encoding.UTF8.GetString(response);
             }

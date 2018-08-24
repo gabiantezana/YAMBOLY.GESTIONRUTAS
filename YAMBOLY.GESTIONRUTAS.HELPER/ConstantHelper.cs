@@ -26,11 +26,13 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
 
         public static string ODATASERVICEURL_KEY = "ODataUrl";
         public static string XSJSPATH_KEY = "XSJSPath";
+        public static string HANADBNAME_KEY = "HANADBNAME";
 
         public static string BEGINQUERY = "--BEGINQUERY";
 
         public static class QueryParameters
         {
+            public static string PARAM0 = "PARAM0";
             public static string PARAM1 = "PARAM1";
             public static string PARAM2 = "PARAM2";
             public static string PARAM3 = "PARAM3";

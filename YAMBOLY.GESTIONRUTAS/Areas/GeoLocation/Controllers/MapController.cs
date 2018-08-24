@@ -68,7 +68,7 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.GeoLocation.Controllers
             return Json(data);
         }
 
-        #region JsonResult
+        #region JsonResult Select2
         [AppViewAuthorize(ConstantHelper.Views.GeoLocation.Map.VIEW)]
         public JsonResult GetProvinciaJList(String CadenaBuscar)
         {
@@ -82,6 +82,29 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.GeoLocation.Controllers
             var data = new DistritoLogic().GetJList(GetDataContext(), CadenaBuscar);
             return Json(data);
         }
+
+        [AppViewAuthorize(ConstantHelper.Views.GeoLocation.Map.VIEW)]
+        public JsonResult GetRutaByZoneJList(string CadenaBuscar)
+        {
+            var data = new RutaLogic().GetJList(GetDataContext(), CadenaBuscar);
+            return Json(data);
+        }
+
+        [AppViewAuthorize(ConstantHelper.Views.GeoLocation.Map.VIEW)]
+        public JsonResult GetSupervisorJList(int CadenaBuscar)
+        {
+            var data = new SupervisorLogic().GetJList(GetDataContext(), CadenaBuscar);
+            return Json(data);
+        }
+
+        [AppViewAuthorize(ConstantHelper.Views.GeoLocation.Map.VIEW)]
+        public JsonResult GetJefeVentasJList(int CadenaBuscar)
+        {
+            var data = new JefeVentasLogic().GetJList(GetDataContext(), CadenaBuscar);
+            return Json(data);
+        }
+
+
         #endregion
 
     }

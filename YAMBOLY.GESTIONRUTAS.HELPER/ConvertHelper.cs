@@ -9,6 +9,7 @@ using YAMBOLY.GESTIONRUTAS.HELPER;
 
 public static class ConvertHelper
 {
+    //TODO: ELIMINAR CAMPO DE USUARIO CREADO EN CLASE DIRECCIÓN
     #region Int32 Convert Helper
     /// <summary>
     /// Covierte un objeto a un entero tipo Int32
@@ -87,6 +88,19 @@ public static class ConvertHelper
     public static String ToSafeString(this object val)
     {
         return (val ?? String.Empty).ToString();
+    }
+
+    public static string FirstCharToUpper(this string input)
+    {
+        var finalText = string.Empty;
+        input = input.ToSafeString().ToLower();
+        foreach (var word in input.Split(' ').ToList())
+        {
+            if (word.Length > 0)
+                finalText += word.First().ToString().ToUpper() + (word.Length > 1 ? word.Substring(1) : "") + " ";
+        }
+
+        return finalText.Trim();
     }
 
     static string[] pats3 = { "é", "É", "á", "Á", "í", "Í", "ó", "Ó", "ú", "Ú" };

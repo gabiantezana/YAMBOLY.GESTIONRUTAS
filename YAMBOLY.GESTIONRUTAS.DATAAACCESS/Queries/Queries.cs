@@ -6,6 +6,15 @@ namespace YAMBOLY.GESTIONRUTAS.DATAAACCESS.Queries
 {
     public class Queries
     {
+        public static string GetDBName()
+        {
+            var name = ConfigurationManager.AppSettings[ConstantHelper.HANADBNAME_KEY].ToString();
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentNullException(ConstantHelper.HANADBNAME_KEY);
+            return name;
+        }
+            
+
         public static string GetStringContent(EmbebbedFileName embebbedFileName)
         {
             var query = string.Empty;
@@ -13,6 +22,8 @@ namespace YAMBOLY.GESTIONRUTAS.DATAAACCESS.Queries
             var values = fileString.Split(new string[] { ConstantHelper.BEGINQUERY }, StringSplitOptions.None);
             if (values.Length > 1)
                 query = values[1];
+
+            query = query.Replace(ConstantHelper.QueryParameters.PARAM0, GetDBName());
             return query;
         }
 

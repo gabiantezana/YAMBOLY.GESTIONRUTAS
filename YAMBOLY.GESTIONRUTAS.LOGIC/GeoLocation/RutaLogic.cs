@@ -10,7 +10,7 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
 {
     public class RutaLogic
     {
-        public List<MSS_RUTAType> GetSAPList(DataContext dataContext)
+        private List<MSS_RUTAType> GetSAPList(DataContext dataContext)
         {
             return new RutaDataAccess().GetList(dataContext);
         }
@@ -28,10 +28,10 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
 
         public Route Get(DataContext dataContext, string id)
         {
-            return GetList(dataContext).FirstOrDefault(x => x.Id== id);
+            return GetList(dataContext).FirstOrDefault(x => x.Id == id);
         }
 
-        public string GetQuery(DataContext dataContext, TreeViewNode zone)
+        public string GetUpdateQuery(DataContext dataContext, TreeViewNode zone)
         {
             string coordinates = string.Empty;
             if (zone.GeoOptions != null)
@@ -44,11 +44,15 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
             return query;
         }
 
-        public List<JsonEntityTwoString> GetJList(DataContext dataContext)
+        public List<JsonEntityTwoString> GetJList(DataContext dataContext, string zoneId = null)
         {
-            return GetSAPList(dataContext).Select(x => new JsonEntityTwoString()
+            var list = GetList(dataContext);
+            if (!string.IsNullOrEmpty(zoneId))
+                list = list.Where(x => x.ZoneId == zoneId).ToList();
+
+            return list.Where(x => x.ZoneId == zoneId).Select(x => new JsonEntityTwoString()
             {
-                id = x.Code,
+                id = x.Id,
                 text = x.Name,
             }).ToList();
         }

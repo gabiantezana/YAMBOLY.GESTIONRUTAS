@@ -93,17 +93,24 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
         public string Distrito { get; set; }
         public string Canal { get; set; }
         public string Giro { get; set; }
-        public string Codigo { get; set; }
+        public bool ConActivos { get; set; }
+        public string CodigoActivo { get; set; }
+        public string CodigoInterno { get; set; }
+        public string CardCode { get; set; }
         public string Ruc { get; set; }
         public string RazonSocial { get; set; }
         public string TipoCliente { get; set; }
         public string Vendedor { get; set; }
-        public string SupervisorCampo { get; set; }
-        public string SupervisorTerritorio { get; set; }
-        public string SupervisorZona { get; set; }
+        public string Supervisor { get; set; }
         public string JefeDeVentas { get; set; }
-        public double VentasMontoMinimo { get; set; }
-        public double VentasMontoMaximo { get; set; }
+        public bool DiaDeVisitaLunes { get; set; }
+        public bool DiaDeVisitaMartes { get; set; }
+        public bool DiaDeVisitaMiercoles { get; set; }
+        public bool DiaDeVisitaJueves { get; set; }
+        public bool DiaDeVisitaViernes { get; set; }
+        public bool DiaDeVisitaSabado { get; set; }
+        public bool DiaDeVisitaDomingo { get; set; }
+        public string FrecuenciaVisita { get; set; }
     }
 
     public class Path

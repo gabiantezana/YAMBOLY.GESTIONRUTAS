@@ -15,34 +15,34 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
         public MapViewModel GetMapViewModel(DataContext dataConext)
         {
             var model = new MapViewModel();
-            model.ZoneList = new ZonaLogic().GetList(dataConext);
-            model.RouteList = new RutaLogic().GetList(dataConext);
-            model.ClientList = new AddressLogic().GetList(dataConext);
-            model.ShapeList = GetShapeList(ref model);
+            model.ShapeList = GetShapeList(ref model, dataConext);
 
             #region JsonList
             model.CanalJList = new CanalLogic().GetJList(dataConext);
             model.DepartamentoJList = new DepartamentoLogic().GetJList(dataConext);
             model.DistritoJList = new DistritoLogic().GetJList(dataConext, string.Empty);
             model.GiroJList = new GiroLogic().GetJList(dataConext);
-            model.JefeVentasJList = new List<JsonEntityTwoString>();//TODO:
+            model.JefeVentasJList = new JefeVentasLogic().GetJList(dataConext, null);
             model.ProvinciaJList = new ProvinciaLogic().GetJList(dataConext, string.Empty);
             model.RegionJList = new RegionLogic().GetJList(dataConext);
             model.ZonaJList = new ZonaLogic().GetJList(dataConext);
             model.RutaJList = new RutaLogic().GetJList(dataConext);
-            model.SupervisorTerritorioJList = new SupervisorLogic().GetJList(dataConext);
-            model.SupervisorZonaJList = new SupervisorLogic().GetJList(dataConext);
+            model.SupervisorJList = new SupervisorLogic().GetJList(dataConext, null);
             model.TipoClienteJList = new List<JsonEntityTwoString>();//TODO:
             model.VendedorJList = new VendedorLogic().GetJList(dataConext);
+            model.FrecuenciaVisitaJList = new UserDefinedValuesLogic().GetJList(dataConext, "CRD1", 7);
             #endregion
 
             return model;
         }
 
-        private List<TreeViewNode> GetShapeList(ref MapViewModel model)
+        private List<TreeViewNode> GetShapeList(ref MapViewModel model, DataContext dataContext)
         {
             List<TreeViewNode> treeViewNode = new List<TreeViewNode>();
-            foreach (var zone in model.ZoneList)
+            var zoneList = new ZonaLogic().GetList(dataContext);
+            var routeList = new RutaLogic().GetList(dataContext);
+            var clientList = new AddressLogic().GetList(dataContext);
+            foreach (var zone in zoneList)
             {
                 var zoneNode = new TreeViewNode();
                 zoneNode.Id = zone.Id;
@@ -50,7 +50,7 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
                 zoneNode.ShapeType = ShapeType.Zone;
                 zoneNode.GeoOptions = zone.GeoOptions;
 
-                foreach (var route in model.RouteList.Where(x => x.ZoneId == zone.Id))
+                foreach (var route in routeList.Where(x => x.ZoneId == zone.Id))
                 {
                     var routeNode = new TreeViewNode();
                     routeNode.Id = route.Id;
@@ -58,10 +58,10 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
                     routeNode.ShapeType = ShapeType.Route;
                     routeNode.GeoOptions = route.GeoOptions;
                     routeNode.ParentId = zoneNode.Id;
-                    foreach (var client in model.ClientList.Where(x => x.RutaId == route.Id))
+                    foreach (var client in clientList.Where(x => x.RutaId == route.Id && x.ZonaId == zone.Id))
                     {
                         var clientNode = new TreeViewNode();
-                        clientNode.Id = client.Codigo;
+                        clientNode.Id = client.CodigoInterno;
                         clientNode.text = client.Ruc + " - " + client.RazonSocial;
                         clientNode.ShapeType = ShapeType.Address;
                         clientNode.GeoOptions = client.GeoOptions;
@@ -86,7 +86,7 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
                     queries.Add(new ZonaLogic().GetQuery(dataContext, zone));
                     foreach (var route in zone.nodes)
                     {
-                        queries.Add(new RutaLogic().GetQuery(dataContext, route));
+                        queries.Add(new RutaLogic().GetUpdateQuery(dataContext, route));
                         foreach (var client in route.nodes)
                         {
                             queries.Add(new AddressLogic().GetQuery(dataContext, client));
@@ -183,7 +183,7 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
         {
             var list = new AddressLogic().GetList(dataContext).AsQueryable();
 
-            var cardCodeList = list.Where(x => string.IsNullOrEmpty(model.Region) | x.Region == model.Region
+            var addressList = list.Where(x => string.IsNullOrEmpty(model.Region) | x.Region == model.Region
                                         && string.IsNullOrEmpty(model.Departamento) | x.Departamento == model.Departamento
                                         && string.IsNullOrEmpty(model.Provincia) | x.Provincia == model.Provincia
                                         && string.IsNullOrEmpty(model.Distrito) | x.Distrito == model.Distrito
@@ -191,12 +191,47 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
                                         && string.IsNullOrEmpty(model.Ruta) | x.RutaId == model.Ruta
                                         && string.IsNullOrEmpty(model.Canal) | x.Canal == model.Canal
                                         && string.IsNullOrEmpty(model.Giro) | x.Giro == model.Giro
+                                        && x.ConActivos == model.ConActivos
+                                        //TODO: TIPO CLIENTE (Clientes Yamboly, competencia, leads)
+                                        //&& x.TipoCliente == model.TipoCliente
                                         && string.IsNullOrEmpty(model.Vendedor) | x.Vendedor == model.Vendedor
-                                        && string.IsNullOrEmpty(model.SupervisorTerritorio) | x.SupervisorCampo == model.SupervisorTerritorio
-                                        && string.IsNullOrEmpty(model.SupervisorZona) | x.SupervisorZona == model.SupervisorZona
-                                        && string.IsNullOrEmpty(model.JefeVentas) | x.JefeDeVentas == model.JefeVentas)
-                                    .Select(x => x.Codigo).ToList();
-            return cardCodeList;
+                                        && string.IsNullOrEmpty(model.Supervisor) | x.Supervisor == model.Supervisor
+                                        && string.IsNullOrEmpty(model.JefeVentas) | x.JefeDeVentas == model.JefeVentas
+                                        && x.DiaDeVisitaLunes == model.DiaDeVisitaLunes
+                                        && x.DiaDeVisitaMartes == model.DiaDeVisitaMartes
+                                        && x.DiaDeVisitaMiercoles == model.DiaDeVisitaMiercoles
+                                        && x.DiaDeVisitaJueves == model.DiaDeVisitaJueves
+                                        && x.DiaDeVisitaViernes == model.DiaDeVisitaViernes
+                                        && x.DiaDeVisitaSabado == model.DiaDeVisitaSabado
+                                        && x.DiaDeVisitaDomingo == model.DiaDeVisitaDomingo
+                                        && x.FrecuenciaVisita == model.FrecuenciaVisita
+                                        )
+                                    .Select(x => x.CodigoInterno).ToList();
+
+            //-------------------------------------------------------------Agrega Filtro de ventas//-------------------------------------------------------------
+            var clientsInSalesRange = GetFilteredClientListBySales(dataContext, model.VentasMontoMinimo, model.VentasMontoMaximo, model.VentasFechaInicio, model.VentasFechaFin);
+            var finalAddressList = new List<string>();
+            foreach (var address in addressList)
+            {
+                if (clientsInSalesRange.Contains(address.Split('-')[0].ToSafeString().Trim()) && !finalAddressList.Contains(address))
+                    finalAddressList.Add(address);
+            }
+            //-------------------------------------------------------------Fin filtro de ventas-------------------------------------------------------------
+
+            return finalAddressList;
+        }
+
+        private List<string> GetFilteredClientListBySales(DataContext dataContext, decimal? montoInicial, decimal? montoFinal, DateTime? fechaInicial, DateTime? fechaFinal)
+        {
+
+            var _salesInDateRange = new VentasLogic().GetList(dataContext).Where(x => fechaInicial <= x.DocDate && x.DocDate <= fechaFinal
+                                                                                               && montoInicial <= x.DocTotal && x.DocTotal <= montoFinal);
+
+
+            var salesInDateRange = new VentasLogic().GetList(dataContext).Where(x => (fechaInicial ?? DateTime.MinValue) <= x.DocDate && x.DocDate <= (fechaFinal?? DateTime.MaxValue)
+                                                                                   && (montoInicial?? decimal.MinValue) <= x.DocTotal && x.DocTotal <= (montoFinal?? decimal.MaxValue))
+                                                                         .Select(x => x.CardCode).Distinct().ToList();
+            return salesInDateRange;
         }
 
     }

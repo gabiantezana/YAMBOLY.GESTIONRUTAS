@@ -74,6 +74,9 @@
   <ItemGroup>
     <Compile Include="Administration\RolDataAccess.cs" />
     <Compile Include="Administration\UserDataAccess.cs" />
+    <Compile Include="GeoLocation\JeveVentasDataAccess.cs" />
+    <Compile Include="GeoLocation\UserDefinedValuesDataAccess.cs" />
+    <Compile Include="GeoLocation\VentasDataAccess.cs" />
     <Compile Include="GeoLocation\ProvinciaDataAccess.cs" />
     <Compile Include="GeoLocation\SupervisorDataAccess.cs" />
     <Compile Include="GeoLocation\VendedorDataAccess.cs" />

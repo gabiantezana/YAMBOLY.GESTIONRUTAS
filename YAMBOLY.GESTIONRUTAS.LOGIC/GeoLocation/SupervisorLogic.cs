@@ -12,14 +12,14 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
 {
     public class SupervisorLogic
     {
-        private List<MSS_SUPEType> GetList(DataContext dataContext)
+        private List<MSS_SUPEType> GetList(DataContext dataContext, int? codigoVendedor)
         {
-            return new SupervisorDataAccess().GetSAPList(dataContext);
+            return new SupervisorDataAccess().GetSAPList(dataContext, codigoVendedor);
         }
 
-        public List<JsonEntityTwoString> GetJList(DataContext dataContext)
+        public List<JsonEntityTwoString> GetJList(DataContext dataContext, int? codigoVendedor)
         {
-            return GetList(dataContext).Select(x => new JsonEntityTwoString()
+            return GetList(dataContext, codigoVendedor).Select(x => new JsonEntityTwoString()
             {
                 id = x.Name,
                 text = x.Name,

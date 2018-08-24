@@ -1,9 +1,7 @@
 ﻿//const drawingModes = Object.freeze({ drawZoneMode: 1, drawRouteMode: 2 });
 const BUTTONMODE = Object.freeze({ Create: 1, Edit: 2, Remove: 3 });
 const SHAPETYPE = Object.freeze({ Zone: 1, Route: 2, Address: 3 });
-
-
-var latLngCenterInit = new google.maps.LatLng(-12.0912651, -77.00467609999998);
+const mouseOverColor = "#00FF00";
 
 var drawingManagerPolygonOptions = {
     drawingMode: google.maps.drawing.OverlayType.POLYGON,
@@ -11,7 +9,7 @@ var drawingManagerPolygonOptions = {
     markerOptions: {
         draggable: true
     }
-}
+};
 
 var drawingManagerMarkerOptions = {
     drawingMode: google.maps.drawing.OverlayType.MARKER,
@@ -19,21 +17,21 @@ var drawingManagerMarkerOptions = {
     markerOptions: {
         draggable: true
     }
-}
+};
 
 var polygonOptionsZone = {
     strokeWeight: 0.7,
     fillOpacity: 0.0,
     editable: true,
     fillColor: 'yellow',
-}
+};
 
 var polygonOptionsRoute = {
     strokeWeight: 0,
     fillOpacity: 0.40,
     editable: true,
     fillColor: '#FF1493',
-}
+};
 
 function isPolygonInsidePolygon(innerPolygon, outerPolygon) {
     var pointsInside = 0;
@@ -42,10 +40,9 @@ function isPolygonInsidePolygon(innerPolygon, outerPolygon) {
         (google.maps.geometry.poly.containsLocation(x, outerPolygon)) ? pointsInside++ : pointsOutside++;
     });
     return (pointsOutside > 0) ? false : true;
-};
+}
 
 function _isPolygonIntersectedWithAnother(innerPolygon, outerPolygon) {
-    debugger;
     var isIntersected = false;
     var isOverlaping = false;
 
@@ -57,14 +54,14 @@ function _isPolygonIntersectedWithAnother(innerPolygon, outerPolygon) {
     //return (pointsInside > 0) ? true : false;
     if (pointsInside > 0)
         isIntersected = true;
-    else 
+    else
         isOverlaping = IsPolygonOverlaping(innerPolygon, outerPolygon);
 
     if (isIntersected || isOverlaping)
         return true;
     else
         return false;
-};
+}
 
 function GetPointsFromPolygon(polygon) {
     var coordinates = [];
@@ -87,7 +84,7 @@ function RemoveSelectedPolygon() {
     if (currentSelectedShape) {
         currentSelectedShape.setMap(null);
         drawingManager.setMap(null);
-        editedPolygonArray = _.without(editedPolygonArray, _.findWhere(editedPolygonArray, { Id: currentSelectedShape.Id, ShapeType : currentSelectedShape.ShapeType }));
+        editedPolygonArray = _.without(editedPolygonArray, _.findWhere(editedPolygonArray, { Id: currentSelectedShape.Id, ShapeType: currentSelectedShape.ShapeType }));
     }
 }
 
@@ -159,7 +156,8 @@ function IsAValidShape(shape) {
             isValid = ValidateCreatedRoute(shape);
             break;
         case SHAPETYPE.Address:
-            isValid = true; //TODO: Add Validation
+            var parentRoute = _.findWhere(editedPolygonArray, { Id: shape.ParentId, ShapeType: SHAPETYPE.Route });
+            isValid = isMarkerInsidePolygon(shape, parentRoute);
             break;
         default:
             throw "Invalid shape type";
@@ -177,7 +175,7 @@ function IsAValidZone(polygon) {
     //-----------------VALIDA QUE NO INTERSECTE A OTRAS ZONAS -------------------
     var isIntersected = false;
     for (var i = 0; i < editedPolygonArray.length; i++) {
-        if (editedPolygonArray[i].ShapeType == SHAPETYPE.Zone && editedPolygonArray[i].Id != polygon.Id ) {
+        if (editedPolygonArray[i].ShapeType === SHAPETYPE.Zone && editedPolygonArray[i].Id !== polygon.Id) {
             isIntersected = _isPolygonIntersectedWithAnother(polygon, editedPolygonArray[i]);
             if (isIntersected) {
                 break;
@@ -199,7 +197,7 @@ function ValidateCreatedRoute(polygon) {
     //-----------------VALIDA QUE NO INTERSECTE A NINGUNA OTRA RUTA -------------------
     if (isValid) {
         for (var i = 0; i < editedPolygonArray.length; i++) {
-            if (editedPolygonArray[i].ShapeType == SHAPETYPE.Route) {
+            if (editedPolygonArray[i].ShapeType === SHAPETYPE.Route && editedPolygonArray[i].Id !== polygon.Id) {
                 isValid = !_isPolygonIntersectedWithAnother(polygon, editedPolygonArray[i]);
                 if (!isValid) {
                     break;
@@ -227,6 +225,16 @@ google.maps.Polygon.prototype.getBounds = function () {
         }
     }
     return bounds;
+};
+
+function isMarkerInsidePolygon(marker, polygon) {
+    var route = GetShapeFromMap(marker.ParentId, SHAPETYPE.Route);
+    if (route) {
+        return google.maps.geometry.poly.containsLocation(marker.position, polygon);
+    }
+    else
+        return false;
 }
+
 
 

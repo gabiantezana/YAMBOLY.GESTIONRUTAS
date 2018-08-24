@@ -19,7 +19,7 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
         {
             return new DireccionesDataAccess().GetList(dataContext).Select(x => new Address()
             {
-                Codigo = GetCodeForAddress(x),
+                CodigoInterno = GetCodeForAddress(x),
                 Region = x.U_MSS_REGI,
                 Departamento = x.State,
                 Provincia = x.County,
@@ -27,22 +27,32 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
                 ZonaId = x.U_MSS_ZONA,
                 Canal = x.U_MSS_CANA,
                 Giro = x.U_MSS_GIRO,
-                Ruc = x.CardCode,
-                RazonSocial = x.CardName,
+                ConActivos = x.U_MSSM_POA.ToSafeString() == "Y" ? true : false,
+                CodigoActivo = string.Empty,//TODO:,
                 TipoCliente = string.Empty,//TODO:,
                 Vendedor = x.U_MSS_COVE,
-                SupervisorTerritorio = x.U_MSS_SUPE,
-                SupervisorCampo = x.U_MSS_SUPE,
-                SupervisorZona = x.U_MSS_SUPE,
+                Supervisor = x.U_MSS_SUPE,
                 JefeDeVentas = x.U_MSS_JEVE,
+                DiaDeVisitaLunes = x.U_MSS_DVLU.ToSafeString() == "1" ? true : false,
+                DiaDeVisitaMartes = x.U_MSS_DVMA.ToSafeString() == "1" ? true : false,
+                DiaDeVisitaMiercoles = x.U_MSS_DVMI.ToSafeString() == "1" ? true : false,
+                DiaDeVisitaJueves = x.U_MSS_DVJU.ToSafeString() == "1" ? true : false,
+                DiaDeVisitaViernes = x.U_MSS_DVVI.ToSafeString() == "1" ? true : false,
+                DiaDeVisitaSabado = x.U_MSS_DVSA.ToSafeString() == "1" ? true : false,
+                DiaDeVisitaDomingo = x.U_MSS_DVDO.ToSafeString() == "1" ? true : false,
+                FrecuenciaVisita = x.U_MSS_FREC,
                 RutaId = x.U_MSS_RUTA,
-                GeoOptions = (!string.IsNullOrEmpty( x.U_MSSM_LAT) && string.IsNullOrEmpty( x.U_MSSM_LON)) ? new GeoOptions() { coords = new Path() { lat = Convert.ToDouble(x.U_MSSM_LAT), lng = Convert.ToDouble(x.U_MSSM_LON) } } : null, //TODO:
+                GeoOptions = (!string.IsNullOrEmpty(x.U_MSSM_LAT) && !string.IsNullOrEmpty(x.U_MSSM_LON)) ? new GeoOptions() { coords = new Path() { lat = Convert.ToDouble(x.U_MSSM_LAT), lng = Convert.ToDouble(x.U_MSSM_LON) } } : null, //TODO:
+
+                Ruc = x.CardCode,
+                RazonSocial = x.CardName.FirstCharToUpper(),
+
             }).ToList();
         }
 
         public Address Get(DataContext dataContext, string id)
         {
-            return GetList(dataContext).FirstOrDefault(x => x.Codigo == id);
+            return GetList(dataContext).FirstOrDefault(x => x.CodigoInterno == id);
         }
 
         public string GetQuery(DataContext dataContext, TreeViewNode node)

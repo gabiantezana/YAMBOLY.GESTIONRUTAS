@@ -55,6 +55,8 @@
   <ItemGroup>
     <Compile Include="Administration\RolLogic.cs" />
     <Compile Include="Administration\UserLogic.cs" />
+    <Compile Include="GeoLocation\JeveVentasLogic.cs" />
+    <Compile Include="GeoLocation\UserDefinedValuesLogic.cs" />
     <Compile Include="GeoLocation\VendedorLogic.cs" />
     <Compile Include="GeoLocation\SupervisorLogic.cs" />
     <Compile Include="GeoLocation\GiroLogic.cs" />
@@ -64,6 +66,7 @@
     <Compile Include="GeoLocation\DistritoLogic.cs" />
     <Compile Include="GeoLocation\ProvinciaLogic.cs" />
     <Compile Include="GeoLocation\CanalLogic.cs" />
+    <Compile Include="GeoLocation\VentasLogic.cs" />
     <Compile Include="GeoLocation\ZonaLogic.cs" />
     <Compile Include="GeoLocation\AddressLogic.cs" />
     <Compile Include="GeoLocation\MapLogic.cs" />

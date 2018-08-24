@@ -34,6 +34,9 @@ function isPolygonInsidePolygon(innerPolygon, outerPolygon) {
 };
 
 
+
+
+
 function GetPointsFromPolygon(polygon) {
     var coordinates = [];
     var message = '';
