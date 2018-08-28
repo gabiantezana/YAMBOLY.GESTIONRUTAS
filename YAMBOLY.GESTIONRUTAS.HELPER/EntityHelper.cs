@@ -91,6 +91,7 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
         public string Departamento { get; set; }
         public string Provincia { get; set; }
         public string Distrito { get; set; }
+        public string Direccion { get; set; }
         public string Canal { get; set; }
         public string Giro { get; set; }
         public bool ConActivos { get; set; }

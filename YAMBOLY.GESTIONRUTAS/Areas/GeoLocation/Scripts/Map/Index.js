@@ -172,10 +172,11 @@ function IsAValidShape(shape) {
 }
 
 function IsAValidZone(polygon) {
+    debugger;
     //-----------------VALIDA QUE NO INTERSECTE A OTRAS ZONAS -------------------
     var isIntersected = false;
     for (var i = 0; i < editedPolygonArray.length; i++) {
-        if (editedPolygonArray[i].ShapeType === SHAPETYPE.Zone && editedPolygonArray[i].Id !== polygon.Id) {
+        if (editedPolygonArray[i].Id !== polygon.Id) {
             isIntersected = _isPolygonIntersectedWithAnother(polygon, editedPolygonArray[i]);
             if (isIntersected) {
                 break;

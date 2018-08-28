@@ -1,12 +1,24 @@
-﻿using Newtonsoft.Json;
+﻿using Spire.Pdf;
+
+
+using Newtonsoft.Json;
+using NPOI.SS.UserModel;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
+using System.Data;
+using System.IO;
 using System.Linq;
+using System.Web.Hosting;
 using YAMBOLY.GESTIONRUTAS.DATAAACCESS.Queries;
 using YAMBOLY.GESTIONRUTAS.HELPER;
 using YAMBOLY.GESTIONRUTAS.MODEL;
 using YAMBOLY.GESTIONRUTAS.VIEWMODEL.GeoLocation;
+using Path = YAMBOLY.GESTIONRUTAS.HELPER.Path;
+using Spire.Xls.Converter;
+using Spire.Xls;
+using System.Reflection;
+using iTextSharp.text.pdf;
 
 namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
 {
@@ -192,19 +204,19 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
                                         && string.IsNullOrEmpty(model.Canal) | x.Canal == model.Canal
                                         && string.IsNullOrEmpty(model.Giro) | x.Giro == model.Giro
                                         && x.ConActivos == model.ConActivos
+                                        && string.IsNullOrEmpty(model.FrecuenciaVisita) | x.FrecuenciaVisita == model.FrecuenciaVisita
                                         //TODO: TIPO CLIENTE (Clientes Yamboly, competencia, leads)
                                         //&& x.TipoCliente == model.TipoCliente
                                         && string.IsNullOrEmpty(model.Vendedor) | x.Vendedor == model.Vendedor
                                         && string.IsNullOrEmpty(model.Supervisor) | x.Supervisor == model.Supervisor
                                         && string.IsNullOrEmpty(model.JefeVentas) | x.JefeDeVentas == model.JefeVentas
-                                        && x.DiaDeVisitaLunes == model.DiaDeVisitaLunes
-                                        && x.DiaDeVisitaMartes == model.DiaDeVisitaMartes
-                                        && x.DiaDeVisitaMiercoles == model.DiaDeVisitaMiercoles
-                                        && x.DiaDeVisitaJueves == model.DiaDeVisitaJueves
-                                        && x.DiaDeVisitaViernes == model.DiaDeVisitaViernes
-                                        && x.DiaDeVisitaSabado == model.DiaDeVisitaSabado
-                                        && x.DiaDeVisitaDomingo == model.DiaDeVisitaDomingo
-                                        && x.FrecuenciaVisita == model.FrecuenciaVisita
+                                        && !model.DiaDeVisitaLunes | x.DiaDeVisitaLunes == model.DiaDeVisitaLunes
+                                        && !model.DiaDeVisitaMartes | x.DiaDeVisitaMartes == model.DiaDeVisitaMartes
+                                        && !model.DiaDeVisitaMiercoles | x.DiaDeVisitaMiercoles == model.DiaDeVisitaMiercoles
+                                        && !model.DiaDeVisitaJueves | x.DiaDeVisitaJueves == model.DiaDeVisitaJueves
+                                        && !model.DiaDeVisitaViernes | x.DiaDeVisitaViernes == model.DiaDeVisitaViernes
+                                        && !model.DiaDeVisitaSabado | x.DiaDeVisitaSabado == model.DiaDeVisitaSabado
+                                        && !model.DiaDeVisitaDomingo | x.DiaDeVisitaDomingo == model.DiaDeVisitaDomingo
                                         )
                                     .Select(x => x.CodigoInterno).ToList();
 
@@ -228,11 +240,255 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
                                                                                                && montoInicial <= x.DocTotal && x.DocTotal <= montoFinal);
 
 
-            var salesInDateRange = new VentasLogic().GetList(dataContext).Where(x => (fechaInicial ?? DateTime.MinValue) <= x.DocDate && x.DocDate <= (fechaFinal?? DateTime.MaxValue)
-                                                                                   && (montoInicial?? decimal.MinValue) <= x.DocTotal && x.DocTotal <= (montoFinal?? decimal.MaxValue))
+            var salesInDateRange = new VentasLogic().GetList(dataContext).Where(x => (fechaInicial ?? DateTime.MinValue) <= x.DocDate && x.DocDate <= (fechaFinal ?? DateTime.MaxValue)
+                                                                                   && (montoInicial ?? decimal.MinValue) <= x.DocTotal && x.DocTotal <= (montoFinal ?? decimal.MaxValue))
                                                                          .Select(x => x.CardCode).Distinct().ToList();
             return salesInDateRange;
         }
 
+
+        public dynamic GetReport(DataContext dataContext, MapViewModel model)
+        {
+            const string excelTemplateFileName = "reportTemplate.xlsx";
+            string serverPath = HostingEnvironment.MapPath("~/App_Data/");
+
+            var key = DateTime.Now.ToString("yyyy-MM-dd hhmmss") + Guid.NewGuid();
+            var newExcelDocumentPath = serverPath + "ReporteDirecciones_" + key + ".xslx";
+            var newPdfDocumentPath = serverPath + "ReporteDirecciones_" + key + ".pdf";
+            var newPdfDocumentEditedPath = serverPath + "ReporteDirecciones_" + key + "v2" + ".pdf";
+
+            var fileInfo = new FileInfo(serverPath + excelTemplateFileName);
+            using (ExcelPackage package = new ExcelPackage(fileInfo))
+            {
+                var worksheet = package.Workbook.Worksheets.First();
+                int columnIndex = 0;
+                int rowIndex = 0;
+
+                #region GeneralList 
+                var regionList = new RegionLogic().GetJList(dataContext);
+                var departamentoList = new DepartamentoLogic().GetJList(dataContext);
+                var zonaList = new ZonaLogic().GetJList(dataContext);
+                var rutaList = new RutaLogic().GetJList(dataContext);
+                var canalList = new CanalLogic().GetJList(dataContext);
+                var giroList = new GiroLogic().GetJList(dataContext);
+                var vendedorList = new VendedorLogic().GetJList(dataContext);
+                var supervisorList = new SupervisorLogic().GetJList(dataContext, null);
+                var jefeVentasList = new JefeVentasLogic().GetJList(dataContext, null);
+                var frecuenciaVisitaList = new UserDefinedValuesLogic().GetJList(dataContext, "CRD1", 7);
+                #endregion
+
+                #region Filters
+                rowIndex = 3;
+                columnIndex = 1;
+                var filterCount = 0;
+
+                for (var i = 0; i < model.GetType().GetProperties().Count(); i++)
+                {
+                    var propertyInfo = model.GetType().GetProperties()[i];
+                    var validPropertyTypes = new List<Type> { typeof(string), typeof(int), typeof(bool) };
+                    if (validPropertyTypes.Contains(propertyInfo.PropertyType))
+                    {
+                        var propertyName = propertyInfo.Name;
+                        var propertyValue = propertyInfo.GetValue(model, null);
+
+                        if (propertyName == model.GetMemberName(x => model.Region))
+                            propertyValue = regionList.FirstOrDefault(x => x.id == model.Region.ToSafeString())?.text;
+
+                        else if (propertyName == model.GetMemberName(x => model.Departamento))
+                            propertyValue = departamentoList.FirstOrDefault(x => x.id == model.Departamento.ToSafeString())?.text;
+
+                        else if (propertyName == model.GetMemberName(x => model.Zona))
+                            propertyValue = zonaList.FirstOrDefault(x => x.id == model.Zona.ToSafeString())?.text;
+
+                        else if (propertyName == model.GetMemberName(x => model.Ruta))
+                            propertyValue = rutaList.FirstOrDefault(x => x.id == model.Ruta.ToSafeString())?.text;
+
+                        else if (propertyName == model.GetMemberName(x => model.Canal))
+                            propertyValue = canalList.FirstOrDefault(x => x.id == model.Canal.ToSafeString())?.text;
+
+                        else if (propertyName == model.GetMemberName(x => model.Giro))
+                            propertyValue = giroList.FirstOrDefault(x => x.id == model.Giro.ToSafeString())?.text;
+
+                        else if (propertyName == model.GetMemberName(x => model.Vendedor))
+                            propertyValue = vendedorList.FirstOrDefault(x => x.id == model.Vendedor.ToSafeString())?.text;
+
+                        else if (propertyName == model.GetMemberName(x => model.JefeVentas))
+                            propertyValue = jefeVentasList.FirstOrDefault(x => x.id == model.JefeVentas.ToSafeString())?.text;
+
+                        else if (propertyName == model.GetMemberName(x => model.Supervisor))
+                            propertyValue = supervisorList.FirstOrDefault(x => x.id == model.Supervisor.ToSafeString())?.text;
+
+                        else if (propertyName == model.GetMemberName(x => model.FrecuenciaVisita))
+                            propertyValue = frecuenciaVisitaList.FirstOrDefault(x => x.id == model.FrecuenciaVisita.ToSafeString())?.text;
+
+                        else if (propertyName == model.GetMemberName(x => model.DiaDeVisitaLunes)
+                                || propertyName == model.GetMemberName(x => model.DiaDeVisitaMartes)
+                                || propertyName == model.GetMemberName(x => model.DiaDeVisitaMiercoles)
+                                || propertyName == model.GetMemberName(x => model.DiaDeVisitaJueves)
+                                || propertyName == model.GetMemberName(x => model.DiaDeVisitaViernes)
+                                || propertyName == model.GetMemberName(x => model.DiaDeVisitaSabado)
+                                || propertyName == model.GetMemberName(x => model.DiaDeVisitaDomingo)
+                            )
+                            propertyValue = (bool)propertyValue ? "Si" : string.Empty;
+
+                        worksheet.Cells[rowIndex, columnIndex].Value = propertyName;
+                        worksheet.Cells[rowIndex, columnIndex + 1].Value = propertyValue;
+
+                        rowIndex += 2;
+                        filterCount++;
+
+                        if (filterCount % 4 == 0)
+                        {
+                            rowIndex = 3;
+                            columnIndex += 3;
+                        }
+                    }
+                }
+
+                #endregion
+
+                #region TableHeader
+                columnIndex = 1;
+                rowIndex = 11;
+
+                worksheet.Cells[rowIndex, columnIndex].Value = "Código"; columnIndex++;
+                worksheet.Cells[rowIndex, columnIndex].Value = "Tipo dirección"; columnIndex++;
+                worksheet.Cells[rowIndex, columnIndex].Value = "Nombre"; columnIndex++;
+                worksheet.Cells[rowIndex, columnIndex].Value = "Departamento"; columnIndex++;
+                worksheet.Cells[rowIndex, columnIndex].Value = "Provincia"; columnIndex++;
+                worksheet.Cells[rowIndex, columnIndex].Value = "Distrito"; columnIndex++;
+                worksheet.Cells[rowIndex, columnIndex].Value = "Nombre y N° Calle"; columnIndex++;
+                worksheet.Cells[rowIndex, columnIndex].Value = "Canal"; columnIndex++;
+                worksheet.Cells[rowIndex, columnIndex].Value = "Giro"; columnIndex++;
+                worksheet.Cells[rowIndex, columnIndex].Value = "Tipo cliente"; columnIndex++;
+                worksheet.Cells[rowIndex, columnIndex].Value = "Zona"; columnIndex++;
+                worksheet.Cells[rowIndex, columnIndex].Value = "Ruta"; columnIndex++;
+                worksheet.Cells[rowIndex, columnIndex].Value = "Vendedor"; columnIndex++;
+                worksheet.Cells[rowIndex, columnIndex].Value = "Supervisor"; columnIndex++;
+                worksheet.Cells[rowIndex, columnIndex].Value = "Jefe de ventas"; columnIndex++;
+                worksheet.Cells[rowIndex, columnIndex].Value = "Visita LU"; columnIndex++;
+                worksheet.Cells[rowIndex, columnIndex].Value = "Visita MA"; columnIndex++;
+                worksheet.Cells[rowIndex, columnIndex].Value = "Visita MI"; columnIndex++;
+                worksheet.Cells[rowIndex, columnIndex].Value = "Visita JU"; columnIndex++;
+                worksheet.Cells[rowIndex, columnIndex].Value = "Visita VI"; columnIndex++;
+                worksheet.Cells[rowIndex, columnIndex].Value = "Visita SA"; columnIndex++;
+                worksheet.Cells[rowIndex, columnIndex].Value = "Visita DO"; columnIndex++;
+                worksheet.Cells[rowIndex, columnIndex].Value = "Frecuencia de visita"; columnIndex++;
+                worksheet.Cells[rowIndex, columnIndex].Value = "Código activo"; columnIndex++;
+                worksheet.Cells[rowIndex, columnIndex].Value = "Latitud"; columnIndex++;
+                worksheet.Cells[rowIndex, columnIndex].Value = "Longitud";
+                rowIndex++;
+
+                #endregion
+
+                #region TableBody
+                rowIndex = 12;
+                columnIndex = 1;
+                List<TreeViewNode> postedObjects = JsonConvert.DeserializeObject<List<TreeViewNode>>(model.PostedShapeList[0]);//TODO:
+                List<string> visibleMarkersCodes = JsonConvert.DeserializeObject<List<string>>(model.VisibleMarkers[0].ToSafeString());
+                var addressList = new AddressLogic().GetList(dataContext);
+
+                foreach (var code in visibleMarkersCodes)
+                {
+                    var item = addressList.Where(x => x.CodigoInterno == code).ToList().FirstOrDefault();
+                    if (item != null)
+                    {
+                        worksheet.Cells[rowIndex, columnIndex].Value = AddressLogic.GetCardCodeAndAddressFromCode(code)[0]; columnIndex++;
+                        worksheet.Cells[rowIndex, columnIndex].Value = AddressLogic.GetCardCodeAndAddressFromCode(code)[1]; columnIndex++;
+                        worksheet.Cells[rowIndex, columnIndex].Value = item.RazonSocial; columnIndex++;
+                        worksheet.Cells[rowIndex, columnIndex].Value = departamentoList.FirstOrDefault(x => x.id == item.Departamento)?.text.ToSafeString(); columnIndex++;
+                        worksheet.Cells[rowIndex, columnIndex].Value = item.Provincia; columnIndex++;
+                        worksheet.Cells[rowIndex, columnIndex].Value = item.Distrito; columnIndex++;
+                        worksheet.Cells[rowIndex, columnIndex].Value = item.Direccion; columnIndex++;
+                        worksheet.Cells[rowIndex, columnIndex].Value = canalList.FirstOrDefault(x => x.id == item.Canal)?.text.ToSafeString(); columnIndex++;
+                        worksheet.Cells[rowIndex, columnIndex].Value = giroList.FirstOrDefault(x => x.id == item.Giro)?.text.ToSafeString(); columnIndex++;
+                        worksheet.Cells[rowIndex, columnIndex].Value = item.TipoCliente; columnIndex++;
+                        worksheet.Cells[rowIndex, columnIndex].Value = zonaList.FirstOrDefault(x => x.id == item.ZonaId)?.text.ToSafeString(); columnIndex++;
+                        worksheet.Cells[rowIndex, columnIndex].Value = rutaList.FirstOrDefault(x => x.id == item.RutaId)?.text.ToSafeString(); columnIndex++;
+                        worksheet.Cells[rowIndex, columnIndex].Value = vendedorList.FirstOrDefault(x => x.id == item.Vendedor)?.text.ToSafeString(); columnIndex++;
+                        worksheet.Cells[rowIndex, columnIndex].Value = item.Supervisor; columnIndex++;
+                        worksheet.Cells[rowIndex, columnIndex].Value = item.JefeDeVentas; columnIndex++;
+                        worksheet.Cells[rowIndex, columnIndex].Value = item.DiaDeVisitaLunes ? "Si" : "No"; columnIndex++;
+                        worksheet.Cells[rowIndex, columnIndex].Value = item.DiaDeVisitaMartes ? "Si" : "No"; columnIndex++;
+                        worksheet.Cells[rowIndex, columnIndex].Value = item.DiaDeVisitaMiercoles ? "Si" : "No"; columnIndex++;
+                        worksheet.Cells[rowIndex, columnIndex].Value = item.DiaDeVisitaJueves ? "Si" : "No"; columnIndex++;
+                        worksheet.Cells[rowIndex, columnIndex].Value = item.DiaDeVisitaViernes ? "Si" : "No"; columnIndex++;
+                        worksheet.Cells[rowIndex, columnIndex].Value = item.DiaDeVisitaSabado ? "Si" : "No"; columnIndex++;
+                        worksheet.Cells[rowIndex, columnIndex].Value = item.DiaDeVisitaDomingo ? "Si" : "No"; columnIndex++;
+                        worksheet.Cells[rowIndex, columnIndex].Value = frecuenciaVisitaList.FirstOrDefault(x => x.id == item.FrecuenciaVisita)?.text.ToSafeString(); columnIndex++;
+                        worksheet.Cells[rowIndex, columnIndex].Value = item.CodigoActivo; columnIndex++;
+                        worksheet.Cells[rowIndex, columnIndex].Value = item.GeoOptions?.coords?.lat.ToSafeString(); columnIndex++;
+                        worksheet.Cells[rowIndex, columnIndex].Value = item.GeoOptions?.coords?.lng.ToSafeString(); columnIndex++;
+
+                        rowIndex++;
+                        columnIndex = 1;
+                    }
+
+                }
+
+                #endregion
+
+                package.SaveAs(new FileInfo(newExcelDocumentPath));
+
+                switch (model.ReportType)
+                {
+                    case ReportType.Excel:
+                        var memStream = new MemoryStream(package.GetAsByteArray());
+                        return memStream;
+                    case ReportType.Pdf:
+                        CreateAndSavePdfFile(dataContext, model, newExcelDocumentPath, newPdfDocumentPath, newPdfDocumentEditedPath);
+                        return newPdfDocumentEditedPath;
+                    default:
+                        throw new InvalidDataException(); //TODO:
+                }
+            }
+        }
+
+        public void CreateAndSavePdfFile(DataContext dataContext, MapViewModel model, string newExcelDocumentPath, string newPdfDocumentPath, string newPdfDocumentEditedPath)
+        {
+            WritePdf(newExcelDocumentPath, newPdfDocumentPath);
+            var contentToReplace = "Evaluation Warning : The document was created with Spire.PDF for .NET.";
+            VerySimpleReplaceText(newPdfDocumentPath, newPdfDocumentEditedPath, contentToReplace, string.Empty);
+        }
+
+        public static void WritePdf(string excelPath, string pdfPath)
+        {
+            // load Excel file
+            Workbook workbook = new Workbook();
+            workbook.LoadFromFile(excelPath);
+
+            // Set PDF template
+            Spire.Pdf.PdfDocument pdfDocument = new Spire.Pdf.PdfDocument();
+            pdfDocument.PageSettings.Orientation = PdfPageOrientation.Landscape;
+            //pdfDocument.PageSettings.Width = 970;
+            //pdfDocument.PageSettings.Height = 850;
+
+
+            //Convert Excel to PDF using the template above
+            PdfConverter pdfConverter = new PdfConverter(workbook);
+            PdfConverterSettings settings = new PdfConverterSettings();
+            settings.TemplateDocument = pdfDocument;
+            settings.FitSheetToOnePage = FitToPageType.ScaleWithSameFactor;
+            pdfDocument = pdfConverter.Convert(settings);
+
+            // Save and preview PDF
+            pdfDocument.SaveToFile(pdfPath);
+        }
+
+        private static void VerySimpleReplaceText(string OrigFile, string ResultFile, string origText, string replaceText)
+        {
+            using (PdfReader reader = new PdfReader(OrigFile))
+            {
+
+                for (int i = 1; i <= reader.NumberOfPages; i++)
+                {
+                    byte[] contentBytes = reader.GetPageContent(i);
+                    string contentString = PdfEncodings.ConvertToString(contentBytes, PdfObject.TEXT_PDFDOCENCODING);
+                    contentString = contentString.Replace(origText, replaceText).Replace(origText, replaceText);
+                    reader.SetPageContent(i, PdfEncodings.ConvertToBytes(contentString, PdfObject.TEXT_PDFDOCENCODING));
+                }
+                new PdfStamper(reader, new FileStream(ResultFile, FileMode.Create, FileAccess.Write)).Close();
+            }
+        }
     }
 }

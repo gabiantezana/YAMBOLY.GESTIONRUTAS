@@ -20,10 +20,13 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
             return new DireccionesDataAccess().GetList(dataContext).Select(x => new Address()
             {
                 CodigoInterno = GetCodeForAddress(x),
+                CardCode = x.CardCode,
+                RazonSocial = x.CardName.FirstCharToUpper(),
                 Region = x.U_MSS_REGI,
                 Departamento = x.State,
                 Provincia = x.County,
                 Distrito = x.City,
+                Direccion = x.Street,
                 ZonaId = x.U_MSS_ZONA,
                 Canal = x.U_MSS_CANA,
                 Giro = x.U_MSS_GIRO,
@@ -45,7 +48,6 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
                 GeoOptions = (!string.IsNullOrEmpty(x.U_MSSM_LAT) && !string.IsNullOrEmpty(x.U_MSSM_LON)) ? new GeoOptions() { coords = new Path() { lat = Convert.ToDouble(x.U_MSSM_LAT), lng = Convert.ToDouble(x.U_MSSM_LON) } } : null, //TODO:
 
                 Ruc = x.CardCode,
-                RazonSocial = x.CardName.FirstCharToUpper(),
 
             }).ToList();
         }
@@ -77,7 +79,7 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
             return address.CardCode + "-" + address.Address;
         }
 
-        public string[] GetCardCodeAndAddressFromCode(string code)
+        public static string[] GetCardCodeAndAddressFromCode(string code)
         {
             string[] values = new string[2] { string.Empty, string.Empty };
             var items = code.Split('-');

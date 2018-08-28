@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using YAMBOLY.GESTIONRUTAS.HELPER;
@@ -245,4 +246,58 @@ public static class ConvertHelper
             return bx.id.GetHashCode() ^ bx.text.GetHashCode();
         }
     }
+
+    #region GetMemberName
+
+    public static string GetMemberName<T>(Expression<Func<T, object>> expression)
+    {
+        return GetMemberName(expression.Body);
+    }
+    private static string GetMemberName(Expression expression)
+    {
+        if (expression == null)
+        {
+            throw new ArgumentException("Expresión can not be null");
+        }
+
+        if (expression is MemberExpression)
+        {
+            // Reference type property or field
+            var memberExpression = (MemberExpression)expression;
+            return memberExpression.Member.Name;
+        }
+
+        if (expression is MethodCallExpression)
+        {
+            // Reference type method
+            var methodCallExpression = (MethodCallExpression)expression;
+            return methodCallExpression.Method.Name;
+        }
+
+        if (expression is UnaryExpression)
+        {
+            // Property, field of method returning value type
+            var unaryExpression = (UnaryExpression)expression;
+            return GetMemberName(unaryExpression);
+        }
+
+        throw new ArgumentException("Error");
+    }
+    private static string GetMemberName(UnaryExpression unaryExpression)
+    {
+        if (unaryExpression.Operand is MethodCallExpression)
+        {
+            var methodExpression = (MethodCallExpression)unaryExpression.Operand;
+            return methodExpression.Method.Name;
+        }
+
+        return ((MemberExpression)unaryExpression.Operand).Member.Name;
+    }
+
+    public static string GetMemberName<T>(this T instance, Expression<Func<T, object>> expression)
+    {
+        return GetMemberName(expression.Body);
+    }
+
+    #endregion
 }

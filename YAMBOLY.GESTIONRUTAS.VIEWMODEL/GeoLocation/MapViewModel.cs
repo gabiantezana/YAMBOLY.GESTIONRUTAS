@@ -23,6 +23,7 @@ namespace YAMBOLY.GESTIONRUTAS.VIEWMODEL.GeoLocation
             TipoClienteJList = new List<JsonEntityTwoString>();
             VendedorJList = new List<JsonEntityTwoString>();
             ZonaJList = new List<JsonEntityTwoString>();
+            VisibleMarkers = new List<string>();
         }
 
         [Obsolete]
@@ -131,5 +132,13 @@ namespace YAMBOLY.GESTIONRUTAS.VIEWMODEL.GeoLocation
 
         #endregion
 
+        #region VisibleMarkers
+        public List<string> VisibleMarkers { get; set; }
+        #endregion
+
+        /// <summary>
+        /// Tipo de formato de el reporte
+        /// </summary>
+        public ReportType ReportType { get; set; }
     }
 }

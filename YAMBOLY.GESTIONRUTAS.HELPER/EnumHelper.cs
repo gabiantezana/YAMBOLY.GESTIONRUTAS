@@ -61,4 +61,10 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
         @MSS_GEOSHAPE_D_Insert = 222,
         @MSS_GEOSHAPE_Insert = 223,
     }
+
+    public enum ReportType
+    {
+        Excel = 1,
+        Pdf = 2,
+    }
 }

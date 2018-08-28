@@ -1,16 +1,16 @@
-﻿using Newtonsoft.Json;
+﻿using OfficeOpenXml;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Web;
+using System.Web.Hosting;
 using System.Web.Mvc;
-using System.Web.Script.Serialization;
 using YAMBOLY.GESTIONRUTAS.Controllers;
 using YAMBOLY.GESTIONRUTAS.EXCEPTION;
 using YAMBOLY.GESTIONRUTAS.Filters;
 using YAMBOLY.GESTIONRUTAS.HELPER;
 using YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation;
 using YAMBOLY.GESTIONRUTAS.VIEWMODEL.GeoLocation;
+using static System.Net.WebRequestMethods;
 
 namespace YAMBOLY.GESTIONRUTAS.Areas.GeoLocation.Controllers
 {
@@ -51,6 +51,21 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.GeoLocation.Controllers
             PostMessage(MessageType.Success);
             return RedirectToAction(nameof(Index));
 
+        }
+
+        [HttpPost]
+        public virtual ActionResult SaveReport(MapViewModel model)
+        {
+            var report = new MapLogic().GetReport(GetDataContext(), model);
+            switch (model.ReportType)
+            {
+                case ReportType.Excel:
+                    return File((MemoryStream)report, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                case ReportType.Pdf:
+                    return new FilePathResult(report, System.Net.Mime.MediaTypeNames.Application.Pdf);
+                default://TODO
+                    throw new Exception();//TODO:
+            }
         }
 
         [AppViewAuthorize(ConstantHelper.Views.GeoLocation.Map.VIEW)]

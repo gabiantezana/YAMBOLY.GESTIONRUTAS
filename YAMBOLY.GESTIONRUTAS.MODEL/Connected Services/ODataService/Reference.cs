@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------
 
 // Original file name:
-// Generation date: 24/08/2018 12:26:05 p.m.
+// Generation date: 27/08/2018 11:57:52 a.m.
 namespace MSS_YAMBOLY_GEOLOCATION.Services.ODataService
 {
     
@@ -2881,6 +2881,28 @@ namespace MSS_YAMBOLY_GEOLOCATION.Services.ODataService
         private string _U_MSSM_POA;
         partial void OnU_MSSM_POAChanging(string value);
         partial void OnU_MSSM_POAChanged();
+        /// <summary>
+        /// There are no comments for Property Street in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        public string Street
+        {
+            get
+            {
+                return this._Street;
+            }
+            set
+            {
+                this.OnStreetChanging(value);
+                this._Street = value;
+                this.OnStreetChanged();
+                this.OnPropertyChanged("Street");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        private string _Street;
+        partial void OnStreetChanging(string value);
+        partial void OnStreetChanged();
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
         public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]

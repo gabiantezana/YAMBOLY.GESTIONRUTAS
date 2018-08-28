@@ -50,7 +50,7 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
             if (!string.IsNullOrEmpty(zoneId))
                 list = list.Where(x => x.ZoneId == zoneId).ToList();
 
-            return list.Where(x => x.ZoneId == zoneId).Select(x => new JsonEntityTwoString()
+            return list.Select(x => new JsonEntityTwoString()
             {
                 id = x.Id,
                 text = x.Name,
