@@ -17,9 +17,8 @@
     </div>*@
 @using (Html.BeginForm("Index", "Map", FormMethod.Post, new { id = "mapForm" }))
 {
-    <div class="col-sm-3">
+    <div class="col-sm-4">
         <div class="panel">
-
             @Html.HiddenFor(x => x.PostedShapeList)
             @Html.HiddenFor(x => x.VisibleMarkers)
             @Html.HiddenFor(x => x.ReportType)
@@ -38,15 +37,14 @@
                                 <label for="input-search" class="sr-only">Search Tree:</label>
                                 <input type="input" class="form-control" id="input-search" placeholder="Buscar..." value="">
                             </div>
-                            <div class="pre-scrollable">
+                            <div class="fixed-panel">
                                 <div id="tree" class="treeview"></div>
                             </div>
                         </div>
                     </div>
                     <div class="tab-pane  animation-scale-up" id="tab2" role="tabpanel">
                         <div class="panel-body">
-                            @*<div class="pre-scrollable">*@
-                            <div>
+                            <div class="fixed-panel">
                                 <div class="row">
                                     @Html.LabelFor(x => Model.Region, new { @class = "col-sm-3 control-label" })
                                     <div class="col-sm-9">
@@ -58,16 +56,16 @@
                                     @Html.LabelFor(x => Model.Departamento, new { @class = "col-sm-3 control-label" })
                                     <div class="col-sm-9">
                                         @Html.DropDownListFor(x => Model.Departamento, new SelectList(Model.DepartamentoJList, "id", "text"),
-new
-{
-    @class = "form-control form-group-margin",
-    @data_plugin = "select2",
-    @onchange = "OnChangeSelect2(this)",
-    @data_select = "select",
-    @data_url = @Url.Action("GetProvinciaJList", "Map"),
-    @data_target = "Provincia",
-    @data_isEdit = "false",
-})
+                                        new
+                                        {
+                                            @class = "form-control form-group-margin",
+                                            @data_plugin = "select2",
+                                            @onchange = "OnChangeSelect2(this)",
+                                            @data_select = "select",
+                                            @data_url = @Url.Action("GetProvinciaJList", "Map"),
+                                            @data_target = "Provincia",
+                                            @data_isEdit = "false",
+                                        })
                                         @Html.ValidationMessageFor(x => x.Departamento)
                                     </div>
                                 </div>
@@ -75,16 +73,16 @@ new
                                     @Html.LabelFor(x => Model.Provincia, new { @class = "col-sm-3 control-label" })
                                     <div class="col-sm-9">
                                         @Html.DropDownListFor(x => Model.Provincia, new SelectList(Model.ProvinciaJList, "id", "text")
-, new
-{
-    @class = "form-control form-group-margin",
-    @data_plugin = "select2",
-    @onchange = "OnChangeSelect2(this)",
-    @data_select = "select",
-    @data_url = @Url.Action("GetDistritoJList", "Map"),
-    @data_target = "Distrito",
-    @data_isedit = "false"
-})
+                                        , new
+                                        {
+                                            @class = "form-control form-group-margin",
+                                            @data_plugin = "select2",
+                                            @onchange = "OnChangeSelect2(this)",
+                                            @data_select = "select",
+                                            @data_url = @Url.Action("GetDistritoJList", "Map"),
+                                            @data_target = "Distrito",
+                                            @data_isedit = "false"
+                                        })
                                         @Html.ValidationMessageFor(x => Model.Provincia)
                                     </div>
                                 </div>
@@ -223,7 +221,6 @@ new
                                     </div>
                                 </div>
                             </div>
-
                             <div class="row">
                                 <button class="btn btn-primary" id="btnBuscarCliente" type="button" onclick="SearchClient()"><i class="fa fa-save" aria-hidden="true"></i>&nbsp; Filtrar</button>
                             </div>
@@ -235,9 +232,8 @@ new
         </div>
     </div>
 
-    <!--PANEL MAPA Y BOTONES--><div class="col-sm-9">
-        <div class="panel ">
-
+    <!--PANEL MAPA Y BOTONES--><div class="col-sm-8">
+        <div class="panel">
             <div class="panel-body">
                 @if (Session.GetViewPermissions().Intersect(new String[] { ConstantHelper.Views.GeoLocation.Map.UPDATE }).Count() > 0)
                 {
@@ -278,11 +274,18 @@ new
                        placeholder="Enter a location">
             </div>
             <div class="panel-footer text-right">
-                <button class="btn btn-primary" id="btnSave" data-url='@Url.Action("Index", "Map", new { Area = "GeoLocation" })'><i class="fa fa-save" aria-hidden="true"></i>&nbsp; Guardar</button>
-                <button class="btn btn-primary" id="btnSaveAsReport" data-url='@Url.Action("SaveReport", "Map", new { Area = "GeoLocation" })' data-message="¿En qué formato desea guardar el reporte?" style="display:none"><i class="fa fa-save" aria-hidden="true"></i>&nbsp; Guardar como reporte</button>
+                @if (Session.GetViewPermissions().Intersect(new String[] { ConstantHelper.Views.GeoLocation.Map.UPDATE }).Count() > 0)
+                {
+                    <button class="btn btn-primary" id="btnSave" data-url='@Url.Action("Index", "Map", new { Area = "GeoLocation" })'><i class="fa fa-save" aria-hidden="true"></i>&nbsp; Guardar</button>
+                }
+                @if (Session.GetViewPermissions().Intersect(new String[] { ConstantHelper.Views.GeoLocation.Map.VIEW }).Count() > 0)
+                {
+                    <button class="btn btn-primary" id="btnSaveAsReport" data-url='@Url.Action("SaveReport", "Map", new { Area = "GeoLocation" })' data-message="¿En qué formato desea guardar el reporte?" style="display:none"><i class="fa fa-save" aria-hidden="true"></i>&nbsp; Guardar como reporte</button>
+                }
             </div>
         </div>
     </div>
+
 
 }
 @section Scripts
@@ -361,6 +364,8 @@ new
             });
 
             $('#tree').on('nodeSelected', function (event, data) { onNodeClick(data); });
+            $('#tree').on('nodeUnselected', function (event, data) { onNodeUnClick();});
+
             $('#tree').treeview('collapseAll', { silent: true });
 
             //Search
@@ -633,53 +638,70 @@ new
             EvaluateSelectedItem();
         }
 
+        function onNodeUnClick(data) {
+            clearSelection();
+            currentSelectedItem = null;
+            EvaluateSelectedItem();
+        }
+
         function EvaluateSelectedItem() {
-            var prefixTitle;
-            var shapeType = currentSelectedItem.ShapeType;
-            switch (currentSelectedItem.ShapeType) {
-                case SHAPETYPE.Zone:
-                    prefixTitle = " zona";
-                    break;
-                case SHAPETYPE.Route:
-                    prefixTitle = " ruta";
-                    break;
-                case SHAPETYPE.Address:
-                    prefixTitle = " cliente";
-                    break;
-                default:
-                    throw "Invalid shape";
-            }
+            if (currentSelectedItem) {
 
-            $("#editShapeButton").html("Editar " + prefixTitle);
-            $("#removeShapeButton").html("Eliminar " + prefixTitle);
-            $("#createShapeButton").html("Crear" + prefixTitle);
-
-            var shape = GetShapeFromMap(currentSelectedItem.Id, currentSelectedItem.ShapeType);
-            if (shape) {
-                currentSelectedShape = shape;
-                //---------Activa efecto zoom en el mapa---------
+                var prefixTitle;
+                var shapeType = currentSelectedItem.ShapeType;
                 switch (currentSelectedItem.ShapeType) {
                     case SHAPETYPE.Zone:
+                        prefixTitle = " zona";
+                        break;
                     case SHAPETYPE.Route:
-                        map.fitBounds(shape.getBounds());
+                        prefixTitle = " ruta";
                         break;
                     case SHAPETYPE.Address:
-                        map.panTo(shape.getPosition());
+                        prefixTitle = " cliente";
                         break;
                     default:
                         throw "Invalid shape";
                 }
 
-                $("#editShapeButton").slideDown();
-                $("#removeShapeButton").slideDown();
-                $("#createShapeButton").slideUp();
+                $("#editShapeButton").html("Editar " + prefixTitle);
+                $("#removeShapeButton").html("Eliminar " + prefixTitle);
+                $("#createShapeButton").html("Crear" + prefixTitle);
+
+                var shape = GetShapeFromMap(currentSelectedItem.Id, currentSelectedItem.ShapeType);
+                if (shape) {
+                    currentSelectedShape = shape;
+                    //---------Activa efecto zoom en el mapa---------
+                    switch (currentSelectedItem.ShapeType) {
+                        case SHAPETYPE.Zone:
+                        case SHAPETYPE.Route:
+                            map.fitBounds(shape.getBounds());
+                            break;
+                        case SHAPETYPE.Address:
+                            map.panTo(shape.getPosition());
+                            break;
+                        default:
+                            throw "Invalid shape";
+                    }
+
+                    $("#editShapeButton").slideDown();
+                    $("#removeShapeButton").slideDown();
+                    $("#createShapeButton").slideUp();
+                }
+                else {
+                    currentSelectedShape = null;
+                    $("#createShapeButton").slideDown();
+                    $("#editShapeButton").slideUp();
+                    $("#removeShapeButton").slideUp();
+                }
+
             }
             else {
                 currentSelectedShape = null;
-                $("#createShapeButton").slideDown();
+                $("#createShapeButton").slideUp();
                 $("#editShapeButton").slideUp();
                 $("#removeShapeButton").slideUp();
             }
+
         }
 
         function OnFinishDrawing(shape) {
@@ -789,9 +811,7 @@ new
                     $('#main-loader').fadeOut();
                 }
                 });
-
         }
-
 
         function OnChangeSelect2(selectInput) {
             var $this = $(selectInput);
@@ -998,6 +1018,7 @@ new
             float: left;
             width: 100%;
         }
+
         .select2-container--default .select2-selection--single {
             height: 25px;
             padding: 0px 20px 0px 10px;
@@ -1017,6 +1038,18 @@ new
 
         input, select, textarea {
             font-size: 80%;
+        }
+
+        .list-group-item {
+            padding: 6px;
+        }
+
+
+        .fixed-panel {
+            min-height: 400px;
+            max-height: 400px;
+            overflow-y: scroll;
+            overflow-x: hidden;
         }
     </style>
 }

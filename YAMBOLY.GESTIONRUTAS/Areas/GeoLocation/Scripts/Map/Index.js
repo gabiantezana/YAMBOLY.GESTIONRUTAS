@@ -42,7 +42,8 @@ function isPolygonInsidePolygon(innerPolygon, outerPolygon) {
     return (pointsOutside > 0) ? false : true;
 }
 
-function _isPolygonIntersectedWithAnother(innerPolygon, outerPolygon) {
+function _isPolygonIntersectedWithAnother(innerPolygon, outerPolygon, validateOverlaping) {
+    debugger;
     var isIntersected = false;
     var isOverlaping = false;
 
@@ -57,10 +58,15 @@ function _isPolygonIntersectedWithAnother(innerPolygon, outerPolygon) {
     else
         isOverlaping = IsPolygonOverlaping(innerPolygon, outerPolygon);
 
-    if (isIntersected || isOverlaping)
-        return true;
-    else
-        return false;
+    if (validateOverlaping) {
+        if (isIntersected || isOverlaping)
+            return true;
+        else
+            return false;
+    }
+    else {
+        return isIntersected;
+    }
 }
 
 function GetPointsFromPolygon(polygon) {
@@ -172,12 +178,14 @@ function IsAValidShape(shape) {
 }
 
 function IsAValidZone(polygon) {
-    debugger;
     //-----------------VALIDA QUE NO INTERSECTE A OTRAS ZONAS -------------------
     var isIntersected = false;
     for (var i = 0; i < editedPolygonArray.length; i++) {
         if (editedPolygonArray[i].Id !== polygon.Id) {
-            isIntersected = _isPolygonIntersectedWithAnother(polygon, editedPolygonArray[i]);
+            if (editedPolygonArray[i].ShapeType === SHAPETYPE.Zone)
+                isIntersected = _isPolygonIntersectedWithAnother(polygon, editedPolygonArray[i], true);
+            else if (editedPolygonArray[i].ShapeType === SHAPETYPE.Route)
+                isIntersected = _isPolygonIntersectedWithAnother(polygon, editedPolygonArray[i], false);
             if (isIntersected) {
                 break;
             }

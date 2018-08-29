@@ -41,7 +41,7 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.Administration
             var user = new UserDataAccess().Get(dataContext, id);
             var model = ConvertHelper.CopyAToB(user, new UserViewModel()) as UserViewModel;
 
-            if (user.Pass != null)
+            if (user?.Pass != null)
                 model.Pass= user.Pass.Equals(EncryptionHelper.CreateMD5(ConstantHelper.PASSWORD_DEFAULT)) ? ConstantHelper.PASSWORD_DEFAULT: ConstantHelper.PASSWORD_HIDDEN;
             FillModelJLists(dataContext, ref model);
 
