@@ -247,7 +247,7 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
         }
 
 
-        public dynamic GetReportBytes(DataContext dataContext, MapViewModel model, out string[] filePathsCreatedInServer)
+        public byte[] GetReportBytes(DataContext dataContext, MapViewModel model)
         {
             const string excelTemplateFileName = "reportTemplate.xlsx";
             string serverPath = HostingEnvironment.MapPath("~/App_Data/");
@@ -429,18 +429,23 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
                 #endregion
 
                 package.SaveAs(new FileInfo(newExcelDocumentPath));
-
-                filePathsCreatedInServer = new string[] { newExcelDocumentPath, newPdfDocumentPath, newPdfDocumentEditedPath };
+                byte[] bytes;
                 switch (model.ReportType)
                 {
                     case ReportType.Excel:
-                        return File.ReadAllBytes(newExcelDocumentPath);
+                        bytes = File.ReadAllBytes(newExcelDocumentPath);
+                        break;
                     case ReportType.Pdf:
                         CreateAndSavePdfFile(dataContext, model, newExcelDocumentPath, newPdfDocumentPath, newPdfDocumentEditedPath);
-                        return File.ReadAllBytes(newPdfDocumentEditedPath);
+                        bytes = File.ReadAllBytes(newPdfDocumentEditedPath);
+                        break;
                     default:
-                        throw new InvalidDataException(); //TODO:
+                        throw new IndexOutOfRangeException();
                 }
+                foreach (var item in new string[] { newExcelDocumentPath, newPdfDocumentPath, newPdfDocumentEditedPath })
+                    if (Directory.Exists(System.IO.Path.GetDirectoryName(item)))
+                        File.Delete(item);
+                return bytes;
             }
         }
 

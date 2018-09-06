@@ -56,25 +56,15 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.GeoLocation.Controllers
         [HttpPost]
         public virtual ActionResult SaveReport(MapViewModel model)
         {
-            string[] filePathsCreatedInServer = { };
-            try
+            var bytes = new MapLogic().GetReportBytes(GetDataContext(), model);
+            switch (model.ReportType)
             {
-                var bytes = new MapLogic().GetReportBytes(GetDataContext(), model, out filePathsCreatedInServer);
-                switch (model.ReportType)
-                {
-                    case ReportType.Excel:
-                        return File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-                    case ReportType.Pdf:
-                        return File(bytes, System.Net.Mime.MediaTypeNames.Application.Pdf);
-                    default://TODO
-                        throw new Exception();
-                }
-            }
-            finally
-            {
-                foreach (var item in filePathsCreatedInServer)
-                    if (Directory.Exists(System.IO.Path.GetDirectoryName(item)))
-                        System.IO.File.Delete(item);
+                case ReportType.Excel:
+                    return File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                case ReportType.Pdf:
+                    return File(bytes, System.Net.Mime.MediaTypeNames.Application.Pdf);
+                default://TODO
+                    throw new Exception();
             }
         }
 
