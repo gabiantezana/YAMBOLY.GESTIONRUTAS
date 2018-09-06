@@ -927,7 +927,6 @@
     <Content Include="Scripts\umd\popper.min.js" />
     <Content Include="Scripts\underscore.js" />
     <Content Include="Scripts\underscore.min.js" />
-    <Content Include="Scripts\Views\Home\TestMap04.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -944,10 +943,6 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Home\TestMap01.cshtml" />
-    <Content Include="Views\Home\TestMap02.cshtml" />
-    <Content Include="Views\Home\TestMap03.cshtml" />
-    <Content Include="Views\Home\TestMap04.cshtml" />
     <Content Include="Scripts\underscore.min.map" />
     <Content Include="Views\Shared\_LoginLayout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />

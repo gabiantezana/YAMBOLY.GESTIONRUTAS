@@ -24,25 +24,25 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
 {
     public class MapLogic
     {
-        public MapViewModel GetMapViewModel(DataContext dataConext)
+        public MapViewModel GetMapViewModel(DataContext dataContext)
         {
             var model = new MapViewModel();
-            model.ShapeList = GetShapeList(ref model, dataConext);
+            model.ShapeList = GetShapeList(ref model, dataContext);
 
             #region JsonList
-            model.CanalJList = new CanalLogic().GetJList(dataConext);
-            model.DepartamentoJList = new DepartamentoLogic().GetJList(dataConext);
-            model.DistritoJList = new DistritoLogic().GetJList(dataConext, string.Empty);
-            model.GiroJList = new GiroLogic().GetJList(dataConext);
-            model.JefeVentasJList = new JefeVentasLogic().GetJList(dataConext, null);
-            model.ProvinciaJList = new ProvinciaLogic().GetJList(dataConext, string.Empty);
-            model.RegionJList = new RegionLogic().GetJList(dataConext);
-            model.ZonaJList = new ZonaLogic().GetJList(dataConext);
-            model.RutaJList = new RutaLogic().GetJList(dataConext);
-            model.SupervisorJList = new SupervisorLogic().GetJList(dataConext, null);
+            model.CanalJList = new CanalLogic().GetJList(dataContext);
+            model.DepartamentoJList = new DepartamentoLogic().GetJList(dataContext);
+            model.DistritoJList = new DistritoLogic().GetJList(dataContext, string.Empty);
+            model.GiroJList = new GiroLogic().GetJList(dataContext);
+            model.JefeVentasJList = new JefeVentasLogic().GetJList(dataContext, null);
+            model.ProvinciaJList = new ProvinciaLogic().GetJList(dataContext, string.Empty);
+            model.RegionJList = new RegionLogic().GetJList(dataContext);
+            model.ZonaJList = new ZonaLogic().GetJList(dataContext);
+            model.RutaJList = new RutaLogic().GetJList(dataContext);
+            model.SupervisorJList = new SupervisorLogic().GetJList(dataContext, null);
             model.TipoClienteJList = new List<JsonEntityTwoString>();//TODO:
-            model.VendedorJList = new VendedorLogic().GetJList(dataConext);
-            model.FrecuenciaVisitaJList = new UserDefinedValuesLogic().GetJList(dataConext, "CRD1", 7);
+            model.VendedorJList = new VendedorLogic().GetJList(dataContext);
+            model.FrecuenciaVisitaJList = new UserDefinedValuesLogic().GetJList(dataContext, ConstantHelper.CRD1, ConstantHelper.FRECUENCIAVISITAINDEXUDVTABLE);
             #endregion
 
             return model;
@@ -274,7 +274,7 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
                 var vendedorList = new VendedorLogic().GetJList(dataContext);
                 var supervisorList = new SupervisorLogic().GetJList(dataContext, null);
                 var jefeVentasList = new JefeVentasLogic().GetJList(dataContext, null);
-                var frecuenciaVisitaList = new UserDefinedValuesLogic().GetJList(dataContext, "CRD1", 7);
+                var frecuenciaVisitaList = new UserDefinedValuesLogic().GetJList(dataContext, ConstantHelper.CRD1, ConstantHelper.FRECUENCIAVISITAINDEXUDVTABLE);
                 #endregion
 
                 #region Filters

@@ -14,6 +14,10 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
         public const string PASSWORD_DEFAULT = "12345";
         public const string PASSWORD_HIDDEN = "*****";
 
+        public const int FRECUENCIAVISITAINDEXUDVTABLE = 7;
+        public const string CRD1 = "CRD1";
+
+
         public static readonly Int32 DEFAULT_PAGE_SIZE = 10;
         public static readonly byte[] ENCRIPT_KEY = { 45, 12, 45, 78, 2, 45, 12, 65, 87, 12, 45, 32, 20, 58, 15, 36, 47, 85, 96, 20, 24, 23, 65, 24 };
         public static readonly byte[] ENCRIPT_METHOD = { 87, 10, 65, 35, 12, 66, 21, 65 };

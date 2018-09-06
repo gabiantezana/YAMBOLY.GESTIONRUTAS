@@ -13,8 +13,8 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.GeoLocation
     {
         public List<JsonEntityTwoString> GetJList(DataContext dataContext, string tableName, int? index)
         {
-            return new UserDefinedValuesDataAccess().GetList(dataContext).Where(x=> x.FieldID ==  index && x.TableID  == tableName)
-                                                    .Select(x=> new JsonEntityTwoString() { id = x.FldValue, text = x.Descr}).ToList();
+            return new UserDefinedValuesDataAccess().GetList(dataContext).Where(x => x.FieldID == index && x.TableID == tableName)
+                                                    .Select(x => new JsonEntityTwoString() { id = x.FldValue, text = x.Descr }).ToList();
         }
     }
 }

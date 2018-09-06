@@ -10,7 +10,6 @@ using YAMBOLY.GESTIONRUTAS.HELPER;
 
 public static class ConvertHelper
 {
-    //TODO: ELIMINAR CAMPO DE USUARIO CREADO EN CLASE DIRECCIÓN
     #region Int32 Convert Helper
     /// <summary>
     /// Covierte un objeto a un entero tipo Int32

@@ -59,7 +59,6 @@
     <Compile Include="SAPMethodsHelper.cs" />
     <Compile Include="SerializeHelper.cs" />
     <Compile Include="UserModel.cs" />
-    <Compile Include="_MSS_ZONA\CRD1.cs" />
     <Compile Include="_MSS_ZONA\MSS_RUTA.cs" />
     <Compile Include="_MSS_ZONA\MSS_ZONA.cs" />
   </ItemGroup>
