@@ -298,8 +298,8 @@
     <script src="http://arthur-e.github.io/Wicket/wicket-gmap3.js"></script>
     <script src="http://bl.ocks.org/christophermanning/raw/4450188/javascript.util.min.js"></script>
     <script src="http://bl.ocks.org/christophermanning/raw/4450188/jsts.min.js"></script>
-    @*<script type="text/javascript" src="~/Scripts/maplabel/maplabel.js"></script>*@
-    @*<script type="text/javascript" src="~/Scripts/markerwithlabel/markerwithlabel.js"></script>*@
+    <script type="text/javascript" src="~/Scripts/maplabel/maplabel.js"></script>
+    <script type="text/javascript" src="~/Scripts/markerwithlabel/markerwithlabel.js"></script>
     <script src="~/Areas/GeoLocation/Scripts/Map/Index.js"></script>
 
     <script>
@@ -356,7 +356,6 @@
             $("#VisibleMarkers").val(JSON.stringify(visibleMarkers));
             return true;
         });
-
 
         function CreateTreeNodes(jsonList) {
             var $searchableTree = $('#tree').treeview({
@@ -505,12 +504,21 @@
                     polygonArray.push(polygon);
                     break;
                 case SHAPETYPE.Address:
+                    var icon = {
+                        //url: "https://png.icons8.com/metro/1600/marker.png",
+                        //url: "https://openclipart.org/image/2400px/svg_to_png/262009/Map-Pin.png",
+                        url: "http://maps.google.com/mapfiles/kml/paddle/red-circle.png",
+                        scaledSize: new google.maps.Size(40, 40), // scaled size
+                        origin: new google.maps.Point(0, 0), // origin
+                        anchor: new google.maps.Point(0, 0) // anchor
+                    };
+
                     var marker = new google.maps.Marker({
                         position: item.GeoOptions.coords,
                         map: map,
                         title: item.text,
                         labelOrigin: new google.maps.Point(0, 0),
-                        icon: "http://maps.google.com/mapfiles/kml/paddle/red-circle.png",
+                        icon:icon,
                         animation: google.maps.Animation.DROP,
                         /*label: {
                             text: item.text,
@@ -758,11 +766,10 @@
                     infoWindow.setPosition(position);
                     infoWindow.open(map);
                 },
-                error: function (error) {
-                    ShowMessage(error.statusText, error.responseJSON);
+                error: function (err, exception ) {
+                    ShowMessage(err.statusText, err.responseJSON);
                 }
             })
-
         }
 
         function SearchClient() {
@@ -806,8 +813,8 @@
                     SetMarkersAsVisible(data);
                     $('#main-loader').fadeOut();
                 },
-                error: function (error) {
-                    ShowMessage(error.statusText, error.responseJSON);
+                error: function (err, exception) {
+                    ShowMessage(err.statusText, err.responseJSON);
                     $('#main-loader').fadeOut();
                 }
                 });
@@ -860,7 +867,8 @@
         }
 
         function AddLabelToPolygon(polygonShape) {
-            /*
+            //OPTION1
+           /*
             var marker = new MarkerWithLabel({
                 position: GetPolygonCenter(polygonShape),
                 map: map,
@@ -868,17 +876,39 @@
                 //labelClass: Sclass, // the CSS class for the label
                 labelInBackground: true,
                 labelContent: polygonShape.Name,
-            });
+            });*/
 
-            var mapLabel2 = new MapLabel({
-                text: polygonShape.Name,
-                position: GetPolygonCenter(polygonShape),
-                map: map,
-                fontSize: 13,
-                align: 'left',
-                zIndex: 1000,
-            });
-            mapLabel2.set('position', GetPolygonCenter(polygonShape));*/
+            //OPTION2
+            switch (polygonShape.ShapeType) {
+                case SHAPETYPE.Zone:
+                    var mapLabel2 = new MapLabel({
+                        text: polygonShape.Name,
+                        minZoom: 1,
+                        position: GetPolygonCenter(polygonShape),
+                        map: map,
+                        fontSize: 12,
+                        strokeWeight:10,
+                        align: 'center',
+                        zIndex: 1000,
+                    });
+                    break;
+                case SHAPETYPE.Route:
+                    var mapLabel2 = new MapLabel({
+                        minZoom: 1,
+                        text: polygonShape.Name,
+                        position: GetPolygonCenter(polygonShape),
+                        map: map,
+                        fontSize: 12,
+                        align: 'center',
+                        zIndex: 1000,
+                    });
+                    break;
+                default:
+            }
+
+            //mapLabel2.set('position', GetPolygonCenter(polygonShape));
+
+            //OPTION3
             /*
             var marker = new google.maps.Marker({
                 position: GetPolygonCenter(polygonShape),
@@ -891,8 +921,8 @@
                 label: {
                     text: polygonShape.Name,
                     color: 'black',
-                    fontWeight: "bold",
-                    fontSize: "14px"
+                    fontWeight: "",//bold
+                    fontSize: "12px"
                 }
             });*/
         }
@@ -950,24 +980,21 @@
             }
         }
 
-
         function SaveAsReport() {
             var url = '@Url.Action("SaveReport", "Map", new { Area = ConstantHelper.Area.GEOLOCATION})';
-
-
              $.ajax({
                 //cache: false,
                 type: 'GET',
                  url: url,
                  contentType: 'application/json; charset=utf-8',
                  dataType : 'json',
-                data: { "model": null },
+                 data: { "model": null },
                  success: function (data) {
                    windows.location='@Url.Action("SaveReport", "Map", new { Area = ConstantHelper.Area.GEOLOCATION})';
-                },
-                 error: function (error) {
-                    ShowMessage(error.statusText, error.responseJSON);
-                }
+                  },
+                 error: function (err, exception) {
+                    ShowMessage(err.statusText, err.responseJSON);
+                 }
                 });
         }
 
