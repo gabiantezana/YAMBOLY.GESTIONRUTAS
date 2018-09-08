@@ -15,8 +15,8 @@
     -webkit-background-size: cover;
     background-size: cover;
     z-index: -1;
-    background: #337ab7;
-    background-repeat: repeat;
+    /*background: #337ab7;*/
+    /*background-repeat: repeat;*/
 }
 
 .page-login-v3 .panel {

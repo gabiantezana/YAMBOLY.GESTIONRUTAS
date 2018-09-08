@@ -657,8 +657,8 @@ body.site-gridmenu-active {
     height: 100%;
     margin: 0 !important;
     padding: 0;
-    background-color: transparent;
-    /*background-image: url('../recursos/geolocation.jpg');*/
+    /*background-color: transparent;*/
+    background-image: url('../recursos/geolocation.jpg');
     width: 100%;
     position: relative;
     background-size: 100% 100%;
@@ -805,7 +805,8 @@ body.site-gridmenu-active {
     }
 
 .page-copyright {
-    margin-top: 60px;
+    /*margin-top: 60px;*/
+    margin-top: 0px;
     color: #37474f;
     font-size: 12px;
     letter-spacing: 1px;
