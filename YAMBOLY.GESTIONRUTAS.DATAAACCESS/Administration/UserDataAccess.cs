@@ -8,7 +8,7 @@ using YAMBOLY.GESTIONRUTAS.VIEWMODEL.General;
 
 namespace YAMBOLY.GESTIONRUTAS.DATAAACCESS.Administration
 {
-    public class UserDataAccess
+    public class UserDataAccess         
     {
         public List<Users> Get(DataContext dataContext)
         {
