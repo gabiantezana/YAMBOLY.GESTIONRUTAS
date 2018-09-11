@@ -21,17 +21,24 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
+                        <td>#</td>
+                        <td>Nombre</td>
                         <td>Descripcion</td>
                         <td>Opciones</td>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model)
+                    @for (var i = 0; i < Model.Count; i++)
                     {
                         <tr>
-                            <td>@item.RolDescription</td>
+                            <td>@(i+1)</td>
+                            <td>@Model[i].RolName</td>
+                            <td>@Model[i].RolDescription</td>
                             <td class="text-nowrap">
-                                <a href="@Url.Action("EditPermisosPorRoles", "Rol", new { Area = ConstantHelper.Area.ADMINISTRATION, rolId = item.RolId })" class="btn btn-sm btn-icon btn-flat btn-default" data-toggle="tooltip" data-original-title="Permisos">
+                                <a href="@Url.Action("AddUpdate", "Rol", new { Area = ConstantHelper.Area.ADMINISTRATION, rolId = Model[i].RolId})" class="btn btn-sm btn-icon btn-flat btn-default" data-toggle="tooltip" data-original-title="Editar">
+                                    <i class="icon wb-wrench" aria-hidden="true"></i>
+                                </a>
+                                <a href="@Url.Action("EditPermisosPorRoles", "Rol", new { Area = ConstantHelper.Area.ADMINISTRATION, rolId = Model[i].RolId })" class="btn btn-sm btn-icon btn-flat btn-default" data-toggle="tooltip" data-original-title="Permisos">
                                     <i class="icon wb-link" aria-hidden="true"></i>
                                 </a>
                             </td>

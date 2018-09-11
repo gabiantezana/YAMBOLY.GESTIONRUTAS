@@ -1,8 +1,9 @@
 ﻿@model YAMBOLY.GESTIONRUTAS.VIEWMODEL.Administration.Rol.RolViewModel
 
 @{
-    ViewBag.Title = "Crear rol";
-    ViewBag.Icon = "plus";
+    ViewBag.Title = Model.RolId.HasValue ? "Editar rol" : "Crear rol";
+    ViewBag.Icon = Model.RolId.HasValue ? "edit" : "plus";
+    var isEdit = Model.RolId.HasValue ? "true" : "false";
 }
 
 <div class="panel">
@@ -17,15 +18,24 @@
     <div class="panel-body">
         @using (Html.BeginForm("AddUpdate", "Rol", FormMethod.Post))
         {
+            @Html.HiddenFor(x=> Model.RolId)
             <div class="panel-body">
-                @Html.EditorFor(x => Model.RolName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.EditorFor(x => Model.RolDescription, new { htmlAttributes = new { @class = "form-control" } })
-                
+                <div class="form-group">
+                    @Html.LabelFor(model => Model.RolName, new { @class = "form-label" })
+                    @Html.EditorFor(x => Model.RolName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(x => Model.RolName)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => Model.RolDescription, new { @class = "form-label" })
+                    @Html.EditorFor(x => Model.RolDescription, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(x => Model.RolDescription)
+                </div>
+
                 @*<div class="form-group col-md-6 col-sm-12">
-                    @Html.LabelFor(x => Model.RolId, new { @class = "form-label" })
-                    @Html.DropDownListFor(x => Model.RolId, new SelectList(Model.NivelJList, "id", "text", 0), new { @class = "form-control form-group-margin", @data_plugin = "select2", @data_isedit = true })
-                    @Html.ValidationMessageFor(x => Model.RolId)
-                </div>*@
+                        @Html.LabelFor(x => Model.RolId, new { @class = "form-label" })
+                        @Html.DropDownListFor(x => Model.RolId, new SelectList(Model.NivelJList, "id", "text", 0), new { @class = "form-control form-group-margin", @data_plugin = "select2", @data_isedit = true })
+                        @Html.ValidationMessageFor(x => Model.RolId)
+                    </div>*@
             </div>
 
             <br />

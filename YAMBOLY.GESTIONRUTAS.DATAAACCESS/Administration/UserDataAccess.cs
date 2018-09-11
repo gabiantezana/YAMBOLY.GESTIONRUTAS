@@ -12,7 +12,8 @@ namespace YAMBOLY.GESTIONRUTAS.DATAAACCESS.Administration
     {
         public List<Users> Get(DataContext dataContext)
         {
-            return dataContext.context.Users.ToList();
+            int? userId = dataContext.session.GetUserId();
+            return dataContext.context.Users.Where(X=> X.UserId != userId && X.Roles.RolName != AppRol.SUPERADMINISTRATOR.ToString()).ToList();
         }
 
         public Users Get(DataContext dataContext, int? userId)
@@ -32,6 +33,7 @@ namespace YAMBOLY.GESTIONRUTAS.DATAAACCESS.Administration
             {
                 var byteArrayPassword = EncryptionHelper.EncryptTextToMemory(ConstantHelper.PASSWORD_DEFAULT, ConstantHelper.ENCRIPT_KEY, ConstantHelper.ENCRIPT_METHOD);
                 user.Pass = byteArrayPassword;
+                user.isActive = true;
             }
             user.UserName = model.UserName;
             user.RolId = model.RolId;

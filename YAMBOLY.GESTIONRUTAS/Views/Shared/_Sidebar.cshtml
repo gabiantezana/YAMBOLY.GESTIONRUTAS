@@ -16,7 +16,7 @@
                 <span class="site-menu-title">Administración</span>
             </a>
             <ul class="site-menu-sub">
-                @if (Session.GetRol() == AppRol.SUPERADMINISTRATOR)
+                @if (Session.GetViewPermissions().Intersect(new String[] { ConstantHelper.Views.Administration.Rol.LIST }).Count() > 0)
                 {
                     <li class="site-menu-item">
                         <a class="animsition-link" href="@Url.Action("List", "Rol", new { Area = ConstantHelper.Area.ADMINISTRATION})"

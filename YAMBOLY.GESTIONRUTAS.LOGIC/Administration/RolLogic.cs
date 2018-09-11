@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using YAMBOLY.GESTIONRUTAS.DATAAACCESS.Administration;
+using YAMBOLY.GESTIONRUTAS.EXCEPTION;
 using YAMBOLY.GESTIONRUTAS.HELPER;
 using YAMBOLY.GESTIONRUTAS.MODEL;
 using YAMBOLY.GESTIONRUTAS.VIEWMODEL.Administration.Rol;
@@ -58,12 +59,20 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.Administration
 
         public RolViewModel Get(DataContext dataContext, int? id)
         {
-            return ConvertHelper.CopyAToB(new RolDataAccess().Get(dataContext, id), null) as RolViewModel;
+            return ConvertHelper.CopyAToB(new RolDataAccess().Get(dataContext, id), new RolViewModel()) as RolViewModel;
         }
 
         public List<JsonEntity> GetList(DataContext dataContext, string searchKey)
         {
             return GetList(dataContext, searchKey, null).Select(x => new JsonEntity() { id = x.RolId, text = x.RolName }).ToList();
+        }
+
+        public void AddUpdate(DataContext dataContext, RolViewModel model)
+        {
+            var exists = dataContext.context.Roles.FirstOrDefault(x => x.RolName == model.RolName && x.RolId != model.RolId) != null;
+            if (exists)
+                throw new CustomException("El nombre del rol especificado ya existe.");
+            new RolDataAccess().AddUpdate(dataContext, model);
         }
     }
 }

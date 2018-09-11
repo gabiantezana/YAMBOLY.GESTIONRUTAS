@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.SessionState;
 
@@ -113,7 +109,6 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
         }
         #endregion
 
-
         #region GetRol
         public static AppRol GetRol(this HttpSessionStateBase Session)
         {
@@ -124,7 +119,6 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
             return (AppRol)Get(Session, SessionKey.Rol);
         }
         #endregion
-
 
         #region GetPermisosVista
         public static String[] GetViewPermissions(this HttpSessionStateBase Session)

@@ -18,7 +18,7 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.Administration.Controllers
             return View(model);
         }
 
-        [AppViewAuthorize(ConstantHelper.Views.Administration.User.ADD_UPDATE)]
+        [AppViewAuthorize(ConstantHelper.Views.Administration.User.LIST)]
         public ActionResult AddUpdate(int? id)
         {
             var model = new UserLogic().Get(GetDataContext(), id);
@@ -26,6 +26,7 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.Administration.Controllers
         }
 
         #region JsonResult
+        [AppViewAuthorize(ConstantHelper.Views.Administration.User.LIST)]
         public JsonResult GetJList(string searchString)
         {
             var jList = new UserLogic().GetJList(GetDataContext(), searchString);
@@ -35,7 +36,7 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.Administration.Controllers
 
         #region Post
         [HttpPost]
-        [AppViewAuthorize(ConstantHelper.Views.Administration.User.ADD_UPDATE)]
+        [AppViewAuthorize(ConstantHelper.Views.Administration.User.CREATE, ConstantHelper.Views.Administration.User.UPDATE)]
         public ActionResult AddUpdate(UserViewModel model)
         {
             ModelState.Remove("Roles");
@@ -54,7 +55,7 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.Administration.Controllers
 
         }
 
-        [AppViewAuthorize(ConstantHelper.Views.Administration.User.ADD_UPDATE)]
+        [AppViewAuthorize(ConstantHelper.Views.Administration.User.CREATE, ConstantHelper.Views.Administration.User.UPDATE)]
         public ActionResult ChangeState(int? userId)
         {
             try
@@ -71,7 +72,7 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.Administration.Controllers
         }
 
         [HttpPost]
-        [AppViewAuthorize(ConstantHelper.Views.Administration.User.ADD_UPDATE)]
+        [AppViewAuthorize(ConstantHelper.Views.Administration.User.CREATE, ConstantHelper.Views.Administration.User.UPDATE)]
         public ActionResult ResetPass(int? userId)
         {
             try
@@ -86,10 +87,10 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.Administration.Controllers
                 return RedirectToAction(nameof(AddUpdate), userId);
             }
         }
-
         #endregion
 
         #region PartialView
+        [AppViewAuthorize(ConstantHelper.Views.Administration.User.LIST)]
         public ActionResult _ListPartialView(int? id, int? p)
         {
             var model = new UserLogic().GetList(GetDataContext(), null, id, p);

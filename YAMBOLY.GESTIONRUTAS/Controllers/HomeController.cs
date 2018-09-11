@@ -62,13 +62,10 @@ namespace YAMBOLY.GESTIONRUTAS.Controllers
                     Session.Set(SessionKey.Views, entity.Roles.RolesViews?.Where(x => x.RolesViewsState == true).Select(x => x.Views.ViewCode).ToArray());
                     Session.Set(SessionKey.UserId, entity.UserId);
 
-                    var appRol = Enum.Parse(typeof(AppRol), entity.Roles.RolName);
-                    Session.Set(SessionKey.Rol, appRol);
-                    switch (appRol)
+                    if (entity.Roles.RolName.Equals(AppRol.SUPERADMINISTRATOR.ToString()))
                     {
-                        case AppRol.SUPERADMINISTRATOR:
-                            Session.Set(SessionKey.Views, context.Views.Select(x => x.ViewCode).ToArray());
-                            break;
+                        Session.Set(SessionKey.Rol, AppRol.SUPERADMINISTRATOR);
+                        Session.Set(SessionKey.Views, context.Views.Select(x => x.ViewCode).ToArray());
                     }
 
                     if (!hasChangePassword)

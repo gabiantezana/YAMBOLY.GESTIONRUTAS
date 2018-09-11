@@ -170,7 +170,6 @@
     <Compile Include="Areas\GeoLocation\GeoLocationAreaRegistration.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Filters\AppRolAuthorizeAttribute.cs" />
     <Compile Include="Filters\AppViewAuthorizeAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

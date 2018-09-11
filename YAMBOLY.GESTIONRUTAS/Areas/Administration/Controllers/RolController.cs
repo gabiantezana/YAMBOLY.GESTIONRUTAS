@@ -9,25 +9,28 @@ using YAMBOLY.GESTIONRUTAS.LOGIC.Administration;
 using YAMBOLY.GESTIONRUTAS.MODEL;
 using YAMBOLY.GESTIONRUTAS.VIEWMODEL.Administration.Rol;
 using System.Transactions;
+using YAMBOLY.GESTIONRUTAS.EXCEPTION;
 
 namespace YAMBOLY.GESTIONRUTAS.Areas.Administration.Controllers
 {
-    [AppRolAuthorize(AppRol.SUPERADMINISTRATOR)]
     public class RolController : BaseController
     {
         #region Get
+        [AppViewAuthorize(ConstantHelper.Views.Administration.Rol.LIST)]
         public ActionResult List()
         {
             var model = new RolLogic().GetList(GetDataContext());
             return View(model);
         }
 
+        [AppViewAuthorize(ConstantHelper.Views.Administration.Rol.LIST)]
         public ActionResult EditPermisosPorRoles(int rolId)
         {
             var model = new RolLogic().EditPermisosPorRoles(GetDataContext(), rolId);
             return View(model);
         }
 
+        [AppViewAuthorize(ConstantHelper.Views.Administration.Rol.LIST)]
         public ActionResult AddUpdate(int? rolId)
         {
             var model = new RolLogic().Get(GetDataContext(), rolId);
@@ -39,6 +42,7 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.Administration.Controllers
         #region Post
 
         [HttpPost]
+        [AppViewAuthorize(ConstantHelper.Views.Administration.Rol.CREATE, ConstantHelper.Views.Administration.Rol.UPDATE)]
         public ActionResult List(RolListViewModel model, FormCollection collection)
         {
             try
@@ -90,14 +94,29 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.Administration.Controllers
                     PostMessage(MessageType.Success);
                 }
             }
-            catch (Exception ex)
+            catch (CustomException ex)
             {
-                PostMessage(MessageType.Error, "Ocurrio un error inesperado. " + ex.ToString());
+                PostMessage(MessageType.Error, ex.Message);
             }
 
             return RedirectToAction(nameof(List));
         }
 
+        [HttpPost]
+        [AppViewAuthorize(ConstantHelper.Views.Administration.Rol.CREATE, ConstantHelper.Views.Administration.Rol.UPDATE)]
+        public ActionResult AddUpdate(RolViewModel model)
+        {
+            try
+            {
+                new RolLogic().AddUpdate(GetDataContext(), model);
+                PostMessage(MessageType.Success);
+            }
+            catch (CustomException ex)
+            {
+                PostMessage(MessageType.Error, ex.Message);
+            }
+            return RedirectToAction(nameof(List));
+        }
         #endregion
     }
 }

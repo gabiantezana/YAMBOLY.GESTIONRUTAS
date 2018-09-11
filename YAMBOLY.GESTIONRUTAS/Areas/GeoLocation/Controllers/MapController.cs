@@ -1,4 +1,4 @@
-﻿using OfficeOpenXml;
+﻿    using OfficeOpenXml;
 using System;
 using System.IO;
 using System.Web;
@@ -43,7 +43,7 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.GeoLocation.Controllers
         /// </summary>
         /// <returns></returns>
 
-        [AppViewAuthorize(ConstantHelper.Views.GeoLocation.Map.UPDATE)]
+        [AppViewAuthorize(ConstantHelper.Views.GeoLocation.Map.CREATESHAPES, ConstantHelper.Views.GeoLocation.Map.UPDATESHAPES)]
         [HttpPost]
         public ActionResult Index(MapViewModel model)
         {
@@ -54,6 +54,7 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.GeoLocation.Controllers
         }
 
         [HttpPost]
+        [AppViewAuthorize(ConstantHelper.Views.GeoLocation.Map.VIEWREPORTS)]
         public virtual ActionResult SaveReport(MapViewModel model)
         {
             var bytes = new MapLogic().GetReportBytes(GetDataContext(), model);
@@ -68,8 +69,8 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.GeoLocation.Controllers
             }
         }
 
-        [AppViewAuthorize(ConstantHelper.Views.GeoLocation.Map.VIEW)]
         [HttpPost]
+        [AppViewAuthorize(ConstantHelper.Views.GeoLocation.Map.VIEW)]
         public JsonResult GetShapeInfo(string id, ShapeType shapeType)
         {
             var shapeInfo = new MapLogic().GetShapeInfo(GetDataContext(), id, shapeType);

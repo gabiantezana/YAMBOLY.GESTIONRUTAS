@@ -42,9 +42,12 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.Administration
             var model = ConvertHelper.CopyAToB(user, new UserViewModel()) as UserViewModel;
 
             if (user?.Pass != null)
-                model.Pass= user.Pass.Equals(EncryptionHelper.CreateMD5(ConstantHelper.PASSWORD_DEFAULT)) ? ConstantHelper.PASSWORD_DEFAULT: ConstantHelper.PASSWORD_HIDDEN;
-            FillModelJLists(dataContext, ref model);
+            {
+                var byteArrayPassword = EncryptionHelper.EncryptTextToMemory(ConstantHelper.PASSWORD_DEFAULT, ConstantHelper.ENCRIPT_KEY, ConstantHelper.ENCRIPT_METHOD);
+                model.Pass = user.Pass.SequenceEqual(byteArrayPassword) ? ConstantHelper.PASSWORD_DEFAULT : ConstantHelper.PASSWORD_HIDDEN;
+            }
 
+            FillModelJLists(dataContext, ref model);
             return model;
         }
 

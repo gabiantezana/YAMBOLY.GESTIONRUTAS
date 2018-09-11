@@ -51,15 +51,27 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
                 public static class User
                 {
                     private const string PREFIX = _PREFIX + "USER.";
+
                     public const string LIST = PREFIX + "LIST";
-                    public const string ADD_UPDATE = PREFIX + "ADD_UPDATE";
-                    public const string DISABLE = PREFIX + "DISABLE";
+                    public const string CREATE = PREFIX + "CREATE";
+                    public const string UPDATE = PREFIX + "UPDATE";
                 }
 
                 public static class Rol
                 {
                     private const string PREFIX = _PREFIX + "ROL.";
+
                     public const string LIST = PREFIX + "LIST";
+                    public const string CREATE = PREFIX + "CREATE";
+                    public const string UPDATE = PREFIX + "UPDATE";
+                }
+
+                public static class Employee
+                {
+                    private const string PREFIX = _PREFIX + "EMPLOYEE.";
+
+                    public const string REGISTERHOURS = PREFIX + "REGISTERHOURS";
+                    public const string VIEWREPORTS = PREFIX + "VIEWREPORTS";
                 }
             }
 
@@ -69,14 +81,11 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
                 public static class Map
                 {
                     private const string PREFIX = _PREFIX + "MAP.";
-                    public const string VIEW = PREFIX + "VIEW";
-                    public const string UPDATE = PREFIX + "UPDATE";
-                }
 
-                public static class Rol
-                {
-                    private const string PREFIX = _PREFIX + "ROL.";
-                    public const string LIST = PREFIX + "LIST";
+                    public const string VIEW = PREFIX + "VIEW";
+                    public const string CREATESHAPES = PREFIX + "CREATESHAPES";
+                    public const string UPDATESHAPES = PREFIX + "UPDATESHAPES";
+                    public const string VIEWREPORTS = PREFIX + "VIEWREPORTS";
                 }
             }
         }

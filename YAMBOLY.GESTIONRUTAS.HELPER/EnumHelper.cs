@@ -21,9 +21,6 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
     public enum AppRol
     {
         SUPERADMINISTRATOR = 0,
-        ADMINISTRATOR = 1,
-        ROUTESMANAGER = 2,
-        MAPVIEWER =  3,
     }
 
     public enum SessionKey
