@@ -73,6 +73,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Administration\EmployeeDataAccess.cs" />
     <Compile Include="Administration\RolDataAccess.cs" />
     <Compile Include="Administration\UserDataAccess.cs" />
     <Compile Include="GeoLocation\JeveVentasDataAccess.cs" />

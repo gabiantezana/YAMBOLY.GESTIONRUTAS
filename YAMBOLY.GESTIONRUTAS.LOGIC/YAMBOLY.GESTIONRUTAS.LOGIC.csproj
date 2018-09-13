@@ -89,6 +89,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Administration\EmployeeLogic.cs" />
     <Compile Include="Administration\RolLogic.cs" />
     <Compile Include="Administration\UserLogic.cs" />
     <Compile Include="GeoLocation\JeveVentasLogic.cs" />

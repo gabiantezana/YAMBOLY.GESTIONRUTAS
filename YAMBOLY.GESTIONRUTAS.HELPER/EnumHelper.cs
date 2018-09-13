@@ -64,4 +64,10 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
         Excel = 1,
         Pdf = 2,
     }
+
+    public enum TipoEmpleado
+    {
+        Operario = 1,
+        Chofer = 2,
+    }
 }

@@ -163,5 +163,11 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
         public List<List<double?>> coords { get; set; }
     }
 
+    public class EmployeeHours
+    {
+        public string EmployeeId { get; set; }
+        public string EmployeeNames { get; set; }
+        public double Hours { get; set; }
+    }
 
 }

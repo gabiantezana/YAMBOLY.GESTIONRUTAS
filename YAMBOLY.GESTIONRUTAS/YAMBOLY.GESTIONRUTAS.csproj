@@ -165,6 +165,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Administration\AdministrationAreaRegistration.cs" />
     <Compile Include="Areas\Administration\Controllers\RolController.cs" />
+    <Compile Include="Areas\Administration\Controllers\EmployeeController.cs" />
     <Compile Include="Areas\Administration\Controllers\UserController.cs" />
     <Compile Include="Areas\GeoLocation\Controllers\MapController.cs" />
     <Compile Include="Areas\GeoLocation\GeoLocationAreaRegistration.cs" />
@@ -364,6 +365,9 @@
     <Content Include="Areas\GeoLocation\Views\_ViewStart.cshtml" />
     <Content Include="Areas\GeoLocation\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\GeoLocation\Views\Map\Index.cshtml" />
+    <Content Include="Areas\Administration\Views\Employee\RegisterHours.cshtml" />
+    <Content Include="Areas\Administration\Views\Employee\List.cshtml" />
+    <Content Include="Areas\Administration\Views\Employee\PartialView\_ListPartialView.cshtml" />
     <None Include="Content\assets\js\jquery-1.10.2.intellisense.js" />
     <Content Include="Content\assets\js\jquery-1.10.2.js" />
     <Content Include="Content\assets\js\jquery-1.10.2.min.js" />
@@ -484,6 +488,8 @@
     <Content Include="Content\js\site.min.js" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\recursos\cmv_icon.png" />
+    <Content Include="Content\recursos\geoIcon.png" />
+    <Content Include="Content\recursos\geolocation.jpg" />
     <Content Include="Content\recursos\icon_airportvan.png" />
     <Content Include="Content\recursos\icon_user.svg" />
     <Content Include="Content\recursos\logo_1.jpg" />

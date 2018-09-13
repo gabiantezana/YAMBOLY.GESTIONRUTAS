@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Administration\Employee\RegisterHoursViewModel.cs" />
     <Compile Include="Administration\User\UserListViewModel.cs" />
     <Compile Include="Administration\Rol\RolViewModel.cs" />
     <Compile Include="Administration\User\UserViewModel.cs" />
@@ -73,5 +74,6 @@
   <ItemGroup>
     <Content Include="Content\PagedList.css" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
