@@ -31,5 +31,6 @@ namespace YAMBOLY.GESTIONRUTAS.MODEL
         public virtual DbSet<ViewGroup> ViewGroup { get; set; }
         public virtual DbSet<Views> Views { get; set; }
         public virtual DbSet<Users> Users { get; set; }
+        public virtual DbSet<Config> Config { get; set; }
     }
 }

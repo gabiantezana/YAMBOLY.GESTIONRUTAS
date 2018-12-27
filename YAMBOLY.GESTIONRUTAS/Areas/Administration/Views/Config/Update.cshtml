@@ -1,0 +1,89 @@
+﻿@model YAMBOLY.GESTIONRUTAS.VIEWMODEL.Administration.Employee.RegisterHoursViewModel
+
+@{
+    ViewBag.Title = "Configuración de portal";
+    ViewBag.Icon = "plus";
+}
+
+@section Breadcrumbs{
+    
+}
+
+<div class="panel">
+    <div class="panel-heading">
+        <h5 class="panel-title">General</h5>
+    </div>
+    @using (Html.BeginForm("Update", "Config", FormMethod.Post))
+    {
+    <div class="panel-body">
+        <div class="form-group col-md-6 col-sm-12">
+            @Html.LabelFor(model => Model.Fecha, new { @class = "form-label" })
+            @Html.ValidationMessageFor(x => Model.Fecha)
+        </div>
+
+        <div class="form-group col-md-6 col-sm-12">
+            @Html.LabelFor(x => Model.CentroCostos1, new { @class = "form-label" })
+            @Html.DropDownListFor(x => Model.CentroCostos1, new SelectList(Model.CentroCostos1JList, "id", "text", 0), new { @class = "form-control form-group-margin", @data_plugin = "select2", @data_isedit = "false" })
+            @Html.ValidationMessageFor(x => Model.CentroCostos1)
+        </div>
+        <div class="form-group col-md-6 col-sm-12">
+            @Html.LabelFor(x => Model.CentroCostos2, new { @class = "form-label" })
+            @Html.DropDownListFor(x => Model.CentroCostos2, new SelectList(Model.CentroCostos2JList, "id", "text", 0), new { @class = "form-control form-group-margin", @data_plugin = "select2", @data_isedit = "false" })
+            @Html.ValidationMessageFor(x => Model.CentroCostos2)
+        </div>
+        <div class="form-group col-md-6 col-sm-12">
+            @Html.LabelFor(x => Model.CentroCostos3, new { @class = "form-label" })
+            @Html.DropDownListFor(x => Model.CentroCostos3, new SelectList(Model.CentroCostos3JList, "id", "text", 0), new { @class = "form-control form-group-margin", @data_plugin = "select2", @data_isedit = "false" })
+            @Html.ValidationMessageFor(x => Model.CentroCostos3)
+        </div>
+        <div class="form-group col-md-6 col-sm-12">
+            @Html.LabelFor(x => Model.CentroCostos4, new { @class = "form-label" })
+            @Html.DropDownListFor(x => Model.CentroCostos4, new SelectList(Model.CentroCostos4JList, "id", "text", 0), new { @class = "form-control form-group-margin", @data_plugin = "select2", @data_isedit = "false" })
+            @Html.ValidationMessageFor(x => Model.CentroCostos4)
+        </div>
+        <div class="form-group col-md-6 col-sm-12">
+            @Html.LabelFor(x => Model.CentroCostos5, new { @class = "form-label" })
+            @Html.DropDownListFor(x => Model.CentroCostos5, new SelectList(Model.CentroCostos5JList, "id", "text", 0), new { @class = "form-control form-group-margin", @data_plugin = "select2", @data_isedit = "false" })
+            @Html.ValidationMessageFor(x => Model.CentroCostos5)
+        </div>
+        <table class="table table-hover">
+            @for (int i = 0; i < Model.EmployeeHoursList.Count; i++)
+            {
+                @Html.HiddenFor(modelItem => modelItem.EmployeeHoursList[i].EmployeeId)
+                <tr>
+                    <td> @(Model.EmployeeHoursList[i].EmployeeId + " - " + Model.EmployeeHoursList[i].EmployeeNames) </td>
+                    <td>
+                        @Html.EditorFor(modelItem => modelItem.EmployeeHoursList[i].Hours)
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+        <div class="panel-footer text-right">
+            <button class="btn btn-primary" id="btnGuardar"><i class="fa fa-save" aria-hidden="true"></i>&nbsp; Guardar</button>
+        </div>
+    }
+
+</div>
+@section Scripts
+{
+    <script>
+        function onClickConfirm(button) {
+            var $this = $(button);
+            var message = $this.data('mensaje');
+
+            alertify.okBtn("Aceptar").cancelBtn("Cancelar").confirm(message, function () {
+                //se clickeo ok
+                document.getElementById("btnResetPass").click();
+            }, function () {
+                //se clickeo cancelar
+            });
+
+            $('.cancel').addClass('btn');
+            $('.cancel').addClass('btn-default');
+
+            $('.ok').addClass('btn');
+            $('.ok').addClass('btn-primary');
+        }
+    </script>
+}

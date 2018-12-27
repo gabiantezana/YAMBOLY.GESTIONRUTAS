@@ -73,6 +73,13 @@ namespace YAMBOLY.GESTIONRUTAS.HELPER
                     public const string REGISTERHOURS = PREFIX + "REGISTERHOURS";
                     public const string VIEWREPORTS = PREFIX + "VIEWREPORTS";
                 }
+
+                public static class Config
+                {
+                    private const string PREFIX = _PREFIX + "CONFIG.";
+                    public const string VIEW = PREFIX + "VIEW";
+                    public const string UPDATE = PREFIX + "UPDATE";
+                }
             }
 
             public class GeoLocation

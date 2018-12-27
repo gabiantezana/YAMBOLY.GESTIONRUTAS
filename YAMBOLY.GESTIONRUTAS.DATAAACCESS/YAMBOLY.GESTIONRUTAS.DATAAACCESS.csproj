@@ -73,6 +73,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Administration\ConfigDataAccess.cs" />
     <Compile Include="Administration\EmployeeDataAccess.cs" />
     <Compile Include="Administration\RolDataAccess.cs" />
     <Compile Include="Administration\UserDataAccess.cs" />

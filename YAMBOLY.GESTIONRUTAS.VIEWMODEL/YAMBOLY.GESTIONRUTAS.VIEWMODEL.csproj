@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Administration\Config\ConfigViewModel.cs" />
     <Compile Include="Administration\Employee\RegisterHoursViewModel.cs" />
     <Compile Include="Administration\User\UserListViewModel.cs" />
     <Compile Include="Administration\Rol\RolViewModel.cs" />

@@ -166,6 +166,7 @@
     <Compile Include="Areas\Administration\AdministrationAreaRegistration.cs" />
     <Compile Include="Areas\Administration\Controllers\RolController.cs" />
     <Compile Include="Areas\Administration\Controllers\EmployeeController.cs" />
+    <Compile Include="Areas\Administration\Controllers\ConfigController.cs" />
     <Compile Include="Areas\Administration\Controllers\UserController.cs" />
     <Compile Include="Areas\GeoLocation\Controllers\MapController.cs" />
     <Compile Include="Areas\GeoLocation\GeoLocationAreaRegistration.cs" />
@@ -926,6 +927,7 @@
     <Content Include="Scripts\esm\popper.js.map" />
     <Content Include="Scripts\esm\popper-utils.min.js.map" />
     <Content Include="Scripts\esm\popper-utils.js.map" />
+    <Content Include="Areas\Administration\Views\Confing\Update.cshtml" />
     <None Include="Content\assets\js\jquery-1.10.2.intellisense.js" />
     <None Include="Content\assets\js\jquery.validate-vsdoc.js" />
     <Content Include="Content\recursos.rar" />

@@ -36,6 +36,17 @@
                     </li>
                 }
 
+
+                @if (Session.GetViewPermissions().Intersect(new String[] { ConstantHelper.Views.Administration.Employee.REGISTERHOURS }).Count() > 0)
+                {
+                    <li class="site-menu-item">
+                        <a class="animsition-link" href="@Url.Action("RegisterHours", "Employee", new { Area = ConstantHelper.Area.ADMINISTRATION})">
+                            <span class="site-menu-title">Empleados</span>
+                        </a>
+                    </li>
+                }
+
+
                 @*@if (Session.GetViewPermissions().Intersect(new String[] { ConstantHelper.Views.Administration.User.LIST }).Count() > 0)
                 {
                     <li class="site-menu-item">
@@ -46,6 +57,28 @@
                 }*@
             </ul>
         </li>
+
+        <li class="site-menu-item has-sub title_">
+            <a href="javascript:void(0)">
+                <i class="site-menu-icon wb-dashboard" aria-hidden="true"></i>
+                <span class="site-menu-title">Empleados</span>
+            </a>
+            <ul class="site-menu-sub">
+                @if (Session.GetViewPermissions().Intersect(new String[] { ConstantHelper.Views.Administration.Rol.LIST }).Count() > 0)
+                {
+                    <li class="site-menu-item">
+                        <a class="animsition-link" href="@Url.Action("RegisterHours", "Employee", new { Area = ConstantHelper.Area.ADMINISTRATION})"
+                           data-animsition-out-class="rotate-out"
+                           data-animsition-out-duration="500">
+                            <span class="site-menu-title">Registrar horas</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </li>
+
+
+
         <li class="site-menu-item has-sub title_">
             <a href="javascript:void(0)">
                 <i class="site-menu-icon wb-dashboard" aria-hidden="true"></i>

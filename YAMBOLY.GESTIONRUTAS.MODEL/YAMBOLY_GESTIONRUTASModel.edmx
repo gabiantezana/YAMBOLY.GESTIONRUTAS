@@ -5,6 +5,16 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="YAMBOLY_GESTIONRUTASModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Config">
+          <Key>
+            <PropertyRef Name="ConfigId" />
+          </Key>
+          <Property Name="ConfigId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="_Key" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="_Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="_Description" Type="nvarchar(max)" />
+          <Property Name="_Value" Type="nvarchar(max)" />
+        </EntityType>
         <EntityType Name="ErrorLog">
           <Key>
             <PropertyRef Name="ErrorLogId" />
@@ -115,6 +125,7 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="YAMBOLY_GESTIONRUTASModelStoreContainer">
+          <EntitySet Name="Config" EntityType="Self.Config" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ErrorLog" EntityType="Self.ErrorLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RolesViews" EntityType="Self.RolesViews" Schema="dbo" store:Type="Tables" />
@@ -175,6 +186,7 @@
             <End Role="Roles" EntitySet="Roles" />
             <End Role="Users" EntitySet="Users" />
           </AssociationSet>
+          <EntitySet Name="Config" EntityType="YAMBOLY_GESTIONRUTASModel.Config" />
           </EntityContainer>
         <EntityType Name="ErrorLog">
           <Key>
@@ -283,6 +295,16 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Config">
+          <Key>
+            <PropertyRef Name="ConfigId" />
+          </Key>
+          <Property Name="ConfigId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="C_Key" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="C_Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="C_Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="C_Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -353,6 +375,17 @@
                 <ScalarProperty Name="Pass" ColumnName="Pass" />
                 <ScalarProperty Name="UserName" ColumnName="UserName" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Config">
+            <EntityTypeMapping TypeName="YAMBOLY_GESTIONRUTASModel.Config">
+              <MappingFragment StoreEntitySet="Config">
+                <ScalarProperty Name="C_Value" ColumnName="_Value" />
+                <ScalarProperty Name="C_Description" ColumnName="_Description" />
+                <ScalarProperty Name="C_Name" ColumnName="_Name" />
+                <ScalarProperty Name="C_Key" ColumnName="_Key" />
+                <ScalarProperty Name="ConfigId" ColumnName="ConfigId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

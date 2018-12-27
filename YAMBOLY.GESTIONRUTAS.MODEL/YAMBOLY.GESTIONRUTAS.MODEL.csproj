@@ -62,6 +62,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config.cs">
+      <DependentUpon>YAMBOLY_GESTIONRUTASModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Connected Services\ODataService\Reference.cs" />
     <Compile Include="DataContext.cs" />
     <Compile Include="ErrorLog.cs">
@@ -106,7 +109,9 @@
     </EntityDeploy>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.Config" />
+    <None Include="App.Config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Connected Services\ODataService\ConnectedService.json" />
     <None Include="packages.config" />
     <None Include="YAMBOLY_GESTIONRUTASModel.edmx.diagram">
