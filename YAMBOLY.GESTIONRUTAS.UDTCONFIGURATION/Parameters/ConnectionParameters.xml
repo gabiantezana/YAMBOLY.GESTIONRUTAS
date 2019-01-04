@@ -2,11 +2,11 @@
 <object>
   <XMLAsString>true</XMLAsString>
   <Server>172.16.7.51:30015</Server>
-  <LicenseServer>172.16.7.51:30000</LicenseServer>
+  <LicenseServer>172.16.7.51:40000</LicenseServer>
   <DbServerType>dst_HANADB</DbServerType>
   <DbUserName>SYSTEM</DbUserName>
   <DbPassword >S31d0r2017</DbPassword>
-  <CompanyDB>DES_HELATONYS_TEST</CompanyDB>
+  <CompanyDB>SBO_HELATONYS_PROD</CompanyDB>
   <UserName>manager</UserName>
   <Password>seidor</Password>
   <language></language>

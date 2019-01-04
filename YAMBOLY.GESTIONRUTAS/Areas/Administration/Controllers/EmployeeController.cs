@@ -13,8 +13,9 @@ namespace YAMBOLY.GESTIONRUTAS.Areas.Administration.Controllers
         [AppViewAuthorize(ConstantHelper.Views.Administration.Employee.REGISTERHOURS)]
         public ActionResult RegisterHours()
         {
-            var model = new EmployeeLogic().GetRegisterHoursViewModel(GetDataContext());
-            return View(model);
+            /*var model = new EmployeeLogic().GetRegisterHoursViewModel(GetDataContext());
+            return View(model);*/
+            return View();
         }
 
         [AppViewAuthorize(ConstantHelper.Views.Administration.User.LIST)]

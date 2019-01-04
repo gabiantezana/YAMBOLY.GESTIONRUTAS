@@ -10,6 +10,7 @@ namespace YAMBOLY.GESTIONRUTAS.DATAAACCESS.Administration
 {
     public class EmployeeDataAccess
     {
+        /*
         //Listado de empleados
         public IEnumerable<A1A_LIEMType> GetList(DataContext dataContext)
         {
@@ -26,6 +27,6 @@ namespace YAMBOLY.GESTIONRUTAS.DATAAACCESS.Administration
         public IEnumerable<OWORType> GetOrdersList(DataContext dataContext)
         {
             return dataContext.oDataService.OWOR;
-        }
+        }*/
     }
 }

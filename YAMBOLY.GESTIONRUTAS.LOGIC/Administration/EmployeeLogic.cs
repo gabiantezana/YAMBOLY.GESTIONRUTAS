@@ -12,6 +12,7 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.Administration
 {
     public class EmployeeLogic
     {
+        /*
         public RegisterHoursViewModel GetRegisterHoursViewModel(DataContext dataContext)
         {
             var model = new RegisterHoursViewModel();
@@ -23,7 +24,7 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.Administration
             model.EmployeeHoursList = GetEmployeeHoursList(dataContext);
             return model;
         }
-
+        
         public List<EmployeeHours> GetEmployeeHoursList(DataContext dataContext)
         {
             return new EmployeeDataAccess().GetList(dataContext).Select(x => new EmployeeHours() { EmployeeId = x.Code, EmployeeNames = x.Name, Hours = 0 }).ToList();
@@ -52,5 +53,6 @@ namespace YAMBOLY.GESTIONRUTAS.LOGIC.Administration
         {
             return new EmployeeDataAccess().GetOrdersList(dataContext).Select(x => new JsonEntity() { id = x.DocNum, text = x.DocNum + " " + x.ItemCode + " " + x.ItemName }).ToList();
         }
+        */
     }
 }
